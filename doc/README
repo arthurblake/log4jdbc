@@ -1,0 +1,132 @@
+[this software is open source, released under the Apache License, Version 2.0:  see LICENSE file]
+
+log4jdbc Version 1.0
+Release Date:  2007-04-21
+=========================
+
+log4jdbc is a JDBC driver that can log SQL and/or JDBC calls (and optionally SQL timing information)
+for other jdbc drivers using the log4j 1.2.x logging system.
+
+Features:
+=========
+
+* Easy to drop in and use in existing systems, because it's a standard jdbc driver.  
+  The only other requirement is to have the log4j 1.2.x jar and your jdbc driver for your
+  database.
+  
+* Easy to configure, in most cases all you need to do is change the driver class name 
+  and prepend "jdbc:log4" to your existing jdbc url, set up your log4j categories and
+  you're ready to go!
+  
+* In the logged output, for prepared statements, the bind arguments are automatically 
+  inserted into the SQL output.  This greatly Improves readability and debugging for
+  many cases.
+  
+* SQL timing information can be generated to help identify how long SQL statements take 
+  to run, helping to identify statements that are running too slowly.
+  
+* SQL connection number information is generated to help identify connection pooling or 
+  threading problems.
+
+* Works with any JDBC 3.0 driver, JDK 1.4 and above, and log4j 1.2.x.
+
+This jdbc driver can be "dropped in" to log the SQL and jdbc calls of another JDBC driver.
+
+Usage:
+======
+
+1.  Set your jdbc driver class to net.sf.log4jdbc.DriverSpy
+
+    The underlying driver that is being spied on in many cases will be loaded automatically
+    without any additional configuration.
+
+    The log4jdbc "spy" driver will try and load the following popular jdbc drivers:
+    
+        oracle.jdbc.driver.OracleDriver              (oracle)
+        com.sybase.jdbc2.jdbc.SybDriver              (sybase)
+        net.sourceforge.jtds.jdbc.Driver             (sourceforge ms sql server driver)
+        com.microsoft.jdbc.sqlserver.SQLServerDriver (microsoft ms sql server driver)
+        weblogic.jdbc.sqlserver.SQLServerDriver      (weblogic ms sql server driver)
+        com.informix.jdbc.IfxDriver                  (informix)
+        org.apache.derby.jdbc.ClientDriver           (apache derby client/server driver)
+        org.apache.derby.jdbc.EmbeddedDriver         (apache derby embedded driver)
+
+    If you want to use a different underlying jdbc driver that is not already in the above supported list,
+    set a system property, log4jdbc.drivers to the class name of the additional driver.  This
+    can also be a comma separated list of driver class names.
+
+    (optional) -Dlog4jdbc.drivers=<driver>[,<driver>...]   If your driver is not one of the common preloaded drivers.
+    
+2.  Prepend "jdbc:log4" to the normal jdbc url that you are using.
+
+    For example, if your normal jdbc url is "jdbc:derby://localhost:1527//db-derby-10.2.2.0-bin/databases/MyDatabase"
+    You would change it to:  "jdbc:log4jdbc:derby://localhost:1527//db-derby-10.2.2.0-bin/databases/MyDatabase" to use the
+    log4jdbc spy driver.
+
+3.  Make sure log4jdbc-1.0.jar and the log4j jar (v1.2x) are in the classpath, as well as the jar file(s) for the
+    actual jdbc driver that is being spied upon.
+
+    Use the following command line options to initialize log4j:
+    
+    (optional) -Dlog4j.debug 
+               -Dlog4j.configuration=log4j.xml (make sure that log4j.xml is also in the classpath).
+    
+    or alternatively initialize the log4j system in code.
+
+5.  Set up your log4j logging categories.  There are 4 categories that are used by log4jdbc,
+    If all 4 loggers are set to the FATAL level, then log4jdbc will not log anything, and in fact the actual (real)
+    connection to the underlying database will be returned by the driver (thus allowing log4jdbc to be installed and
+    available without imposing any performance loss).  If any of the 4 logs are set to ERROR or higher, then log4jdbc
+    will be activated, wrapping and logging all activity in the jdbc connections returned by the driver.
+
+
+    Each of these logs can be set at either DEBUG, INFO or ERROR
+    DEBUG includes the class name and line number (if available) at which the sql was executed.
+    INFO  includes the sql (or other information as applicable)
+    ERROR will show the stack traces in the log output when sql exceptions occur.
+
+    jdbc.sqlonly   shows only SQL in the log.  SQL executed within a prepared statement is automatically shown with
+                   it's bind arguments replaced with the data bound at that position, for greatly increased readability.
+
+    jdbc.sqltiming shows the SQL, post-execution, including timing statistics on how long the sql took to execute.
+
+    jdbc.audit     Logs ALL jdbc calls except for ResultSets.  This is a very voluminous output, and is not normally
+                   needed unless tracking down a specific jdbc problem.
+
+    jdbc.resultset Even more voluminous, because all calls to ResultSet objects are logged.
+
+
+    Additionally, there is one logger named log4jdbc.debug which is for use with internal debugging of log4jdbc.
+    At this time it just prints out information on which underlying drivers were found and not found when the
+    spy driver loads.
+
+    In a typical usage scenario, you might turn on only the jdbc.sqlonly logging at INFO level,
+    just to view the sql coming out of your program.
+
+    Then if you wanted to view how long each sql statement is taking to execute, you might use jdbc.sqltiming.
+
+    jdbc.audit and jdbc.resultset are used for more in depth diagnosis of what is going on under the hood with jdbc
+    as potentially almost every single call to jdbc could be logged (logs can grow very large very quickly with this.)
+
+    See the sample files log4j.xml and log4j.properties for more information.
+
+6.  Adjust debugging options.  When logging at the DEBUG level, the class file and line number (if available) for the
+    class that invoked jdbc is logged after each log statement.  This is enormously useful for finding where in the
+    code the SQL is generated.  Be careful when using this on a production system because there is a small, but
+    potentially significant penalty performance for generating this data on each logging statement.
+
+    In many cases, this call stack data is not very useful because the calling class into log4jdbc is a connection pool,
+    object-persistance layer or other layer between log4jdbc and your application code-- but the class file and
+    line number information you really are interested in seeing is where in your application the SQL was generated from.
+
+    There are a couple of very useful system properties you can set for log4jdc to help get around this problem.
+
+    (optional) -Dlog4jdbc.debug.stack.prefix=<package.prefix> <-- a String that is the partial (or full) package
+       prefix for the package name of your application.  The call stack will be searched down to the first occurence
+       of a class that has the matching prefix.  If this is not set, the actual class that called into log4jdbc is used
+       in the debug output (in many cases this will be a connection pool class)
+
+
+
+
+

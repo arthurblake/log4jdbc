@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<!-- An example log4j configuration xml file for log4jdbc -->
+<!-- Logging levels are:                                  -->
+<!-- DEBUG < INFO < WARN < ERROR < FATAL                  -->
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+  <appender name="stdout-appender" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p %c{1}: %m%n"/>
+    </layout>
+  </appender>
+
+  <appender name="sql-appender" class="org.apache.log4j.FileAppender">
+    <param name="File" value="./logs/sql.log"/>
+    <param name="Append" value="false"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="-----&gt; %d{yyyy-MM-dd HH:mm:ss.SSS} &lt;%t&gt; %m%n%n"/>
+    </layout>
+  </appender>
+
+  <appender name="sql-timing-appender" class="org.apache.log4j.FileAppender">
+    <param name="File" value="./logs/sqltiming.log"/>
+    <param name="Append" value="false"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="-----&gt; %d{yyyy-MM-dd HH:mm:ss.SSS} %m%n%n"/>
+    </layout>
+  </appender>
+
+  <appender name="jdbc-appender" class="org.apache.log4j.FileAppender">
+    <param name="File" value="./logs/jdbc.log"/>
+    <param name="Append" value="false"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
+    </layout>
+  </appender>
+
+  <!--
+       The Following 4 logs can be turned on and off while the server is running
+       LIVE in order to trace the SQL and/or all JDBC coming out of the application.
+
+       To turn a log on, set the level value to INFO or DEBUG (to see class name and
+       line number information in the log)  The DEBUG setting is much more inefficient
+       but the output is much more useful.
+
+       To turn off JDBC logging completely, you must set all 4 logs to a level higher 
+       than ERROR (FATAL is suggested.)
+  -->
+
+  <!-- log SQL (pre-execution) plus exceptions caused by SQL -->
+  <logger name="jdbc.sqlonly" additivity="false">
+    <level value="debug"/>
+    <appender-ref ref="sql-appender"/>
+  </logger>
+
+  <!-- log SQL with timing information, post execution -->
+  <logger name="jdbc.sqltiming" additivity="false">
+    <level value="fatal"/>
+    <appender-ref ref="sql-timing-appender"/>
+  </logger>
+
+  <!-- only use the two logs below to trace ALL JDBC information,
+       NOTE:  This can be very voluminous!  -->
+
+  <!-- log all jdbc calls except ResultSet calls -->
+  <logger name="jdbc.audit" additivity="false">
+    <level value="fatal"/>
+    <appender-ref ref="jdbc-appender"/>
+  </logger>
+
+  <!-- log the jdbc ResultSet calls -->
+  <logger name="jdbc.resultset" additivity="false">
+    <level value="fatal"/>
+    <appender-ref ref="jdbc-appender"/>
+  </logger>
+
+
+  <!-- this log is for internal debugging of log4jdbc, itself -->
+  <!-- debug logging for log4jdbc itself -->
+  <logger name="log4jdbc.debug" additivity="false">
+    <level value="debug"/>
+    <appender-ref ref="stdout-appender"/>
+  </logger>
+
+  <!-- by default, log everything to the console with a level of WARN or higher -->
+  <root>
+    <level value="warn"/>
+    <appender-ref ref="stdout-appender"/>
+  </root>
+</log4j:configuration>
