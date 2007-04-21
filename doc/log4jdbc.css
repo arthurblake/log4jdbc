@@ -1,0 +1,26 @@
+/*
+ red in logo is  #f06
+ purple in logo is  #ef39e9
+*/
+
+.left {text-align:left;}
+.right{text-align:right;}
+.usage {text-align:left;}
+h1 {font-size:1em;color:#f06;background-color:#eee;display:block;padding:0.8em;}
+h2 {font-size:1.2em;color:#f06;background-color:#eee;display:block;height:2em;padding-top:0.8em;}
+a {text-decoration:none;}
+a:link {color: #f06;}
+a:visited {color: #f06;}
+p {padding:10px;}
+span.file {font-weight:bold;}
+ul {padding:10px;list-style:square}
+ol {padding:10px;list-style:decimal;}
+
+ul li {margin-left:2em;padding:0.3em;}
+ol li {margin-left:2em;padding:0.3em;}
+
+li p {margin-left:0;}
+
+code,pre {color:navy;background-color:beige;font-size:11pt;}
+
+pre {border:2px dashed navy;margin-left:3em;margin-right:4em;margin-top:1em;margin-bottom:1em;white-space:pre-line;}
