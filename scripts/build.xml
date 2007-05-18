@@ -9,7 +9,7 @@
 
   <target name="all" depends="cleancompile,compile,cleanjar,jar"/>
 
-  <property name="version" value="1.0"/>
+  <property name="version" value="1.01"/>
 
   <target name="compile" description="compile all the source code">
     <javac srcdir="src" destdir="classes" deprecation="true" debug="true">
