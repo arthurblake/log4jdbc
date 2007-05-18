@@ -1,0 +1,4 @@
+o switch to SLF4J logging facade so that any kind of logging system can be used with log4jdbc --
+  not just log4j
+
+o need a way to report exceptions in the sql timing log as well as the sql that failed and how long it took to fail. 

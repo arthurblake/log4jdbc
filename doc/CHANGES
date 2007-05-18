@@ -1,0 +1,6 @@
+           1.01 pending release
+
+           o Fixed problem where when sql timing log was the only log turned on, log4jdbc would not recognize that
+             logging was on at all.
+
+2007-04-21 Initial 1.0 Release
