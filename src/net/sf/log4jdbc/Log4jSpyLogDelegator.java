@@ -69,7 +69,7 @@ public class Log4jSpyLogDelegator implements SpyLogDelegator
   public boolean isJdbcLoggingEnabled()
   {
     return jdbcLogger.isEnabledFor(Level.ERROR) || resultSetLogger.isEnabledFor(Level.ERROR) ||
-      sqlOnlyLogger.isEnabledFor(Level.ERROR);
+      sqlOnlyLogger.isEnabledFor(Level.ERROR) || sqlTimingLogger.isEnabledFor(Level.ERROR);
   }
 
   /**
