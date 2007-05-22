@@ -1,11 +1,11 @@
 [this software is open source, released under the Apache License, Version 2.0:  see LICENSE file]
 
-log4jdbc Version 1.0
-Release Date:  2007-04-21
+log4jdbc Version 1.1
+Release Date:  pending
 =========================
 
 log4jdbc is a JDBC driver that can log SQL and/or JDBC calls (and optionally SQL timing information)
-for other jdbc drivers using the log4j 1.2.x logging system.
+for other jdbc drivers using the SLF4J logging system.
 
 Features:
 =========

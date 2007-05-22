@@ -39,8 +39,10 @@ public interface SpyLogDelegator
    * @param methodCall a description of the name and call parameters of the method generated the Exception.
    * @param e          the Exception that was thrown.
    * @param sql        optional sql that occured just before the exception occured.
+   * @param execTime   optional amount of time that passed before an exception was thrown when sql was being executed.
+   *                   caller should pass -1 if not used
    */
-  public void exceptionOccured(Spy spy, String methodCall, Exception e, String sql);
+  public void exceptionOccured(Spy spy, String methodCall, Exception e, String sql, long execTime);
 
   /**
    * Called when spied upon method call returns.

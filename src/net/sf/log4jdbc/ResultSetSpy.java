@@ -51,7 +51,7 @@ public class ResultSetSpy implements ResultSet, Spy
    */
   protected void reportException(String methodCall, SQLException exception)
   {
-    log.exceptionOccured(this, methodCall, exception, null);
+    log.exceptionOccured(this, methodCall, exception, null, -1L);
   }
 
   /**

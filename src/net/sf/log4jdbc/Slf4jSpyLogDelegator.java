@@ -15,20 +15,20 @@
  */
 package net.sf.log4jdbc;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
- * Delegates JDBC spy events to the log4j logger.
+ * Delegates JDBC spy logging events to the the Simple Logging Facade for Java (slf4j).
  *
  * @author Arthur Blake
  */
-public class Log4jSpyLogDelegator implements SpyLogDelegator
+public class Slf4jSpyLogDelegator implements SpyLogDelegator
 {
   /**
-   * Create a SpyLogDelegator specific to the log4j logging system. 
+   * Create a SpyLogDelegator specific to the Simple Logging Facade for Java (slf4j).
    */
-  public Log4jSpyLogDelegator()
+  public Slf4jSpyLogDelegator()
   {
   }
 
@@ -37,29 +37,29 @@ public class Log4jSpyLogDelegator implements SpyLogDelegator
   /**
    * Logger that shows all JDBC calls on INFO level (exception ResultSet calls)
    */
-  public static final Logger jdbcLogger = Logger.getLogger("jdbc.audit");
+  public static final Logger jdbcLogger = LoggerFactory.getLogger("jdbc.audit");
 
   /**
    * Logger that shows JDBC calls for ResultSet operations
    */
-  public static final Logger resultSetLogger = Logger.getLogger("jdbc.resultset");
+  public static final Logger resultSetLogger = LoggerFactory.getLogger("jdbc.resultset");
 
   /**
    * Logger that shows only the SQL that is occuring
    */
-  public static final Logger sqlOnlyLogger = Logger.getLogger("jdbc.sqlonly");
+  public static final Logger sqlOnlyLogger = LoggerFactory.getLogger("jdbc.sqlonly");
 
   /**
    * Logger that shows the SQL timing, post execution
    */
-  public static final Logger sqlTimingLogger = Logger.getLogger("jdbc.sqltiming");
+  public static final Logger sqlTimingLogger = LoggerFactory.getLogger("jdbc.sqltiming");
 
   // admin/setup logging for log4jdbc.
 
   /**
    * Logger just for debugging things within log4jdbc itself (admin, setup, etc.)
    */
-  public static final Logger debugLogger = Logger.getLogger("log4jdbc.debug");
+  public static final Logger debugLogger = LoggerFactory.getLogger("log4jdbc.debug");
 
   /**
    * Determine if any of the spy loggers are turned on.
@@ -68,8 +68,14 @@ public class Log4jSpyLogDelegator implements SpyLogDelegator
    */
   public boolean isJdbcLoggingEnabled()
   {
+
+
+    //todo: how can we handle this better??
+    return true;
+/*
     return jdbcLogger.isEnabledFor(Level.ERROR) || resultSetLogger.isEnabledFor(Level.ERROR) ||
       sqlOnlyLogger.isEnabledFor(Level.ERROR) || sqlTimingLogger.isEnabledFor(Level.ERROR);
+*/
   }
 
   /**
@@ -262,3 +268,4 @@ public class Log4jSpyLogDelegator implements SpyLogDelegator
     debugLogger.debug(msg);
   }
 }
+

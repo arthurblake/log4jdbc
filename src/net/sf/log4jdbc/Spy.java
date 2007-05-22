@@ -16,7 +16,9 @@
 package net.sf.log4jdbc;
 
 /**
- * Common interface that all Spy classes can implement
+ * Common interface that all Spy classes can implement.
+ * This is used so that any class that is being spied upon can transmit generic information about
+ * itself to the whoever is doing the spying.
  *
  * @author Arthur Blake
  */

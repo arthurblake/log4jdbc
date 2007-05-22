@@ -19,8 +19,8 @@ package net.sf.log4jdbc;
  * A provider for a SpyLogDelegator.  This allows a single switch point to abstract
  * away which logging system to use for spying on JDBC calls.
  *
- * At this point, only the log4j system can be used, but it would be trivial to extend the system
- * for use with any other logging system, by creating new implementations of SpyLogDelegator.
+ * The SLF4J logging facade is used, which is a very good general purpose facade for plugging into
+ * numerous java logging systems, simply and easily.
  *
  * @author Arthur Blake
  */
@@ -34,7 +34,8 @@ public class SpyLogFactory
   /**
    * The logging system of choice.
    */
-  private static final SpyLogDelegator logger = new Log4jSpyLogDelegator();
+  private static final SpyLogDelegator logger = new Slf4jSpyLogDelegator();
+  //new Log4jSpyLogDelegator();
 
   /**
    * Get the default SpyLogDelegator for logging to the logger.

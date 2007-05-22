@@ -93,12 +93,12 @@ public class ConnectionSpy implements Connection, Spy
 
   protected void reportException(String methodCall, SQLException exception, String sql)
   {
-    log.exceptionOccured(this, methodCall, exception, sql);
+    log.exceptionOccured(this, methodCall, exception, sql, -1L);
   }
 
   protected void reportException(String methodCall, SQLException exception)
   {
-    log.exceptionOccured(this, methodCall, exception, null);
+    log.exceptionOccured(this, methodCall, exception, null, -1L);
   }
 
   protected void reportAllReturns(String methodCall, String returnValue)
