@@ -16,4 +16,7 @@
 
            o dump batched sql correctly
 
+           o add simple command line program (PostLogProfilerProcessor) for processing sqltiming log files to create
+             a simple profiling report from log data
+
 2007-04-21 Initial 1.0 Release
