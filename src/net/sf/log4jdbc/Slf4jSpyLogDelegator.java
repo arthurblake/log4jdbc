@@ -97,12 +97,31 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     {
       jdbcLogger.error(header, e);
       sqlOnlyLogger.error(header, e);
+      //todo: should exception w/o sql also be shown in sqltiming log ?? for consistency... ?
     }
     else
     {
       jdbcLogger.error(header + " " + sql, e);
-      sqlOnlyLogger.error(header + " " + sql, e);
-      sqlTimingLogger.error(header + " FAILED! " + sql + " {FAILED after " + execTime + " msec}", e);
+
+      // if at debug level, display debug info to error log
+      if (sqlOnlyLogger.isDebugEnabled())
+      {
+        sqlOnlyLogger.error(getDebugInfo() + nl + spyNo + ". " + sql, e);
+      }
+      else
+      {
+        sqlOnlyLogger.error(header + " " + sql, e);
+      }
+
+      // if at debug level, display debug info to error log
+      if (sqlTimingLogger.isDebugEnabled())
+      {
+        sqlTimingLogger.error(getDebugInfo() + nl + spyNo + ". " + sql + " {FAILED after " + execTime + " msec}", e);
+      }
+      else
+      {
+        sqlTimingLogger.error(header + " FAILED! " + sql + " {FAILED after " + execTime + " msec}", e);
+      }
     }
   }
 
@@ -119,28 +138,27 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   {
     String classType = spy.getClassType();
     int spyNo = spy.getConnectionNumber();
+    String header = spyNo + ". " + classType + "." + methodCall + " returned " + returnMsg;
     if (ResultSetSpy.classTypeDescription.equals(classType))
     {
       if (resultSetLogger.isDebugEnabled())
       {
-        resultSetLogger.debug(
-          spyNo + ". " + classType + "." + methodCall + " returned " + returnMsg + " " + getDebugInfo());
+        resultSetLogger.debug(header + " " + getDebugInfo());
       }
       else if (resultSetLogger.isInfoEnabled())
       {
-        resultSetLogger.info(spyNo + ". " + classType + "." + methodCall + " returned " + returnMsg);
+        resultSetLogger.info(header);
       }
     }
     else
     {
       if (jdbcLogger.isDebugEnabled())
       {
-        jdbcLogger.debug(
-          spyNo + ". " + classType + "." + methodCall + " returned " + returnMsg + " " + getDebugInfo());
+        jdbcLogger.debug(header + " " + getDebugInfo());
       }
       else if (jdbcLogger.isInfoEnabled())
       {
-        jdbcLogger.info(spyNo + ". " + classType + "." + methodCall + " returned " + returnMsg);
+        jdbcLogger.info(header);
       }
     }
   }
