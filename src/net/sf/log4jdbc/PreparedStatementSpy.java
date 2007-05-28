@@ -790,6 +790,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void addBatch() throws SQLException
   {
     String methodCall = "addBatch()";
+    currentBatch.add(dumpedSql());
     try
     {
       realPreparedStatement.addBatch();

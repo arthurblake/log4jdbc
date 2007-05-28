@@ -20,6 +20,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Wraps a Statement and reports method calls, returns and exceptions.
@@ -233,6 +235,12 @@ public class StatementSpy implements Statement, Spy
   }
 
   /**
+   * Running one-off statement sql is generally inefficient and a bad idea for various reasons,
+   * so give a warning when this is done.
+   */
+  private static final String StatementSqlWarning = "{WARNING: Statement used to run SQL} ";
+
+  /**
    * Report SQL for logging with a warning that it was generated from a statement.
    *
    * @param sql        the SQL being run
@@ -242,7 +250,7 @@ public class StatementSpy implements Statement, Spy
   {
     // redirect to one more method call ONLY so that stack trace search is consistent
     // with the reportReturn calls
-    _reportSql("{WARNING: Statement used to run SQL} " + sql, methodCall);
+    _reportSql(StatementSqlWarning + sql, methodCall);
   }
 
   /**
@@ -256,7 +264,7 @@ public class StatementSpy implements Statement, Spy
   {
     // redirect to one more method call ONLY so that stack trace search is consistent
     // with the reportReturn calls
-    _reportSqlTiming(execTime, "{WARNING: Statement used to run SQL} " + sql, methodCall);
+    _reportSqlTiming(execTime, StatementSqlWarning + sql, methodCall);
   }
 
   /**
@@ -392,19 +400,24 @@ public class StatementSpy implements Statement, Spy
     reportReturn(methodCall);
   }
 
+  /**
+   * Tracking of current batch (see addBatch, clearBatch and executeBatch)
+   * //todo: should access to this List be synchronized?
+   */
+  protected List currentBatch = new ArrayList();
+
   public void addBatch(String sql) throws SQLException
   {
     String methodCall = "addBatch(" + sql + ")";
-    reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+
+    currentBatch.add(StatementSqlWarning + sql);
     try
     {
       realStatement.addBatch(sql);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall,s);
       throw s;
     }
     reportReturn(methodCall);
@@ -436,6 +449,7 @@ public class StatementSpy implements Statement, Spy
       reportException(methodCall, s);
       throw s;
     }
+    currentBatch.clear();
     reportReturn(methodCall);
   }
 
@@ -457,15 +471,38 @@ public class StatementSpy implements Statement, Spy
   public int[] executeBatch() throws SQLException
   {
     String methodCall = "executeBatch()";
+
+    int j=currentBatch.size();
+    StringBuffer batchReport = new StringBuffer("batching " + j + " statements:");
+
+    int fieldSize = (""+j).length();
+
+    String sql;
+    for (int i=0; i < j;)
+    {
+      sql = (String) currentBatch.get(i);
+      batchReport.append("\n");
+      batchReport.append(Utilities.rightJustify(fieldSize,""+(++i)));
+      batchReport.append(":  ");
+      batchReport.append(sql);
+    }
+
+    sql = batchReport.toString();
+    reportSql(sql, methodCall);
+    long tstart = System.currentTimeMillis();
+
+    int[] updateResults;
     try
     {
-      return (int[]) reportReturn(methodCall, realStatement.executeBatch());
+      updateResults = realStatement.executeBatch();
+      reportSqlTiming(System.currentTimeMillis()-tstart, sql, methodCall);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s);
+      reportException(methodCall, s, sql, System.currentTimeMillis()-tstart);
       throw s;
     }
+    return (int[])reportReturn(methodCall,updateResults);
   }
 
   public void setFetchSize(int rows) throws SQLException
