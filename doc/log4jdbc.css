@@ -24,3 +24,5 @@ li p {margin-left:0;}
 code,pre {color:navy;background-color:beige;font-size:11pt;}
 
 pre {border:2px dashed navy;margin-left:3em;margin-right:4em;margin-top:1em;margin-bottom:1em;white-space:pre-line;}
+
+p.ad {font-size:1em;color:blue;}
