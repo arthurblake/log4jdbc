@@ -52,6 +52,25 @@
     <mkdir dir="doc/apidocs" />
   </target>
 
+  <target name="cleanrelease">
+    <delete file="../log4jdbc-${version}.zip"/>
+    <delete file="../log4jdbc-${version}.tar"/>
+    <delete file="../log4jdbc-${version}.tar.gz"/>
+  </target>
+
+  <target name="release" depends="cleanrelease,all,ydoc" description="make a complete release distribution (a .jar zip and tar.gz file for release)">
+    <zip destfile="../log4jdbc-${version}.zip">
+      <zipfileset dir="." prefix="log4jdbc-${version}" excludes="*.zip,*.tar.gz,*,iml,*.ipr,*.iws,thirdparty-stuff/**,classes/**"/>
+    </zip>
+    <tar destfile="../log4jdbc-${version}.tar">
+      <tarfileset dir="." prefix="log4jdbc-${version}" excludes="*.zip,*.tar.gz,*,iml,*.ipr,*.iws,thirdparty-stuff/**,classes/**"/>
+    </tar>
+    <gzip destfile="../log4jdbc-${version}.tar.gz" src="../log4jdbc-${version}.tar"/>
+    <delete file="../log4jdbc-${version}.tar"/>
+  </target>
+
+  <!-- make the javadoc (or ydoc which includes UML diagrams) -->
+
   <target name="javadoc" description="generate the javadoc" depends="cleanjavadoc">
     <delete dir="doc/apidocs" />
     <mkdir dir="doc/apidocs" />
@@ -75,7 +94,6 @@
       <link href="http://www.slf4j.org/api/"/>
     </javadoc>
   </target>
-
 
   <target name="ydoc" description="create javadoc using ydoc doclet to include UML diagrams" depends="cleanjavadoc">
 
