@@ -13,7 +13,7 @@
 
 <h1><a name="top"/><img class="logo" src="log4jdbc-logo-gray.png"><br>
 
-<a href="http://sourceforge.net/project/showfiles.php?group_id=194500&package_id=229335&release_id=502834">download</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=194500">download</a> |
 <a href="#news">news</a> |
 <a href="#features">features</a> |
 <a href="#usage">usage</a> |
@@ -24,12 +24,12 @@
 
 <p>
 <b>log4jdbc</b> is a JDBC driver that can log SQL and/or JDBC calls (and optionally SQL timing information)
-for other jdbc drivers using the <a href="http://logging.apache.org/log4j/docs/">log4j</a> 1.2.x logging system.
+for other jdbc drivers using the <a href="http://www.slf4j.org/">Simple Logging Facade For Java</a> (SLF4J) logging system.
 </p>
 
-
 <h2><a name="news"/>news</h2>
-<p class="left"><b>2007-04-21:</b> log4jdbc 1.0 has been released!  <a href="http://sourceforge.net/project/showfiles.php?group_id=194500&package_id=229335&release_id=502834">Download it</a> and give it a try!</p>
+<p class="left"><b>2007-05-29:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=688372">log4jdbc 1.1 alpha 1 released.</a>  Most notable change is that the simple logging facade for java is now used instead of log4j directly.  See <a href="CHANGES">CHANGES</a> for all the release details.</p>
+<p class="left"><b>2007-04-21:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=688372">log4jdbc 1.0 has been released!</a>  Download it and give it a try!</p>
 
 <p class="right"><a href="#top">[back to top]</a></p>
 <h2><a name="features"/>features</h2>
@@ -37,13 +37,13 @@ for other jdbc drivers using the <a href="http://logging.apache.org/log4j/docs/"
 <ul class="left">
 <li>
   Easy to drop in and use in existing systems, because it's a standard jdbc driver.
-  The only other requirement is to have the log4j 1.2.x jar and your jdbc driver for your
+  The only other requirement is to have the SLF4J jars and your jdbc driver for your
   database.
 </li>
 
 <li>
   Easy to configure, in most cases all you need to do is change the driver class name
-  and prepend "jdbc:log4" to your existing jdbc url, set up your log4j categories and
+  and prepend "jdbc:log4" to your existing jdbc url, set up your logging categories and
   you're ready to go!
 </li>
 
@@ -55,16 +55,18 @@ for other jdbc drivers using the <a href="http://logging.apache.org/log4j/docs/"
 
 <li>
   SQL timing information can be generated to help identify how long SQL statements take
-  to run, helping to identify statements that are running too slowly.
+  to run, helping to identify statements that are running too slowly and this data can
+  be post processed with an included tool to produce profiling report data for quickly
+  identifying slow SQL in your application..
 </li>
-
+  
 <li>
   SQL connection number information is generated to help identify connection pooling or
   threading problems.
 </li>
 
 <li>
-  Works with any JDBC 3.0 driver, JDK 1.4 and above, and log4j 1.2.x.
+  Works with any JDBC 3.0 driver, JDK 1.4 and above, and SLF4J 1.x.
 </li>
 
 </ul>
@@ -111,23 +113,19 @@ This jdbc driver can be "dropped in" to log the SQL and jdbc calls of another JD
     You would change it to:  <code>jdbc:log4jdbc:derby://localhost:1527//db-derby-10.2.2.0-bin/databases/MyDatabase</code> to use the
     log4jdbc spy driver.</p>
 </li>
-<li><p>Make sure <span class="file">log4jdbc-1.0.jar</span> and the <span class="file">log4j jar</span> (v1.2x) are in
-  the classpath, as well as the jar file(s) for the actual jdbc driver that is being spied upon.</p>
-  <p>
-    Use the following command line options to initialize log4j:
+<li><p>Make sure <span class="file">log4jdbc-1.1alpha1.jar</span> and the <span class="file">slf4j</span> jar files (v1.x) are in
+  the classpath, as well as the jar file for the logging system that SLF4J forwards to and the jar file(s) for the actual
+  jdbc driver that is being spied upon.  Please refer the the <a href="http://www.slf4j.org/">SLF4J documentation</a>
+  for information on setting up SLF4J.  It's really easy!
   </p>
-  <pre>
-
-    (optional) -Dlog4j.debug
-               -Dlog4j.configuration=log4j.xml (make sure that log4j.xml is also in the classpath).
-  </pre>
-    <p>or alternatively initialize the log4j system in code. </p>
 </li>
-<li> <p> Set up your log4j logging categories.  There are 4 categories that are used by log4jdbc,
-    If all 4 loggers are set to the FATAL level, then log4jdbc will not log anything, and in fact the actual (real)
-    connection to the underlying database will be returned by the driver (thus allowing log4jdbc to be installed and
-    available without imposing any performance loss).  If any of the 4 logs are set to ERROR or higher, then log4jdbc
-    will be activated, wrapping and logging all activity in the jdbc connections returned by the driver.</p>
+<li> <p> Set up your logging categories.  There are 4 categories that are used by log4jdbc,
+    If all 4 loggers are set to a level less than error (such as the FATAL level), then log4jdbc will not log
+    anything, and in fact the actual (real) connection to the underlying database will be returned by the log4jdbc
+    driver (thus allowing log4jdbc to be installed and available to turn on at runtime at a moment's notice,
+    without imposing any actual performance loss when not being used).  If any of the 4 logs are set to ERROR,INFO or
+    DEBUG, then log4jdbc will be activated, wrapping and logging all activity in the jdbc connections returned by the
+    underlying driver.</p>
     <pre>
 
     Each of these logs can be set at either DEBUG, INFO or ERROR
@@ -148,7 +146,7 @@ This jdbc driver can be "dropped in" to log the SQL and jdbc calls of another JD
 
     <p>Additionally, there is one logger named log4jdbc.debug which is for use with internal debugging of log4jdbc.
     At this time it just prints out information on which underlying drivers were found and not found when the
-    spy driver loads.</p>
+    log4jdbc spy driver loads.</p>
 
     <p>In a typical usage scenario, you might turn on only the jdbc.sqlonly logging at INFO level,
     just to view the sql coming out of your program.</p>
@@ -156,9 +154,11 @@ This jdbc driver can be "dropped in" to log the SQL and jdbc calls of another JD
     <p>Then if you wanted to view how long each sql statement is taking to execute, you might use jdbc.sqltiming.</p>
 
     <p>jdbc.audit and jdbc.resultset are used for more in depth diagnosis of what is going on under the hood with jdbc
-    as potentially almost every single call to jdbc could be logged (logs can grow very large very quickly with this.)</p>
+    as potentially almost every single call to jdbc could be logged (logs can grow very large, very quickly with this!)</p>
 
-    <p>See the sample files <a href="log4j.xml">log4j.xml</a> and <a href="log4j.properties">log4j.properties</a> for more information.</p>
+    <p>SLF4J is a logging facade that can be used with many popular java logging systems.  The setup for the logging
+      categories will vary depending on which underlying logger you use.  Sample configuration files for log4j are
+      provided here:  <a href="log4j.xml">log4j.xml</a> and <a href="log4j.properties">log4j.properties</a>.</p>
 </li>
 <li><p>Adjust debugging options.  When logging at the DEBUG level, the class file and line number (if available) for the
     class that invoked jdbc is logged after each log statement.  This is enormously useful for finding where in the
@@ -169,13 +169,27 @@ This jdbc driver can be "dropped in" to log the SQL and jdbc calls of another JD
     object-persistance layer or other layer between log4jdbc and your application code-- but the class file and
     line number information you really are interested in seeing is where in your application the SQL was generated from.</p>
 
-    <p>There are a couple of very useful system properties you can set for log4jdc to help get around this problem.</p>
+    <p>Set the <code>log4jdbc.debug.stack.prefix</code> System property for log4jdc to help get around this problem:</p>
 
     <p>
     (optional) <code>-Dlog4jdbc.debug.stack.prefix=&lt;package.prefix&gt;</code>  a String that is the partial (or full) package
        prefix for the package name of your application.  The call stack will be searched down to the first occurence
        of a class that has the matching prefix.  If this is not set, the actual class that called into log4jdbc is used
        in the debug output (in many cases this will be a connection pool class)</p>
+     <p>
+     For example, setting a system property such as this:  <code>-Dlog4jdbc.debug.stack.prefix=com.mycompany.myapp</code>
+     Would cause the call stack to be searched for the first call that came from code in the com.mycompany.myapp package or below,
+     thus if all of your sql generating code was in code located in the com.mycompany.myapp package or any subpackages,
+     this would be printed in the debug information, rather than the package name for a connection pool, object relational system, etc.
+     </p>
+</li>
+<li>With the 1.1 alpha 1 release, a new tool is included which you can use to post-process sql timing logs produced by log4jdbc
+  to produce simple profiling reports with statistics and a dump of the sql statements that ran the slowest within the log.
+  To invoke the tool, use the profsql.sh (for unix/linux) and profsql.cmd (for windows) scripts located in the scripts
+  folder.  These scripts take as one argument, the filename of a sql timing log (generated from the
+  <code>jdbc.sqltiming</code> log category.  They produce a profiling report to stdout.
+  At this point the tool is experimental and I expect it to evolve quite a bit over the next few releases.
+  Nevertheless, it has already been very useful to me for tracking down SQL performance problems.
 </li>
 </ol>
 
@@ -194,7 +208,7 @@ log4jdbc is open source software, licensed under the <b>Apache 2.0 license:</b> 
 <p class="right"><a href="#top">[back to top]</a></p>
 <h1>
 
-<a href="http://sourceforge.net/project/showfiles.php?group_id=194500&package_id=229335&release_id=502834">download</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=194500">download</a> |
 <a href="#news">news</a> |
 <a href="#features">features</a> |
 <a href="#usage">usage</a> |

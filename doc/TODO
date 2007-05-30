@@ -5,7 +5,7 @@ x need a way to report exceptions in the sql timing log as well as the sql that 
 
 x include ydoc within javadoc
 
-o NEED TO LOOK INTO how to support isJdbcLoggingEnabled method call for Slf4jSpyLogDelegator
+x NEED TO LOOK INTO how to support isJdbcLoggingEnabled method call for Slf4jSpyLogDelegator
 
 o NEED to test & build for jdk 1.5&1.6 and jdbc 4
 
@@ -13,4 +13,5 @@ o  log4layers product?  log4jdbc + servlet layer logging, struts layer logging, 
 
 o  configuration that doesn't rely on system properties (jdbc parms?)
 
-o  PostLogProfilerProcessor needs to be able to handle exceptions in log, & needs to be more efficient
+o  PostLogProfilerProcessor needs to be able to handle exceptions in log, & needs to be more efficient, also needs command
+   line switches to control the thresholds & counts, etc.

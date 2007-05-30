@@ -1,4 +1,4 @@
-           1.1 pending release
+2007-05-29 1.1 alpha 1 Release
 
            o Fixed problem where when sql timing log was the only log turned on, log4jdbc would not recognize that
              logging was on at all.
@@ -9,14 +9,12 @@
 
            o Switch to Simple Logging Facade for Java SLF4J instead of using log4j directly, so that any underlying
              logging system can be easily used.
-             {at this time, log4jdbc is ALWAYS on when using the log4jdbc driver as opposed to
-              log4j, when it would be turned on ONLY if one of the 4 log4jdbc logs was set to above FATAL level}
 
            o option added to ant build script to generate javadoc with ydoc to include UML diagrams within the javadoc.
 
-           o dump batched sql correctly
+           o dump batched sql correctly.
 
            o add simple command line program (PostLogProfilerProcessor) for processing sqltiming log files to create
-             a simple profiling report from log data
+             a simple profiling report from log data.
 
 2007-04-21 Initial 1.0 Release
