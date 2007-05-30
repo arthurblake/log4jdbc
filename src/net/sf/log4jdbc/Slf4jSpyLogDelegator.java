@@ -37,45 +37,40 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   /**
    * Logger that shows all JDBC calls on INFO level (exception ResultSet calls)
    */
-  public static final Logger jdbcLogger = LoggerFactory.getLogger("jdbc.audit");
+  private final Logger jdbcLogger = LoggerFactory.getLogger("jdbc.audit");
 
   /**
    * Logger that shows JDBC calls for ResultSet operations
    */
-  public static final Logger resultSetLogger = LoggerFactory.getLogger("jdbc.resultset");
+  private final Logger resultSetLogger = LoggerFactory.getLogger("jdbc.resultset");
 
   /**
    * Logger that shows only the SQL that is occuring
    */
-  public static final Logger sqlOnlyLogger = LoggerFactory.getLogger("jdbc.sqlonly");
+  private final Logger sqlOnlyLogger = LoggerFactory.getLogger("jdbc.sqlonly");
 
   /**
    * Logger that shows the SQL timing, post execution
    */
-  public static final Logger sqlTimingLogger = LoggerFactory.getLogger("jdbc.sqltiming");
+  private final Logger sqlTimingLogger = LoggerFactory.getLogger("jdbc.sqltiming");
 
   // admin/setup logging for log4jdbc.
 
   /**
    * Logger just for debugging things within log4jdbc itself (admin, setup, etc.)
    */
-  public static final Logger debugLogger = LoggerFactory.getLogger("log4jdbc.debug");
+  private final Logger debugLogger = LoggerFactory.getLogger("log4jdbc.debug");
 
   /**
-   * Determine if any of the spy loggers are turned on.
+   * Determine if any of the 4 log4jdbc spy loggers are turned on (jdbc.audit | jdbc.resultset |
+   * jdbc.sqlonly | jdbc.sqltiming.)
    *
-   * @return true if any of the spy jdbc/sql loggers are enabled at error level or higher.
+   * @return true if any of the 4 spy jdbc/sql loggers are enabled at debug info or error level.
    */
   public boolean isJdbcLoggingEnabled()
   {
-
-
-    //todo: how can we handle this better??
-    return true;
-/*
-    return jdbcLogger.isEnabledFor(Level.ERROR) || resultSetLogger.isEnabledFor(Level.ERROR) ||
-      sqlOnlyLogger.isEnabledFor(Level.ERROR) || sqlTimingLogger.isEnabledFor(Level.ERROR);
-*/
+    return jdbcLogger.isErrorEnabled() || resultSetLogger.isErrorEnabled() || sqlOnlyLogger.isErrorEnabled() ||
+      sqlTimingLogger.isErrorEnabled();
   }
 
   /**
@@ -97,7 +92,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     {
       jdbcLogger.error(header, e);
       sqlOnlyLogger.error(header, e);
-      //todo: should exception w/o sql also be shown in sqltiming log ?? for consistency... ?
+      sqlTimingLogger.error(header, e);
     }
     else
     {
