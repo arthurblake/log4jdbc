@@ -72,7 +72,7 @@
       <sourcepath path="/j2sdk1.4.2_13/src"/>
       <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
       <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
-      <link href="http://logging.apache.org/log4j/docs/api/"/>
+      <link href="http://www.slf4j.org/api/"/>
     </javadoc>
   </target>
 
@@ -98,7 +98,7 @@
       <sourcepath path="/j2sdk1.4.2_13/src"/>
       <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
       <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
-      <link href="http://logging.apache.org/log4j/docs/api/"/>
+      <link href="http://www.slf4j.org/api/"/>
 
       <!-- ydoc doclet for UML diagrams, see http://www.yworks.com/en/products_ydoc.htm -->
       <doclet name="ydoc.doclets.YStandard"
