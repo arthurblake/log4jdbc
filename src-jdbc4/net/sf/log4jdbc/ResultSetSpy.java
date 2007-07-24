@@ -19,23 +19,14 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Calendar;
 import java.util.Map;
 
 /**
  * Wraps a ResultSet and reports method calls, returns and exceptions.
+ *
+ * JDBC 4 version.
  *
  * @author Arthur Blake
  */
@@ -722,6 +713,666 @@ public class ResultSetSpy implements ResultSet, Spy
     reportReturn(methodCall);
   }
 
+  public RowId getRowId(int columnIndex) throws SQLException {
+    String methodCall = "getRowId(" + columnIndex + ")";
+    try
+    {
+      return (RowId) reportReturn(methodCall, realResultSet.getRowId(columnIndex));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public RowId getRowId(String columnLabel) throws SQLException {
+    String methodCall = "getRowId(" + columnLabel + ")";
+    try
+    {
+      return (RowId) reportReturn(methodCall, realResultSet.getRowId(columnLabel));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public void updateRowId(int columnIndex, RowId x) throws SQLException {
+    String methodCall = "updateRowId(" + columnIndex + ", " + x + ")";
+    try
+    {
+      realResultSet.updateRowId(columnIndex, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateRowId(String columnLabel, RowId x) throws SQLException {
+    String methodCall = "updateRowId(" + columnLabel + ", " + x + ")";
+    try
+    {
+      realResultSet.updateRowId(columnLabel, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public int getHoldability() throws SQLException {
+    String methodCall = "getHoldability()";
+    try
+    {
+      return reportReturn(methodCall, realResultSet.getHoldability());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public boolean isClosed() throws SQLException {
+    String methodCall = "isClosed()";
+    try
+    {
+      return reportReturn(methodCall, realResultSet.isClosed());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public void updateNString(int columnIndex, String nString) throws SQLException {
+    String methodCall = "updateNString(" + columnIndex + ", " + nString + ")";
+    try
+    {
+      realResultSet.updateNString(columnIndex, nString);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNString(String columnLabel, String nString) throws SQLException {
+    String methodCall = "updateNString(" + columnLabel + ", " + nString + ")";
+    try
+    {
+      realResultSet.updateNString(columnLabel, nString);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNClob(int columnIndex, NClob nClob) throws SQLException {
+    String methodCall = "updateNClob(" + columnIndex + ", " + nClob + ")";
+    try
+    {
+      realResultSet.updateNClob(columnIndex, nClob);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNClob(String columnLabel, NClob nClob) throws SQLException {
+    String methodCall = "updateNClob(" + columnLabel + ", " + nClob + ")";
+    try
+    {
+      realResultSet.updateNClob(columnLabel, nClob);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public NClob getNClob(int columnIndex) throws SQLException {
+    String methodCall = "getNClob(" + columnIndex + ")";
+    try
+    {
+      return (NClob) reportReturn(methodCall, realResultSet.getNClob(columnIndex));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public NClob getNClob(String columnLabel) throws SQLException {
+    String methodCall = "getNClob(" + columnLabel + ")";
+    try
+    {
+      return (NClob) reportReturn(methodCall, realResultSet.getNClob(columnLabel));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public SQLXML getSQLXML(int columnIndex) throws SQLException {
+    String methodCall = "getSQLXML(" + columnIndex + ")";
+    try
+    {
+      return (SQLXML) reportReturn(methodCall, realResultSet.getSQLXML(columnIndex));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public SQLXML getSQLXML(String columnLabel) throws SQLException {
+    String methodCall = "getSQLXML(" + columnLabel + ")";
+    try
+    {
+      return (SQLXML) reportReturn(methodCall, realResultSet.getSQLXML(columnLabel));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public void updateSQLXML(int columnIndex, SQLXML xmlObject) throws SQLException {
+    String methodCall = "updateSQLXML(" + columnIndex + ", " + xmlObject + ")";
+    try
+    {
+      realResultSet.updateSQLXML(columnIndex, xmlObject);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateSQLXML(String columnLabel, SQLXML xmlObject) throws SQLException {
+    String methodCall = "updateSQLXML(" + columnLabel + ", " + xmlObject + ")";
+    try
+    {
+      realResultSet.updateSQLXML(columnLabel, xmlObject);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public String getNString(int columnIndex) throws SQLException {
+    String methodCall = "getNString(" + columnIndex + ")";
+    try
+    {
+      return (String) reportReturn(methodCall, realResultSet.getNString(columnIndex));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public String getNString(String columnLabel) throws SQLException {
+    String methodCall = "getNString(" + columnLabel + ")";
+    try
+    {
+      return (String) reportReturn(methodCall, realResultSet.getNString(columnLabel));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public Reader getNCharacterStream(int columnIndex) throws SQLException {
+    String methodCall = "getNCharacterStream(" + columnIndex + ")";
+    try
+    {
+      return (Reader) reportReturn(methodCall, realResultSet.getNCharacterStream(columnIndex));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public Reader getNCharacterStream(String columnLabel) throws SQLException {
+    String methodCall = "getNCharacterStream(" + columnLabel + ")";
+    try
+    {
+      return (Reader) reportReturn(methodCall, realResultSet.getNCharacterStream(columnLabel));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public void updateNCharacterStream(int columnIndex, Reader x, long length) throws SQLException {
+    String methodCall = "updateNCharacterStream(" + columnIndex + ", " + x + ", " + length + ")";
+    try
+    {
+      realResultSet.updateNCharacterStream(columnIndex, x, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNCharacterStream(String columnLabel, Reader reader, long length) throws SQLException {
+    String methodCall = "updateNCharacterStream(" + columnLabel + ", " + reader + ", " + length + ")";
+    try
+    {
+      realResultSet.updateNCharacterStream(columnLabel, reader, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateAsciiStream(int columnIndex, InputStream x, long length) throws SQLException {
+    String methodCall = "updateAsciiStream(" + columnIndex + ", " + x + ", " + length + ")";
+    try
+    {
+      realResultSet.updateAsciiStream(columnIndex, x, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateBinaryStream(int columnIndex, InputStream x, long length) throws SQLException {
+    String methodCall = "updateBinaryStream(" + columnIndex + ", " + x + ", " + length + ")";
+    try
+    {
+      realResultSet.updateBinaryStream(columnIndex, x, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateCharacterStream(int columnIndex, Reader x, long length) throws SQLException {
+    String methodCall = "updateCharacterStream(" + columnIndex + ", " + x + ", " + length + ")";
+    try
+    {
+      realResultSet.updateCharacterStream(columnIndex, x, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateAsciiStream(String columnLabel, InputStream x, long length) throws SQLException {
+    String methodCall = "updateAsciiStream(" + columnLabel + ", " + x + ", " + length + ")";
+    try
+    {
+      realResultSet.updateAsciiStream(columnLabel, x, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateBinaryStream(String columnLabel, InputStream x, long length) throws SQLException {
+    String methodCall = "updateBinaryStream(" + columnLabel + ", " + x + ", " + length + ")";
+    try
+    {
+      realResultSet.updateBinaryStream(columnLabel, x, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateCharacterStream(String columnLabel, Reader reader, long length) throws SQLException {
+    String methodCall = "updateCharacterStream(" + columnLabel + ", " + reader + ", " + length + ")";
+    try
+    {
+      realResultSet.updateCharacterStream(columnLabel, reader, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateBlob(int columnIndex, InputStream inputStream, long length) throws SQLException {
+    String methodCall = "updateBlob(" + columnIndex + ", " + inputStream + ", " + length + ")";
+    try
+    {
+      realResultSet.updateBlob(columnIndex, inputStream, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateBlob(String columnLabel, InputStream inputStream, long length) throws SQLException {
+    String methodCall = "updateBlob(" + columnLabel + ", " + inputStream + ", " + length + ")";
+    try
+    {
+      realResultSet.updateBlob(columnLabel, inputStream, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateClob(int columnIndex, Reader reader, long length) throws SQLException {
+    String methodCall = "updateClob(" + columnIndex + ", " + reader + ", " + length + ")";
+    try
+    {
+      realResultSet.updateClob(columnIndex, reader, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateClob(String columnLabel, Reader reader, long length) throws SQLException {
+    String methodCall = "updateClob(" + columnLabel + ", " + reader + ", " + length + ")";
+    try
+    {
+      realResultSet.updateClob(columnLabel, reader, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNClob(int columnIndex, Reader reader, long length) throws SQLException {
+    String methodCall = "updateNClob(" + columnIndex + ", " + reader + ", " + length + ")";
+    try
+    {
+      realResultSet.updateNClob(columnIndex, reader, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNClob(String columnLabel, Reader reader, long length) throws SQLException {
+    String methodCall = "updateNClob(" + columnLabel + ", " + reader + ", " + length + ")";
+    try
+    {
+      realResultSet.updateNClob(columnLabel, reader, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNCharacterStream(int columnIndex, Reader reader) throws SQLException {
+    String methodCall = "updateNCharacterStream(" + columnIndex + ", " + reader + ")";
+    try
+    {
+      realResultSet.updateNCharacterStream(columnIndex, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNCharacterStream(String columnLabel, Reader reader) throws SQLException {
+    String methodCall = "updateNCharacterStream(" + columnLabel + ", " + reader + ")";
+    try
+    {
+      realResultSet.updateNCharacterStream(columnLabel, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateAsciiStream(int columnIndex, InputStream x) throws SQLException {
+    String methodCall = "updateAsciiStream(" + columnIndex + ", " + x + ")";
+    try
+    {
+      realResultSet.updateAsciiStream(columnIndex, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateBinaryStream(int columnIndex, InputStream x) throws SQLException {
+    String methodCall = "updateBinaryStream(" + columnIndex + ", " + x + ")";
+    try
+    {
+      realResultSet.updateBinaryStream(columnIndex, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateCharacterStream(int columnIndex, Reader x) throws SQLException {
+    String methodCall = "updateCharacterStream(" + columnIndex + ", " + x + ")";
+    try
+    {
+      realResultSet.updateCharacterStream(columnIndex, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateAsciiStream(String columnLabel, InputStream x) throws SQLException {
+    String methodCall = "updateAsciiStream(" + columnLabel + ", " + x + ")";
+    try
+    {
+      realResultSet.updateAsciiStream(columnLabel, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateBinaryStream(String columnLabel, InputStream x) throws SQLException {
+    String methodCall = "updateBinaryStream(" + columnLabel + ", " + x + ")";
+    try
+    {
+      realResultSet.updateBinaryStream(columnLabel, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateCharacterStream(String columnLabel, Reader reader) throws SQLException {
+    String methodCall = "updateCharacterStream(" + columnLabel + ", " + reader + ")";
+    try
+    {
+      realResultSet.updateCharacterStream(columnLabel, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateBlob(int columnIndex, InputStream inputStream) throws SQLException {
+    String methodCall = "updateBlob(" + columnIndex + ", " + inputStream + ")";
+    try
+    {
+      realResultSet.updateBlob(columnIndex, inputStream);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateBlob(String columnLabel, InputStream inputStream) throws SQLException {
+    String methodCall = "updateBlob(" + columnLabel + ", " + inputStream + ")";
+    try
+    {
+      realResultSet.updateBlob(columnLabel, inputStream);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateClob(int columnIndex, Reader reader) throws SQLException {
+    String methodCall = "updateClob(" + columnIndex + ", " + reader + ")";
+    try
+    {
+      realResultSet.updateClob(columnIndex, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateClob(String columnLabel, Reader reader) throws SQLException {
+    String methodCall = "updateClob(" + columnLabel + ", " + reader + ")";
+    try
+    {
+      realResultSet.updateClob(columnLabel, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNClob(int columnIndex, Reader reader) throws SQLException {
+    String methodCall = "updateNClob(" + columnIndex + ", " + reader + ")";
+    try
+    {
+      realResultSet.updateNClob(columnIndex, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void updateNClob(String columnLabel, Reader reader) throws SQLException {
+    String methodCall = "updateNClob(" + columnLabel + ", " + reader + ")";
+    try
+    {
+      realResultSet.updateNClob(columnLabel, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
   public boolean isBeforeFirst() throws SQLException
   {
     String methodCall = "isBeforeFirst()";
@@ -1183,20 +1834,6 @@ public class ResultSetSpy implements ResultSet, Spy
     }
   }
 
-  public Object getObject(int i, Map map) throws SQLException
-  {
-    String methodCall = "getObject(" + i + ", " + map + ")";
-    try
-    {
-      return reportReturn(methodCall, realResultSet.getObject(i, map));
-    }
-    catch (SQLException s)
-    {
-      reportException(methodCall, s);
-      throw s;
-    }
-  }
-
   public Object getObject(String colName, Map map) throws SQLException
   {
     String methodCall = "getObject(" + colName + ", " + map + ")";
@@ -1328,8 +1965,23 @@ public class ResultSetSpy implements ResultSet, Spy
       }
       else
       {
+        //todo: what's going on here?
         return (Statement) reportReturn(methodCall, new StatementSpy(new ConnectionSpy(s.getConnection()), s));
       }
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException
+  {
+    String methodCall = "getObject(" + columnIndex + ", " + map + ")";
+    try
+    {
+      return reportReturn(methodCall, realResultSet.getObject(columnIndex, map));
     }
     catch (SQLException s)
     {
@@ -1456,6 +2108,7 @@ public class ResultSetSpy implements ResultSet, Spy
 
   public void updateBytes(int columnIndex, byte[] x) throws SQLException
   {
+    // todo: dump array?
     String methodCall = "updateBytes(" + columnIndex + ", " + x + ")";
     try
     {
@@ -1471,6 +2124,7 @@ public class ResultSetSpy implements ResultSet, Spy
 
   public void updateBytes(String columnName, byte[] x) throws SQLException
   {
+    // todo: dump array?
     String methodCall = "updateBytes(" + columnName + ", " + x + ")";
     try
     {
@@ -2239,6 +2893,35 @@ public class ResultSetSpy implements ResultSet, Spy
     catch (SQLException s)
     {
       reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public <T> T unwrap(Class<T> iface) throws SQLException {
+    String methodCall = "unwrap(" + (iface==null?"null":iface.getName()) + ")";
+    try
+    {
+      //todo: double check this logic
+      return (T)reportReturn(methodCall, (iface != null && (iface == ResultSet.class || iface == Spy.class))?(T)this:realResultSet.unwrap(iface));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
+  }
+
+  public boolean isWrapperFor(Class<?> iface) throws SQLException
+  {
+    String methodCall = "isWrapperFor(" + (iface==null?"null":iface.getName()) + ")";
+    try
+    {
+      return reportReturn(methodCall, (iface != null && (iface == ResultSet.class || iface == Spy.class)) ||
+          realResultSet.isWrapperFor(iface));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
       throw s;
     }
   }

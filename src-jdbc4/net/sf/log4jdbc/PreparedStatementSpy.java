@@ -19,21 +19,11 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.ParameterMetaData;
-import java.sql.PreparedStatement;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.StringTokenizer;
+import java.util.List;
 
 /**
  * Wraps a PreparedStatement and reports method calls, returns and exceptions.
@@ -48,7 +38,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   /**
    * holds list of bind variables for tracing
    */
-  protected final ArrayList argTrace = new ArrayList();
+  protected final List argTrace = new ArrayList();
 
   // a way to turn on and off type help...
   // todo:  make this a configurable parameter
@@ -169,7 +159,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   protected RdbmsSpecifics rdbmsSpecifics;
 
   /**
-   * Create a prepared statement spy for logging activity of another PreparedStatement.
+   * Create a PreparedStatementSpy (JDBC 4.0 version) for logging activity of another PreparedStatement.
    *
    * @param sql                   SQL for the prepared statement that is being spied upon.
    * @param connectionSpy         ConnectionSpy that was called to produce this PreparedStatement.
@@ -226,7 +216,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException
   {
     String methodCall = "setCharacterStream(" + parameterIndex + ", " + reader + ", " + length + ")";
-    argTraceSet(parameterIndex, "(CharacterStream)", reader + ":" + length);
+    argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
     try
     {
       realPreparedStatement.setCharacterStream(parameterIndex, reader, length);
@@ -504,7 +494,6 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setURL(int parameterIndex, URL x) throws SQLException
   {
     String methodCall = "setURL(" + parameterIndex + ", " + x + ")";
-
     argTraceSet(parameterIndex, "(URL)", x);
 
     try
@@ -522,9 +511,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setString(int parameterIndex, String x) throws SQLException
   {
     String methodCall = "setString(" + parameterIndex + ", \"" + x + "\")";
-
     argTraceSet(parameterIndex, "(String)", rdbmsSpecifics.formatParameterObject(x));
-
     try
     {
       realPreparedStatement.setString(parameterIndex, x);
@@ -539,6 +526,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   public void setBytes(int parameterIndex, byte[] x) throws SQLException
   {
+    //todo: dump array?
     String methodCall = "setBytes(" + parameterIndex + ", " + x + ")";
     argTraceSet(parameterIndex, "(byte[])", "<byte[]>");
     try
@@ -583,6 +571,126 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     }
   }
 
+  public void setRowId(int parameterIndex, RowId x) throws SQLException {
+    String methodCall = "setRowId(" + parameterIndex + ", " + x + ")";
+    argTraceSet(parameterIndex, "(RowId)", rdbmsSpecifics.formatParameterObject(x));
+    try
+    {
+      realPreparedStatement.setRowId(parameterIndex, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setNString(int parameterIndex, String value) throws SQLException {
+    String methodCall = "setNString(" + parameterIndex + ", " + value + ")";
+    argTraceSet(parameterIndex, "(String)", rdbmsSpecifics.formatParameterObject(value));
+    try
+    {
+      realPreparedStatement.setNString(parameterIndex, value);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {
+    String methodCall = "setNCharacterStream(" + parameterIndex + ", " + value + ", " + length + ")";
+    argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
+    try
+    {
+      realPreparedStatement.setNCharacterStream(parameterIndex, value, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setNClob(int parameterIndex, NClob value) throws SQLException {
+    String methodCall = "setNClob(" + parameterIndex + ", " + value + ")";
+    argTraceSet(parameterIndex, "(NClob)", "<NClob>");
+    try
+    {
+      realPreparedStatement.setNClob(parameterIndex, value);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
+    String methodCall = "setClob(" + parameterIndex + ", " + reader + ", " + length + ")";
+    argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
+    try
+    {
+      realPreparedStatement.setClob(parameterIndex, reader, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
+    String methodCall = "setBlob(" + parameterIndex + ", " + inputStream + ", " + length + ")";
+    argTraceSet(parameterIndex, "(InputStream)", "<InputStream of length " + length + ">");
+    try
+    {
+      realPreparedStatement.setBlob(parameterIndex, inputStream, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
+    String methodCall = "setNClob(" + parameterIndex + ", " + reader + ", " + length + ")";
+    argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
+    try
+    {
+      realPreparedStatement.setNClob(parameterIndex, reader, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
+    String methodCall = "setSQLXML(" + parameterIndex + ", " + xmlObject + ")";
+    argTraceSet(parameterIndex, "(SQLXML)", rdbmsSpecifics.formatParameterObject(xmlObject));
+    try
+    {
+      realPreparedStatement.setSQLXML(parameterIndex, xmlObject);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
   public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException
   {
     String methodCall = "setDate(" + parameterIndex + ", " + x + ", " + cal + ")";
@@ -620,10 +728,22 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     }
   }
 
+  private String getTypeHelp(Object x)
+  {
+    if (x==null)
+    {
+      return "(null)";
+    }
+    else
+    {
+      return "(" + x.getClass().getName() + ")";
+    }
+  }
+
   public void setObject(int parameterIndex, Object x, int targetSqlType, int scale) throws SQLException
   {
     String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ", " + scale + ")";
-    argTraceSet(parameterIndex, "(" + x.getClass().getName() + ")", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, getTypeHelp(x), rdbmsSpecifics.formatParameterObject(x));
 
     try
     {
@@ -637,10 +757,184 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
+  /**
+   * Sets the designated parameter to the given input stream, which will have
+   * the specified number of bytes.
+   * When a very large ASCII value is input to a <code>LONGVARCHAR</code>
+   * parameter, it may be more practical to send it via a
+   * <code>java.io.InputStream</code>. Data will be read from the stream
+   * as needed until end-of-file is reached.  The JDBC driver will
+   * do any necessary conversion from ASCII to the database char format.
+   * <p/>
+   * <P><B>Note:</B> This stream object can either be a standard
+   * Java stream object or your own subclass that implements the
+   * standard interface.
+   *
+   * @param parameterIndex the first parameter is 1, the second is 2, ...
+   * @param x              the Java input stream that contains the ASCII parameter value
+   * @param length         the number of bytes in the stream
+   * @throws java.sql.SQLException if parameterIndex does not correspond to a parameter
+   *                               marker in the SQL statement; if a database access error occurs or
+   *                               this method is called on a closed <code>PreparedStatement</code>
+   * @since 1.6
+   */
+  public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
+    String methodCall = "setAsciiStream(" + parameterIndex + ", " + x + ", " + length + ")";
+    argTraceSet(parameterIndex, "(Ascii InputStream)", "<Ascii InputStream of length " + length + ">");
+    try
+    {
+      realPreparedStatement.setAsciiStream(parameterIndex, x, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
+    String methodCall = "setBinaryStream(" + parameterIndex + ", " + x + ", " + length + ")";
+    argTraceSet(parameterIndex, "(Binary InputStream)", "<Binary InputStream of length " + length + ">");
+    try
+    {
+      realPreparedStatement.setBinaryStream(parameterIndex, x, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
+    String methodCall = "setCharacterStream(" + parameterIndex + ", " + reader + ", " + length + ")";
+    argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
+    try
+    {
+      realPreparedStatement.setCharacterStream(parameterIndex, reader, length);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+
+  }
+
+  public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
+    String methodCall = "setAsciiStream(" + parameterIndex + ", " + x + ")";
+    argTraceSet(parameterIndex, "(Ascii InputStream)", "<Ascii InputStream>");
+    try
+    {
+      realPreparedStatement.setAsciiStream(parameterIndex, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
+    String methodCall = "setBinaryStream(" + parameterIndex + ", " + x + ")";
+    argTraceSet(parameterIndex, "(Binary InputStream)", "<Binary InputStream>");
+    try
+    {
+      realPreparedStatement.setBinaryStream(parameterIndex, x);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+
+  }
+
+  public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
+    String methodCall = "setCharacterStream(" + parameterIndex + ", " + reader + ")";
+    argTraceSet(parameterIndex, "(Reader)", "<Reader>");
+    try
+    {
+      realPreparedStatement.setCharacterStream(parameterIndex, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setNCharacterStream(int parameterIndex, Reader reader) throws SQLException {
+    String methodCall = "setNCharacterStream(" + parameterIndex + ", " + reader + ")";
+    argTraceSet(parameterIndex, "(Reader)", "<Reader>");
+    try
+    {
+      realPreparedStatement.setNCharacterStream(parameterIndex, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setClob(int parameterIndex, Reader reader) throws SQLException {
+    String methodCall = "setClob(" + parameterIndex + ", " + reader + ")";
+    argTraceSet(parameterIndex, "(Reader)", "<Reader>");
+    try
+    {
+      realPreparedStatement.setClob(parameterIndex, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
+    String methodCall = "setBlob(" + parameterIndex + ", " + inputStream + ")";
+    argTraceSet(parameterIndex, "(InputStream)", "<InputStream>");
+    try
+    {
+      realPreparedStatement.setBlob(parameterIndex, inputStream);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setNClob(int parameterIndex, Reader reader) throws SQLException {
+    String methodCall = "setNClob(" + parameterIndex + ", " + reader + ")";
+    argTraceSet(parameterIndex, "(Reader)", "<Reader>");
+    try
+    {
+      realPreparedStatement.setNClob(parameterIndex, reader);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+
+  }
+
   public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException
   {
     String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ")";
-    argTraceSet(parameterIndex, "(" + x.getClass().getName() + ")", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, getTypeHelp(x), rdbmsSpecifics.formatParameterObject(x));
     try
     {
       realPreparedStatement.setObject(parameterIndex, x, targetSqlType);
@@ -656,7 +950,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setObject(int parameterIndex, Object x) throws SQLException
   {
     String methodCall = "setObject(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(" + x.getClass().getName() + ")", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, getTypeHelp(x), rdbmsSpecifics.formatParameterObject(x));
     try
     {
       realPreparedStatement.setObject(parameterIndex, x);
@@ -723,7 +1017,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException
   {
     String methodCall = "setAsciiStream(" + parameterIndex + ", " + x + ", " + length + ")";
-    argTraceSet(parameterIndex, "(Ascii InputStream)", "<Ascii InputStream of length " + x + ">");
+    argTraceSet(parameterIndex, "(Ascii InputStream)", "<Ascii InputStream of length " + length + ">");
     try
     {
       realPreparedStatement.setAsciiStream(parameterIndex, x, length);
@@ -802,4 +1096,42 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     }
     reportReturn(methodCall);
   }
+
+  public <T> T unwrap(Class<T> iface) throws SQLException {
+    String methodCall = "unwrap(" + (iface==null?"null":iface.getName()) + ")";
+    try
+    {
+      //todo: double check this logic
+      //NOTE: could call super.isWrapperFor to simplify this logic, but it would result in extra log output
+      //because the super classes would be invoked, thus executing their logging methods too...
+      return (T)reportReturn(methodCall,
+        (iface != null && (iface==PreparedStatement.class||iface==Statement.class||iface==Spy.class))?
+          (T)this:
+          realPreparedStatement.unwrap(iface));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
+  }
+
+  public boolean isWrapperFor(Class<?> iface) throws SQLException
+  {
+    String methodCall = "isWrapperFor(" + (iface==null?"null":iface.getName()) + ")";
+    try
+    {
+      //NOTE: could call super.isWrapperFor to simplify this logic, but it would result in extra log output
+      //when the super classes would be invoked..
+      return reportReturn(methodCall,
+        (iface != null && (iface==PreparedStatement.class||iface==Statement.class||iface==Spy.class)) ||
+        realPreparedStatement.isWrapperFor(iface));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
+  }
+
 }

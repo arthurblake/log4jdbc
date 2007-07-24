@@ -15,17 +15,16 @@
  */
 package net.sf.log4jdbc;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.Savepoint;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Wraps a JDBC Connection and reports method calls, returns and exceptions.
+ *
+ * This version is for jdbc 4.0.
+ *
+ * @see ConnectionSpy for the jdbc 3 version.
  *
  * @author Arthur Blake
  */
@@ -46,6 +45,7 @@ public class ConnectionSpy implements Connection, Spy
    */
   public ConnectionSpy(Connection realConnection)
   {
+    setRdbmsSpecifics(DriverSpy.defaultRdbmsSpecifics); // just in case it's not initialized
     if (realConnection == null)
     {
       throw new IllegalArgumentException("Must pass in a non null real Connection");
@@ -58,6 +58,29 @@ public class ConnectionSpy implements Connection, Spy
       connectionNumber = ++lastConnectionNumber;
     }
   }
+
+  /**
+   * Create a new ConnectionSpy that wraps a given Connection.
+   *
+   * @param realConnection &quot;real&quot; Connection that this ConnectionSpy wraps.
+   * @param rdbmsSpecifics the RdbmsSpecifics object for formatting logging appropriate for the Rdbms used.
+   */
+  public ConnectionSpy(Connection realConnection, RdbmsSpecifics rdbmsSpecifics)
+  {
+    setRdbmsSpecifics(rdbmsSpecifics);
+    if (realConnection == null)
+    {
+      throw new IllegalArgumentException("Must pass in a non null real Connection");
+    }
+    this.realConnection = realConnection;
+    log = SpyLogFactory.getSpyLogDelegator();
+
+    synchronized (connectionNumberLock)
+    {
+      connectionNumber = ++lastConnectionNumber;
+    }
+  }
+
 
   private RdbmsSpecifics rdbmsSpecifics;
 
@@ -357,6 +380,7 @@ public class ConnectionSpy implements Connection, Spy
 
   public PreparedStatement prepareStatement(String sql, int columnIndexes[]) throws SQLException
   {
+    //todo: dump the array here?
     String methodCall = "prepareStatement(" + sql + ", " + columnIndexes + ")";
     try
     {
@@ -386,6 +410,7 @@ public class ConnectionSpy implements Connection, Spy
 
   public PreparedStatement prepareStatement(String sql, String columnNames[]) throws SQLException
   {
+    //todo: dump the array here?
     String methodCall = "prepareStatement(" + sql + ", " + columnNames + ")";
     try
     {
@@ -399,12 +424,160 @@ public class ConnectionSpy implements Connection, Spy
     }
   }
 
+  public Clob createClob() throws SQLException {
+    String methodCall = "createClob()";
+    try
+    {
+      return (Clob) reportReturn(methodCall, realConnection.createClob());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public Blob createBlob() throws SQLException {
+    String methodCall = "createBlob()";
+    try
+    {
+      return (Blob) reportReturn(methodCall, realConnection.createBlob());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public NClob createNClob() throws SQLException {
+    String methodCall = "createNClob()";
+    try
+    {
+      return (NClob) reportReturn(methodCall, realConnection.createNClob());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public SQLXML createSQLXML() throws SQLException {
+    String methodCall = "createSQLXML()";
+    try
+    {
+      return (SQLXML) reportReturn(methodCall, realConnection.createSQLXML());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public boolean isValid(int timeout) throws SQLException {
+    String methodCall = "isValid(" + timeout + ")";
+    try
+    {
+      return reportReturn(methodCall,realConnection.isValid(timeout));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public void setClientInfo(String name, String value) throws SQLClientInfoException {
+    String methodCall = "setClientInfo(" + name + ", " + value + ")";
+    try
+    {
+      realConnection.setClientInfo(name,value);
+    }
+    catch (SQLClientInfoException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public void setClientInfo(Properties properties) throws SQLClientInfoException {
+    // todo: dump properties?
+    String methodCall = "setClientInfo(" + properties + ")";
+    try
+    {
+      realConnection.setClientInfo(properties);
+    }
+    catch (SQLClientInfoException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public String getClientInfo(String name) throws SQLException {
+    String methodCall = "getClientInfo(" + name + ")";
+    try
+    {
+      return (String) reportReturn(methodCall,realConnection.getClientInfo(name));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public Properties getClientInfo() throws SQLException {
+    String methodCall = "getClientInfo()";
+    try
+    {
+      return (Properties) reportReturn(methodCall,realConnection.getClientInfo());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+    //todo: dump elements?
+    String methodCall = "createArrayOf(" + typeName + ", " + elements +")";
+    try
+    {
+      return (Array) reportReturn(methodCall,realConnection.createArrayOf(typeName,elements));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+    //todo: dump attributes?
+    String methodCall = "createStruct(" + typeName + ", " + attributes +")";
+    try
+    {
+      return (Struct) reportReturn(methodCall,realConnection.createStruct(typeName, attributes));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
   public boolean isReadOnly() throws SQLException
   {
     String methodCall = "isReadOnly()";
     try
     {
-      return realConnection.isReadOnly();
+      return reportReturn(methodCall,realConnection.isReadOnly());
     }
     catch (SQLException s)
     {
@@ -504,12 +677,12 @@ public class ConnectionSpy implements Connection, Spy
     }
   }
 
-  public java.util.Map getTypeMap() throws SQLException
+  public Map<String,Class<?>> getTypeMap() throws SQLException
   {
     String methodCall = "getTypeMap()";
     try
     {
-      return (java.util.Map) reportReturn(methodCall, realConnection.getTypeMap());
+      return (Map<String,Class<?>>) reportReturn(methodCall, realConnection.getTypeMap());
     }
     catch (SQLException s)
     {
@@ -547,8 +720,9 @@ public class ConnectionSpy implements Connection, Spy
     }
   }
 
-  public void setTypeMap(java.util.Map map) throws SQLException
+  public void setTypeMap(java.util.Map<String,Class<?>> map) throws SQLException
   {
+    //todo: dump map??
     String methodCall = "setTypeMap(" + map + ")";
     try
     {
@@ -662,5 +836,34 @@ public class ConnectionSpy implements Connection, Spy
       throw s;
     }
     reportReturn(methodCall);
+  }
+
+  public <T> T unwrap(Class<T> iface) throws SQLException {
+    String methodCall = "unwrap(" + (iface==null?"null":iface.getName()) + ")";
+    try
+    {
+      //todo: double check this logic
+      return (T)reportReturn(methodCall, (iface != null && (iface == Connection.class || iface == Spy.class))?(T)this:realConnection.unwrap(iface));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
+  }
+
+  public boolean isWrapperFor(Class<?> iface) throws SQLException
+  {
+    String methodCall = "isWrapperFor(" + (iface==null?"null":iface.getName()) + ")";
+    try
+    {
+      return reportReturn(methodCall, (iface != null && (iface == Connection.class || iface == Spy.class)) ||
+          realConnection.isWrapperFor(iface));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
   }
 }

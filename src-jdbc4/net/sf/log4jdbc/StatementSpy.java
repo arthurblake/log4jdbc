@@ -26,6 +26,10 @@ import java.util.ArrayList;
 /**
  * Wraps a Statement and reports method calls, returns and exceptions.
  *
+ * jdbc 4.0 version
+ *
+ * @see StatementSpy for the jdbc 3 version.
+ *
  * @author Arthur Blake
  */
 public class StatementSpy implements Statement, Spy
@@ -43,8 +47,8 @@ public class StatementSpy implements Statement, Spy
   protected Statement realStatement;
 
   /**
-   * Create a StatementSpy that wraps another Statement, for the purpose of logging all method calls, sql,
-   * exceptions and return values.
+   * Create a StatementSpy (JDBC 4.0 version) that wraps another Statement,
+   * for the purpose of logging all method calls, sql, exceptions and return values.
    *
    * @param connectionSpy Connection that created this Statement.
    * @param realStatement real underlying Statement that this StatementSpy wraps.
@@ -744,6 +748,46 @@ public class StatementSpy implements Statement, Spy
     }
   }
 
+  public boolean isClosed() throws SQLException {
+    String methodCall = "isClosed()";
+    try
+    {
+      return reportReturn(methodCall, realStatement.isClosed());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
+  public void setPoolable(boolean poolable) throws SQLException {
+    String methodCall = "setPoolable(" + poolable + ")";
+    try
+    {
+      realStatement.setPoolable(poolable);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+  }
+
+  public boolean isPoolable() throws SQLException {
+    String methodCall = "isPoolable()";
+    try
+    {
+      return reportReturn(methodCall, realStatement.isPoolable());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+  }
+
   public void setMaxFieldSize(int max) throws SQLException
   {
     String methodCall = "setMaxFieldSize(" + max + ")";
@@ -913,4 +957,34 @@ public class StatementSpy implements Statement, Spy
       throw s;
     }
   }
+
+  public <T> T unwrap(Class<T> iface) throws SQLException {
+    String methodCall = "unwrap(" + (iface==null?"null":iface.getName()) + ")";
+    try
+    {
+      //todo: double check this logic
+      return (T)reportReturn(methodCall, (iface != null && (iface == Connection.class || iface == Spy.class))?(T)this:realStatement.unwrap(iface));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
+  }
+
+  public boolean isWrapperFor(Class<?> iface) throws SQLException
+  {
+    String methodCall = "isWrapperFor(" + (iface==null?"null":iface.getName()) + ")";
+    try
+    {
+      return reportReturn(methodCall, (iface != null && (iface == Statement.class || iface == Spy.class)) ||
+          realStatement.isWrapperFor(iface));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
+  }
+
 }

@@ -3,17 +3,44 @@
 <!--
   Ant build script for log4jdbc
 
-  Tested with Apache Ant version 1.6.5
+  Tested with Apache Ant version 1.6.5 & 1.7
 
-  built with jdk 1.4.2_13
+  built with jdk 1.4.2_13 (for use with jdbc3) 
+  and/or jdk 1.6.0 (for use with jdbc4)
 -->
 
 <project name="log4jdbc" default="all" basedir="..">
 
-  <target name="all" depends="cleancompile,compile,cleanjar,jar"/>
+  <!-- the jdbc.level flag should be set externally to either 3 or 4
+  
+       the is the jdbc version and should be 3 if using a jdk 1.4 (or 1.5) (1.4 is recommended for maximum compatibility)
+       
+       the jdbc.level flag should be set to 4 if using a jdk 1.6 or greater.
+
+       defaults to jdbc3 build if not set externally 
+  -->
+
+  <property name="jdbc.level" value="3" />
+  <property name="jdbc.prefix" value="jdbc${jdbc.level}" />
+
+  <property name="src" value="src-${jdbc.prefix}" />
+  <property name="classes" value="classes-${jdbc.prefix}" />
+  <property name="apidocs" value="doc/apidocs-${jdbc.prefix}" />
+
 
   <!-- release version -->
-  <property name="version" value="1.1alpha1"/>
+  <property name="version" value="1.1alpha2"/>
+
+  <target name="all" depends="cleancompile,compile,cleanjar,jar"/>
+
+  <!-- 
+       note that if jdbc.level is 3, a jdk 1.4 compiler should be used to build log4jdbc
+       and if the jdbc.level is 4, a jdk 1.6 compiler should be used to build log4jdbc
+       therefore to build both, ant should be invoked twice, setting the jdbc.level externally
+       to 3 and then 4. and using the jdk 1.4 and then 1.6.
+       
+       jdbc.level is explicitly set here to xxx so that the user is forced to set it externally.
+  -->
 
   <!-- ydoc.home is only used for ydoc target for producing javadoc with generated UML
        requires the NON-FREE ydoc utility
@@ -22,7 +49,7 @@
   <property name="ydoc.home" value="/ydoc-2.2_04"/>
 
   <target name="compile" description="compile all the source code">
-    <javac srcdir="src" destdir="classes" deprecation="true" debug="true">
+    <javac srcdir="${src}" destdir="${classes}" deprecation="true" debug="true">
       <classpath>
         <pathelement location="$src"/>
         <fileset dir="lib">
@@ -33,23 +60,23 @@
   </target>
 
   <target name="cleancompile" description="delete all the .class files.">
-    <delete dir="classes"/>
-    <mkdir dir="classes"/>
+    <delete dir="${classes}"/>
+    <mkdir dir="${classes}"/>
   </target>
   
   <target name="jar" description="jar up all the class files">
     <mkdir dir="build"/>
-    <jar jarfile="build/log4jdbc-${version}.jar" basedir="classes"/>
+    <jar jarfile="build/log4${jdbc.prefix}-${version}.jar" basedir="${classes}"/>
   </target>
 
   <target name="cleanjar" description="delete the jar file">
-    <delete file="build/log4jdbc-${version}.jar" description="delete the jar file"/>
+    <delete file="build/log4${jdbc.prefix}-${version}.jar" description="delete the jar file"/>
   </target>
 
 
   <target name="cleanjavadoc">
-    <delete dir="doc/apidocs" />
-    <mkdir dir="doc/apidocs" />
+    <delete dir="${apidocs}" />
+    <mkdir dir="${apidocs}" />
   </target>
 
   <target name="cleanrelease">
@@ -60,10 +87,10 @@
 
   <target name="release" depends="cleanrelease,all,ydoc" description="make a complete release distribution (a .jar zip and tar.gz file for release)">
     <zip destfile="../log4jdbc-${version}.zip">
-      <zipfileset dir="." prefix="log4jdbc-${version}" excludes="*.zip,*.tar.gz,*,iml,*.ipr,*.iws,thirdparty-stuff/**,classes/**"/>
+      <zipfileset dir="." prefix="log4jdbc-${version}" excludes="*.zip,*.tar.gz,*,iml,*.ipr,*.iws,thirdparty-stuff/**,classes*/**"/>
     </zip>
     <tar destfile="../log4jdbc-${version}.tar">
-      <tarfileset dir="." prefix="log4jdbc-${version}" excludes="*.zip,*.tar.gz,*,iml,*.ipr,*.iws,thirdparty-stuff/**,classes/**"/>
+      <tarfileset dir="." prefix="log4jdbc-${version}" excludes="*.zip,*.tar.gz,*,iml,*.ipr,*.iws,thirdparty-stuff/**,classes*/**"/>
     </tar>
     <gzip destfile="../log4jdbc-${version}.tar.gz" src="../log4jdbc-${version}.tar"/>
     <delete file="../log4jdbc-${version}.tar"/>
@@ -72,11 +99,11 @@
   <!-- make the javadoc (or ydoc which includes UML diagrams) -->
 
   <target name="javadoc" description="generate the javadoc" depends="cleanjavadoc">
-    <delete dir="doc/apidocs" />
-    <mkdir dir="doc/apidocs" />
-    <javadoc destdir="doc/apidocs" packagenames="net.sf.log4jdbc.*"
-      Windowtitle="log4jdbc ${version}"
-      Header="&lt;b&gt;&lt;a href=&quot;http://log4jdbc.sourceforge.net&quot;&gt;log4jdbc ${version}&lt;/a&gt;&lt;/b&gt;"
+    <delete dir="${apidocs}" />
+    <mkdir dir="${apidocs}" />
+    <javadoc destdir="${apidocs}" packagenames="net.sf.log4jdbc.*"
+      Windowtitle="log4${jdbc.prefix} ${version}"
+      Header="&lt;b&gt;&lt;a href=&quot;http://log4jdbc.sourceforge.net&quot;&gt;log4${jdbc.prefix} ${version}&lt;/a&gt;&lt;/b&gt;"
       Use="true" breakiterator="true">
       <classpath>
         <pathelement location="$src"/>
@@ -84,14 +111,16 @@
           <include name="**/*.jar"/>
         </fileset>
       </classpath>
-      <sourcepath path="src"/>
+      <sourcepath path="${src}"/>
 
       <!-- note that the jdk source code is referenced here so that javadoc will be generated from
           interface class methods when none is specified in the implementation -->
+<!--
       <sourcepath path="/j2sdk1.4.2_13/src"/>
       <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
       <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
       <link href="http://www.slf4j.org/api/"/>
+-->
     </javadoc>
   </target>
 
@@ -99,9 +128,9 @@
 
     <property name="ps" value="${path.separator}"/>
 
-    <javadoc destdir="doc/apidocs" packagenames="net.sf.log4jdbc.*"
-      Windowtitle="log4jdbc ${version}"
-      Header="&lt;b&gt;&lt;a href=&quot;http://log4jdbc.sourceforge.net&quot;&gt;log4jdbc ${version}&lt;/a&gt;&lt;/b&gt;"
+    <javadoc destdir="${apidocs}" packagenames="net.sf.log4jdbc.*"
+      Windowtitle="log4${jdbc.prefix} ${version}"
+      Header="&lt;b&gt;&lt;a href=&quot;http://log4jdbc.sourceforge.net&quot;&gt;log4${jdbc.prefix} ${version}&lt;/a&gt;&lt;/b&gt;"
       Use="true" breakiterator="true">
       <classpath>
         <pathelement location="$src"/>
@@ -109,18 +138,19 @@
           <include name="**/*.jar"/>
         </fileset>
       </classpath>
-      <sourcepath path="src"/>
+      <sourcepath path="${src}"/>
 
       <!-- note that the jdk source code is referenced here so that javadoc will be generated from
           interface class methods when none is specified in the implementation -->
+<!--
       <sourcepath path="/j2sdk1.4.2_13/src"/>
       <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
       <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
       <link href="http://www.slf4j.org/api/"/>
-
+-->
       <!-- ydoc doclet for UML diagrams, see http://www.yworks.com/en/products_ydoc.htm -->
       <doclet name="ydoc.doclets.YStandard"
-              path="${ydoc.home}/lib/ydoc.jar${ps}${ydoc.home}/lib/class2svg.jar${ps}${ydoc.home}/resources${ps}${ydoc.home}/doc${ps}./classes">
+              path="${ydoc.home}/lib/ydoc.jar${ps}${ydoc.home}/lib/class2svg.jar${ps}${ydoc.home}/resources${ps}${ydoc.home}/doc${ps}./${classes}">
         <param name="-author"/>
         <param name="-generic"/>
         <param name="-umlautogen"/>

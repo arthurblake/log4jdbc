@@ -46,6 +46,29 @@ public class ConnectionSpy implements Connection, Spy
    */
   public ConnectionSpy(Connection realConnection)
   {
+    setRdbmsSpecifics(DriverSpy.defaultRdbmsSpecifics); // just in case it's not initialized
+    if (realConnection == null)
+    {
+      throw new IllegalArgumentException("Must pass in a non null real Connection");
+    }
+    this.realConnection = realConnection;
+    log = SpyLogFactory.getSpyLogDelegator();
+
+    synchronized (connectionNumberLock)
+    {
+      connectionNumber = ++lastConnectionNumber;
+    }
+  }
+
+  /**
+   * Create a new ConnectionSpy that wraps a given Connection.
+   *
+   * @param realConnection &quot;real&quot; Connection that this ConnectionSpy wraps.
+   * @param rdbmsSpecifics the RdbmsSpecifics object for formatting logging appropriate for the Rdbms used. 
+   */
+  public ConnectionSpy(Connection realConnection, RdbmsSpecifics rdbmsSpecifics)
+  {
+    setRdbmsSpecifics(rdbmsSpecifics);
     if (realConnection == null)
     {
       throw new IllegalArgumentException("Must pass in a non null real Connection");
@@ -404,7 +427,7 @@ public class ConnectionSpy implements Connection, Spy
     String methodCall = "isReadOnly()";
     try
     {
-      return realConnection.isReadOnly();
+      return reportReturn(methodCall,realConnection.isReadOnly());
     }
     catch (SQLException s)
     {
@@ -549,6 +572,7 @@ public class ConnectionSpy implements Connection, Spy
 
   public void setTypeMap(java.util.Map map) throws SQLException
   {
+    //todo: dump map?
     String methodCall = "setTypeMap(" + map + ")";
     try
     {

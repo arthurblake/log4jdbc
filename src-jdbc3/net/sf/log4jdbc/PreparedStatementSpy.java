@@ -34,6 +34,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.StringTokenizer;
+import java.util.List;
 
 /**
  * Wraps a PreparedStatement and reports method calls, returns and exceptions.
@@ -48,7 +49,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   /**
    * holds list of bind variables for tracing
    */
-  protected final ArrayList argTrace = new ArrayList();
+  protected final List argTrace = new ArrayList();
 
   // a way to turn on and off type help...
   // todo:  make this a configurable parameter
@@ -226,7 +227,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException
   {
     String methodCall = "setCharacterStream(" + parameterIndex + ", " + reader + ", " + length + ")";
-    argTraceSet(parameterIndex, "(CharacterStream)", reader + ":" + length);
+    argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
     try
     {
       realPreparedStatement.setCharacterStream(parameterIndex, reader, length);
@@ -620,10 +621,22 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     }
   }
 
+  private String getTypeHelp(Object x)
+  {
+    if (x==null)
+    {
+      return "(null)";
+    }
+    else
+    {
+      return "(" + x.getClass().getName() + ")";
+    }
+  }
+
   public void setObject(int parameterIndex, Object x, int targetSqlType, int scale) throws SQLException
   {
     String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ", " + scale + ")";
-    argTraceSet(parameterIndex, "(" + x.getClass().getName() + ")", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, getTypeHelp(x), rdbmsSpecifics.formatParameterObject(x));
 
     try
     {
@@ -640,7 +653,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException
   {
     String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ")";
-    argTraceSet(parameterIndex, "(" + x.getClass().getName() + ")", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, getTypeHelp(x), rdbmsSpecifics.formatParameterObject(x));
     try
     {
       realPreparedStatement.setObject(parameterIndex, x, targetSqlType);
@@ -656,7 +669,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setObject(int parameterIndex, Object x) throws SQLException
   {
     String methodCall = "setObject(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(" + x.getClass().getName() + ")", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, getTypeHelp(x), rdbmsSpecifics.formatParameterObject(x));
     try
     {
       realPreparedStatement.setObject(parameterIndex, x);
