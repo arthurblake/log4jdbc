@@ -120,6 +120,8 @@ public class DriverSpy implements Driver
     subDrivers.add("com.informix.jdbc.IfxDriver");
     subDrivers.add("org.apache.derby.jdbc.ClientDriver");
     subDrivers.add("org.apache.derby.jdbc.EmbeddedDriver");
+    subDrivers.add("com.mysql.jdbc.Driver");
+    subDrivers.add("org.postgresql.Driver");
 
     // look for additional driver specified in system properties
     String moreDrivers = System.getProperty("log4jdbc.drivers");
@@ -158,7 +160,6 @@ public class DriverSpy implements Driver
       }
       catch (ClassNotFoundException c)
       {
-//        log.debug(" ... (not found) ..." + driverClass);
         i.remove();
       }
     }
@@ -261,8 +262,10 @@ public class DriverSpy implements Driver
   }
 
   /**
-   * Report whether the underlying driver is jdbcClient.  If there is no underlying driver, false
-   * will be returned, because the driver cannot actually do any work without an underlying driver.
+   * Report whether the underlying driver is jdbc compliant.
+   * If there is no underlying driver, false
+   * will be returned, because the driver cannot actually do
+   * any work without an underlying driver.
    *
    * @return <code>true</code> if the underlying driver is JDBC Compliant; <code>false</code>
    *         otherwise.

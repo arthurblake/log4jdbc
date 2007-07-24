@@ -1,17 +1,18 @@
-x switch to SLF4J logging facade so that any kind of logging system can be used with log4jdbc --
-  not just log4j
-
-x need a way to report exceptions in the sql timing log as well as the sql that failed and how long it took to fail.
-
-x include ydoc within javadoc
-
-x NEED TO LOOK INTO how to support isJdbcLoggingEnabled method call for Slf4jSpyLogDelegator
-
-o NEED to test & build for jdk 1.5&1.6 and jdbc 4
-
-o  log4layers product?  log4jdbc + servlet layer logging, struts layer logging, json-rpc layer logging, request header dump?
+o  what about jdbc 2 back support??
 
 o  configuration that doesn't rely on system properties (jdbc parms?)
 
 o  PostLogProfilerProcessor needs to be able to handle exceptions in log, & needs to be more efficient, also needs command
    line switches to control the thresholds & counts, etc.
+   
+o  intelligent array dumper?
+
+o  check for more different kinds of JDBC drivers at startup time
+
+o  support for data sources
+
+o  ALL String concatenation & dumping methods should take place ONLY if logging is ON!!
+
+o  review dumpedSql method - make auto line breaking option (& num chars used) be options
+
+o  need log4jdbc.debug.stack.regex so that the stack matching can take place via regex
