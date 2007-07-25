@@ -42,11 +42,16 @@
        jdbc.level is explicitly set here to xxx so that the user is forced to set it externally.
   -->
 
-  <!-- ydoc.home is only used for ydoc target for producing javadoc with generated UML
-       requires the NON-FREE ydoc utility
+  <!-- ydoc.home.X is only used for the ydoc.X targets for producing javadoc with UML
+  
+       it requires the commercial ydoc utility (see http://www.yworks.com/en/products_ydoc.htm)
        (use the javadoc target to generate regular javadoc)
+       
+       ydoc.home.3 is for jdk1.4 / JDBC 3
+       ydoc.home.4 is for jdk1.6 / JDBC 4
   -->
-  <property name="ydoc.home" value="/ydoc-2.2_04"/>
+  <property name="ydoc.home.3" value="/ydoc-2.2_04"/>
+  <property name="ydoc.home.4" value="/ydoc-2.2_04-jdk1.5"/>
 
   <target name="compile" description="compile all the source code">
     <javac srcdir="${src}" destdir="${classes}" deprecation="true" debug="true">
@@ -85,7 +90,7 @@
     <delete file="../log4jdbc-${version}.tar.gz"/>
   </target>
 
-  <target name="release" depends="cleanrelease,all,ydoc" description="make a complete release distribution (a .jar zip and tar.gz file for release)">
+  <target name="release" depends="cleanrelease" description="make a complete release distribution (a .jar zip and tar.gz file for release)">
     <zip destfile="../log4jdbc-${version}.zip">
       <zipfileset dir="." prefix="log4jdbc-${version}" excludes="*.zip,*.tar.gz,*,iml,*.ipr,*.iws,thirdparty-stuff/**,classes*/**"/>
     </zip>
@@ -124,7 +129,53 @@
     </javadoc>
   </target>
 
-  <target name="ydoc" description="create javadoc using ydoc doclet to include UML diagrams" depends="cleanjavadoc">
+  <target name="ydoc.3" description="(jdk1.4/JDBC3 version) create javadoc using ydoc doclet to include UML diagrams" depends="cleanjavadoc">
+
+    <property name="ps" value="${path.separator}" />
+
+    <javadoc destdir="${apidocs}" packagenames="net.sf.log4jdbc.*"
+      Windowtitle="log4${jdbc.prefix} ${version}"
+      Header="&lt;b&gt;&lt;a href=&quot;http://log4jdbc.sourceforge.net&quot;&gt;log4${jdbc.prefix} ${version}&lt;/a&gt;&lt;/b&gt;"
+      Use="true" breakiterator="true">
+      <classpath>
+        <pathelement location="$src"/>
+        <fileset dir="lib">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+      <sourcepath path="${src}"/>
+
+      <!-- note that the jdk source code is referenced here so that javadoc will be generated from
+          interface class methods when none is specified in the implementation -->
+
+      <sourcepath path="/j2sdk1.4.2_13/src"/>
+      <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
+<!--
+      <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
+-->
+      <link href="http://www.slf4j.org/api/"/>
+
+      <!-- ydoc doclet for UML diagrams, see http://www.yworks.com/en/products_ydoc.htm -->
+      <doclet name="ydoc.doclets.YStandard"
+              path="${ydoc.home.3}/lib/ydoc.jar${ps}${ydoc.home.3}/lib/class2svg.jar${ps}${ydoc.home.3}/resources${ps}${ydoc.home.3}/doc${ps}./${classes}">
+        <param name="-author"/>
+        <param name="-generic"/>
+        <param name="-umlautogen"/>
+        <param name="-filterpath" value="${ydoc.home.3}/lib/ydoc.jar"/>
+        <param name="-filter" value="ydoc.filters.ExcludeFilter"/>
+        <param name="-tag" value="y.precondition"/>
+        <param name="-tag" value="y.postcondition"/>
+        <param name="-tag" value="y.complexity"/>
+        <param name="-tag" value="param"/>
+        <param name="-tag" value="return"/>
+        <param name="-tag" value="see"/>
+        <param name="-tag" value="y.uml"/>
+        <param name="-linksource" value="true"/>
+      </doclet>
+    </javadoc>
+  </target>
+
+  <target name="ydoc.4" description="(jdk1.6/JDBC4 version) create javadoc using ydoc doclet to include UML diagrams" depends="cleanjavadoc">
 
     <property name="ps" value="${path.separator}"/>
 
@@ -142,19 +193,21 @@
 
       <!-- note that the jdk source code is referenced here so that javadoc will be generated from
           interface class methods when none is specified in the implementation -->
+
+      <sourcepath path="/jdk1.6.0/src"/>
+      <link href="http://java.sun.com/javase/6/docs/api/"/>
 <!--
-      <sourcepath path="/j2sdk1.4.2_13/src"/>
-      <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
       <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
-      <link href="http://www.slf4j.org/api/"/>
 -->
+      <link href="http://www.slf4j.org/api/"/>
+
       <!-- ydoc doclet for UML diagrams, see http://www.yworks.com/en/products_ydoc.htm -->
       <doclet name="ydoc.doclets.YStandard"
-              path="${ydoc.home}/lib/ydoc.jar${ps}${ydoc.home}/lib/class2svg.jar${ps}${ydoc.home}/resources${ps}${ydoc.home}/doc${ps}./${classes}">
+              path="${ydoc.home.4}/lib/ydoc.jar${ps}${ydoc.home.4}/lib/class2svg.jar${ps}${ydoc.home.4}/resources${ps}${ydoc.home.4}/doc${ps}./${classes}">
         <param name="-author"/>
         <param name="-generic"/>
         <param name="-umlautogen"/>
-        <param name="-filterpath" value="${ydoc.home}/lib/ydoc.jar"/>
+        <param name="-filterpath" value="${ydoc.home.4}/lib/ydoc.jar"/>
         <param name="-filter" value="ydoc.filters.ExcludeFilter"/>
         <param name="-tag" value="y.precondition"/>
         <param name="-tag" value="y.postcondition"/>
@@ -167,5 +220,6 @@
       </doclet>
     </javadoc>
   </target>
+
 
 </project>
