@@ -1,11 +1,10 @@
+2007-07-25  1.1 alpha 2 Release
 
-             alpha 2 Release
-
-             initial JDBC 4.0 support
+           o JDBC 4.0 support!
              
-             fix Null pointer exception bug that could happen with setObject call on PreparedStatementSpy
+           o fix Null pointer exception bug that could happen with setObject call on PreparedStatementSpy
              
-             added mysql (com.mysql.jdbc.Driver) and postgresql (org.postgresql.Driver) 
+           o added MySQL (com.mysql.jdbc.Driver) and PostgreSQL (org.postgresql.Driver) 
              to list of "well known" drivers that log4jdbc looks for at startup.
 
 2007-05-29 1.1 alpha 1 Release
