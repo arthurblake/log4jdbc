@@ -1,23 +1,28 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 
 <!--
+
   Ant build script for log4jdbc
 
   Tested with Apache Ant version 1.6.5 & 1.7
 
   built with jdk 1.4.2_13 (for use with jdbc3) 
   and/or jdk 1.6.0 (for use with jdbc4)
+
 -->
 
 <project name="log4jdbc" default="all" basedir="..">
 
   <!-- the jdbc.level flag should be set externally to either 3 or 4
   
-       the is the jdbc version and should be 3 if using a jdk 1.4 (or 1.5) (1.4 is recommended for maximum compatibility)
+       this is the jdbc version and should be 3 if using a jdk 1.4 or 1.5 (jdk 1.4 is recommended for maximum compatibility)
        
        the jdbc.level flag should be set to 4 if using a jdk 1.6 or greater.
 
        defaults to jdbc3 build if not set externally 
+       
+       therefore to build both, ant should be invoked twice, setting the jdbc.level externally
+       to 3 and then 4. and using the jdk 1.4 and then 1.6.
   -->
 
   <property name="jdbc.level" value="3" />
@@ -29,18 +34,9 @@
 
 
   <!-- release version -->
-  <property name="version" value="1.1alpha2"/>
+  <property name="version" value="1.1beta1"/>
 
   <target name="all" depends="cleancompile,compile,cleanjar,jar"/>
-
-  <!-- 
-       note that if jdbc.level is 3, a jdk 1.4 compiler should be used to build log4jdbc
-       and if the jdbc.level is 4, a jdk 1.6 compiler should be used to build log4jdbc
-       therefore to build both, ant should be invoked twice, setting the jdbc.level externally
-       to 3 and then 4. and using the jdk 1.4 and then 1.6.
-       
-       jdbc.level is explicitly set here to xxx so that the user is forced to set it externally.
-  -->
 
   <!-- ydoc.home.X is only used for the ydoc.X targets for producing javadoc with UML
   

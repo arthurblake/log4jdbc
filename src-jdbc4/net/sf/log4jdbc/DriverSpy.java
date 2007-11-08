@@ -36,9 +36,9 @@ import java.util.TreeSet;
  * class load time, so that this driver can be "dropped in" to any java program that uses these drivers
  * without making any code changes.  The well known driver classes that are loaded are:
  * <p/>
+ * <p/>
  * <code>
  * <ul>
- * <p/>
  * <li>oracle.jdbc.driver.OracleDriver</li>
  * <li>com.sybase.jdbc2.jdbc.SybDriver</li>
  * <li>net.sourceforge.jtds.jdbc.Driver</li>
@@ -47,9 +47,11 @@ import java.util.TreeSet;
  * <li>com.informix.jdbc.IfxDriver</li>
  * <li>org.apache.derby.jdbc.ClientDriver</li>
  * <li>org.apache.derby.jdbc.EmbeddedDriver</li>
- * <p/>
+ * <li>org.hsqldb.jdbcDriver</li>
+ * <li>org.h2.Driver</li>
  * </ul>
  * </code>
+ * <p/>
  * <p/>
  * Additional drivers can be set via a system property: <b>log4jdbc.drivers</b>
  * This can be either a single driver class name or a list of comma separated driver class names.
@@ -122,6 +124,8 @@ public class DriverSpy implements Driver
     subDrivers.add("org.apache.derby.jdbc.EmbeddedDriver");
     subDrivers.add("com.mysql.jdbc.Driver");
     subDrivers.add("org.postgresql.Driver");
+    subDrivers.add("org.hsqldb.jdbcDriver");
+    subDrivers.add("org.h2.Driver");
 
     // look for additional driver specified in system properties
     String moreDrivers = System.getProperty("log4jdbc.drivers");

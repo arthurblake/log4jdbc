@@ -25,4 +25,4 @@
 # *                                                                                               *
 # *************************************************************************************************
 
-java -Xmx1024m -classpath ../build/log4jdbc-1.1alpha1.jar net.sf.log4jdbc.PostLogProfilerProcessor $@
+java -Xmx1024m -classpath ../build/log4jdbc-1.1beta1.jar net.sf.log4jdbc.PostLogProfilerProcessor $@

@@ -1,4 +1,8 @@
-2007-07-25  1.1 alpha 2 Release
+TBD        1.1 beta 1 Release
+           o added HSQLDB (org.hsqldb.jdbcDriver) and H2 (org.h2.Driver)
+             to list of "well known" drivers that log4jdbc looks for at startup.           
+
+2007-07-25 1.1 alpha 2 Release
 
            o JDBC 4.0 support!
              

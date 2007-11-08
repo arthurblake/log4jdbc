@@ -144,14 +144,16 @@ for other jdbc drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 
         oracle.jdbc.driver.OracleDriver              (Oracle)
         com.sybase.jdbc2.jdbc.SybDriver              (Sybase)
-        net.sourceforge.jtds.jdbc.Driver             (SourceForge SQL Server driver)
+        net.sourceforge.jtds.jdbc.Driver             (jTDS SQL Server & Sybase driver)
         com.microsoft.jdbc.sqlserver.SQLServerDriver (Microsoft SQL Server driver)
         weblogic.jdbc.sqlserver.SQLServerDriver      (Weblogic SQL Server driver)
         com.informix.jdbc.IfxDriver                  (Informix)
-        org.apache.derby.jdbc.ClientDriver           (Apache Derby client/server driver)
-        org.apache.derby.jdbc.EmbeddedDriver         (Apache Derby embedded driver)
+        org.apache.derby.jdbc.ClientDriver           (Apache Derby client/server driver, aka the Java DB)
+        org.apache.derby.jdbc.EmbeddedDriver         (Apache Derby embedded driver, aka the Java DB)
         com.mysql.jdbc.Driver                        (MySQL)
         org.postgresql.Driver                        (PostgresSQL)
+        org.hsqldb.jdbcDriver                        (HSQLDB pure Java database)
+        org.h2.Driver                                (H2 pure Java database)
     </pre>
   <p>
     If you want to use a different underlying jdbc driver that is not already in the above supported list,
