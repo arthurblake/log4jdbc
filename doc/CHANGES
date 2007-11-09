@@ -1,6 +1,11 @@
 TBD        1.1 beta 1 Release
+
            o added HSQLDB (org.hsqldb.jdbcDriver) and H2 (org.h2.Driver)
-             to list of "well known" drivers that log4jdbc looks for at startup.           
+             to list of "well known" drivers that log4jdbc looks for at startup.
+             
+           o added log4jdbc.sqltiming.warn.threshold and log4jdbc.sqltiming.error.threshold system property
+             settings to greatly aid in finding slow running sql.  Special thanks to Lilianne E. Blaze for the idea
+             and initial implementation.
 
 2007-07-25 1.1 alpha 2 Release
 

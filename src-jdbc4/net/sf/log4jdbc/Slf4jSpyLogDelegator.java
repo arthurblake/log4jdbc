@@ -169,7 +169,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     // not used in this implementation -- yet
   }
 
-
   private static String nl = System.getProperty("line.separator");
 
   /**
@@ -196,34 +195,98 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   /**
    * Special call that is called only for JDBC method calls that contain SQL.
    *
-   * @param spy        the    Spy wrapping the class where the SQL occured.
-   * @param execTime   how long it took the sql to run, in msec.
-   * @param methodCall a description of the name and call parameters of the method that generated the SQL.
-   * @param sql        sql that occured.
+   * @param spy        the Spy wrapping the class where the SQL occurred.
+   * 
+   * @param execTime   how long it took the SQL to run, in milliseconds.
+   * 
+   * @param methodCall a description of the name and call parameters of the 
+   *                   method that generated the SQL.
+   *                   
+   * @param sql        SQL that occurred.
    */
   public void sqlTimingOccured(Spy spy, long execTime, String methodCall, String sql)
   {
-    int spyNo = spy.getConnectionNumber();
-
-    if (sqlTimingLogger.isDebugEnabled())
+    // un-comment to simulate random delay to make testing easier
+    //execTime = execTime + (long)(Math.random() * 5000);
+    
+    if (sqlTimingLogger.isErrorEnabled())
     {
-      sqlTimingLogger.debug(getDebugInfo() + nl + spyNo + ". " + sql + " {executed in " + execTime + " msec}");
-    }
-    else if (sqlTimingLogger.isInfoEnabled())
-    {
-      sqlTimingLogger.info(sql + " {executed in " + execTime + " msec}");
+      if (DriverSpy.SqlTimingErrorThresholdEnabled && 
+          execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
+      {
+        sqlTimingLogger.error(
+          buildSqlTimingDump(spy, execTime, methodCall, sql, true));
+      }
+      else if (sqlTimingLogger.isWarnEnabled())
+      {
+        if (DriverSpy.SqlTimingWarnThresholdEnabled &&
+          execTime >= DriverSpy.SqlTimingWarnThresholdMsec)
+        {
+          sqlTimingLogger.warn(
+            buildSqlTimingDump(spy, execTime, methodCall, sql, true));
+        } 
+        else if (sqlTimingLogger.isDebugEnabled())
+        {
+          sqlTimingLogger.debug(
+            buildSqlTimingDump(spy, execTime, methodCall, sql, true));
+        }
+        else if (sqlTimingLogger.isInfoEnabled())
+        {
+          sqlTimingLogger.info(
+            buildSqlTimingDump(spy, execTime, methodCall, sql, false));
+        }
+      }
     }
   }
 
   /**
+   * Helper method to quickly build a SQL timing dump output String for
+   * logging.
+   * 
+   * @param spy        the Spy wrapping the class where the SQL occurred.
+   * 
+   * @param execTime   how long it took the SQL to run, in milliseconds.
+   * 
+   * @param methodCall a description of the name and call parameters of the 
+   *                   method that generated the SQL.
+   *                         
+   * @param sql        SQL that occurred.
+   * 
+   * @param debugInfo  if true, include debug info at the front of the output.
+   *        
+   * @return a SQL timing dump String for logging.
+   */
+  private String buildSqlTimingDump(Spy spy, long execTime, String methodCall, 
+    String sql, boolean debugInfo)
+  {
+    StringBuffer out = new StringBuffer();
+
+    if (debugInfo)
+    {
+      out.append(getDebugInfo());
+      out.append(nl);
+      out.append(spy.getConnectionNumber());
+      out.append(". ");
+    }
+    
+    out.append(sql);
+    out.append(" {executed in ");
+    out.append(execTime);
+    out.append(" msec}");
+    
+    return out.toString();
+  }
+  
+  /**
    * Get debugging info - the module and line number that called the logger
-   * version that prints the stack trace information from the point just before we got it (net.sf.log4jdbc)
+   * version that prints the stack trace information from the point just before 
+   * we got it (net.sf.log4jdbc)
    *
    * if the optional log4jdbc.debug.stack.prefix system property is defined then
    * the last call point from an application is shown in the debug
    * trace output, instead of the last direct caller into log4jdbc
    *
-   * @return debugging info for whoever called into jdbc from within the application.
+   * @return debugging info for whoever called into JDBC from within the application.
    */
   private static String getDebugInfo()
   {

@@ -38,10 +38,14 @@
 
   <target name="all" depends="cleancompile,compile,cleanjar,jar"/>
 
-  <!-- ydoc.home.X is only used for the ydoc.X targets for producing javadoc with UML
+  <!-- 
+       The ydoc.home.3 and ydoc.home.4 properties are only used for the ydoc.3
+       and ydoc.4 targets for producing javadoc with UML
   
-       it requires the commercial ydoc utility (see http://www.yworks.com/en/products_ydoc.htm)
-       (use the javadoc target to generate regular javadoc)
+       it requires the commercial ydoc utility 
+       (see http://www.yworks.com/en/products_ydoc.htm)
+       
+       use the javadoc target to generate regular javadoc
        
        ydoc.home.3 is for jdk1.4 / JDBC 3
        ydoc.home.4 is for jdk1.6 / JDBC 4
@@ -216,6 +220,4 @@
       </doclet>
     </javadoc>
   </target>
-
-
 </project>
