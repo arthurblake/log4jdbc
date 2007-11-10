@@ -17,20 +17,23 @@
 <a href="#news">news</a> |
 <a href="#features">features</a> |
 <a href="#usage">usage</a> |
-<a href="#license">license</a> |
+<a href="#advanced">advanced</a> |
+<a href="#similiartools">similiar tools</a> |
 <a href="#feedback">feedback</a>
 <br>
-<a href="apidocs-jdbc3/net/sf/log4jdbc/package-summary.html">javadoc(JDK1.4: JDBC 3)</a> |
-<a href="apidocs-jdbc4/net/sf/log4jdbc/package-summary.html">javadoc(JDK1.6: JDBC 4)</a>
+<a href="http://sourceforge.net/projects/log4jdbc/">sourceforge page</a> |
+<a href="apidocs-jdbc3/net/sf/log4jdbc/package-summary.html">JDK1.4/JDBC 3 javadoc</a> |
+<a href="apidocs-jdbc4/net/sf/log4jdbc/package-summary.html">JDK1.6/JDBC 4 javadoc</a>
 </h1>
 
 <p>
 <b>log4jdbc</b> is a JDBC driver that can log SQL and/or JDBC calls (and optionally SQL timing information)
-for other jdbc drivers using the <a target="slf4j" href="http://www.slf4j.org/">Simple Logging Facade For Java</a> (SLF4J) logging system.
+for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">Simple Logging Facade For Java</a> (SLF4J) logging system.
 </p>
 
 <h2><a name="news"/>news</h2>
-<p class="left"><b>2007-07-25:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=719640">log4jdbc 1.1 alpha 2 released.</a>  JDBC 4 support!  See <a href="CHANGES">CHANGES</a> for all the release details.</p>
+<p class="left"><b>2007-11-10:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=xxxxxx">log4jdbc 1.1 beta 1 released.</a>  New optional timing threshold settings for honing in on slow SQL.  See <a href="CHANGES">CHANGES</a> for all the release details.</p>
+<p class="left"><b>2007-07-25:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=719640">log4jdbc 1.1 alpha 2 released.</a>  JDBC 4 support!</p>
 <p class="left"><b>2007-05-29:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=700185">log4jdbc 1.1 alpha 1 released.</a>  Most notable change is that the <a target="slf4j" href="http://slf4j.org">Simple Logging Facade for Java</a> is now used instead of <b>log4j</b> directly.
 <p class="left"><b>2007-04-21:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=688372">log4jdbc 1.0 has been released!</a>  Download it and give it a try!</p>
 
@@ -69,6 +72,11 @@ for other jdbc drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 <li>
   Works with any underlying JDBC driver, with JDK 1.4 and above, and SLF4J 1.x.
 </li>
+
+<li>
+  Open source software, licensed under the business friendly <b>Apache 2.0 license:</b>  <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
+</li>
+
 </ul>
 <p class="right"><a href="#top">[back to top]</a></p>
 <h2><a name="usage"/>usage</h2>
@@ -83,7 +91,7 @@ for other jdbc drivers using the <a target="slf4j" href="http://www.slf4j.org/">
     <p>
     Currently there are very few actual JDBC 4 drivers on the market.  (The only major one that I really know about is Apache Derby aka The Java DB distributed with JDK 1.6.)
     JDBC 4 support was added with the JDK 1.6 release and adds many additional features over and above JDBC 3.
-    However, the log4jdbc JDBC 4.0 driver can wrap a JDBC 3 or older driver and
+    However, the log4jdbc JDBC 4 driver can wrap a JDBC 3 or older driver and
     it's recommended that if you use JDK 1.6 or above, that you use the log4jdbc JDBC 4 driver that is compiled with JDK 1.6.
     </p>
     <p>
@@ -96,10 +104,10 @@ for other jdbc drivers using the <a target="slf4j" href="http://www.slf4j.org/">
     </p>
     <pre>
 
-    Choose and <a href="http://sourceforge.net/project/showfiles.php?group_id=194500&package_id=229335&release_id=527690">download</a> one of the drivers .jar files:
+    Choose and <a href="http://sourceforge.net/project/showfiles.php?group_id=194500&package_id=229335&release_id=527690">download</a> one of the driver .jar files:
 
-        log4jdbc3-1.1alpha2.jar      JDBC 3 support for JDK 1.4 , JDK 1.5
-        log4jdbc4-1.1alpha2.jar      JDBC 4 support for JDK 1.6 , JDK 1.7
+        log4jdbc3-1.1beta1.jar      JDBC 3 support for JDK 1.4 , JDK 1.5
+        log4jdbc4-1.1beta1.jar      JDBC 4 support for JDK 1.6 , JDK 1.7
 
     Place the log4jdbc jar that you choose into your application's classpath.
     </pre>
@@ -123,7 +131,7 @@ for other jdbc drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 
      You will need two jars:
 
-        slf4j-api-1.4.2.jar (or the latest available version) and
+        slf4j-api-1.4.3.jar (or the latest available version) and
         whichever jar you pick depending on the java logging system you choose
 
     Place these two .jar files into your application's classpath.
@@ -237,27 +245,76 @@ for other jdbc drivers using the <a target="slf4j" href="http://www.slf4j.org/">
      this would be printed in the debug information, rather than the package name for a connection pool, object relational system, etc.
      </p>
 </li>
-<li>Starting with the 1.1 alpha 1 release, a new tool was included which you can use to post-process sql timing logs produced by log4jdbc
-  to produce simple profiling reports with statistics and a dump of the sql statements that ran the slowest within the log.
-  To invoke the tool, use the profsql.sh (for unix/linux) and profsql.cmd (for windows) scripts located in the scripts
-  folder.  These scripts take as one argument, the filename of a sql timing log (generated from the
-  <code>jdbc.sqltiming</code> log category.  They produce a profiling report to stdout.
-  At this point the tool is experimental and I expect it to evolve quite a bit over the next few releases.
-  Nevertheless, it has already been very useful to me for tracking down SQL performance problems.
-</li>
 </ol>
 
 <p class="right"><a href="#top">[back to top]</a></p>
 
-<h2><a name="license"/>license</h2>
-<p>
-log4jdbc is open source software, licensed under the <b>Apache 2.0 license:</b>  <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
-</p>
-
+<h2><a name="advanced"/>advanced</h2>
+<ul class="left">
+<li>A simple tool is included which you can use to post-process sql timing logs produced by log4jdbc.
+  It produces produce simple profiling reports with statistics and a dump of the sql statements that ran the slowest within the log.
+  To invoke the tool, use the profsql.sh (for unix/linux) and profsql.cmd (for windows) scripts located in the scripts
+  folder.  These scripts take as one argument, the filename of a sql timing log (generated from the
+  <code>jdbc.sqltiming</code> log category.  They produce a profiling report to stdout.
+  The tool is currently experimental and I expect it to evolve quite a bit over the next few releases.
+  Nevertheless, it has already been very useful to me for tracking down SQL performance problems.
+</li>
+<li>
+  Starting with the 1.1 beta 1 release, you can set timing thresholds to more easily find slow running SQL.  These are set via system properties:
+  <p>
+    <code>-Dlog4jdbc.sqltiming.warn.threshold=&lt;number of milliseconds&gt;</code> causes SQL that takes &lt;number of milliseconds&gt; or more time to execute to be logged at the <b>warning</b> level in the sqltiming log.
+  </p>
+  <p>
+    <code>-Dlog4jdbc.sqltiming.error.threshold=&lt;number of milliseconds&gt;</code> causes SQL that takes &lt;number of milliseconds&gt; or more time to execute to be logged at the <b>error</b> level in the sqltiming log.
+  </p>
+  <p>
+    Note that the sqltiming log must be enabled at the warn or error log levels for these features to work.  Also the logged output for both of these settings will log with debug information that is normally only shown
+    when the sqltiming log is enabled at the debug level.  This can help you to more quickly find slower running SQL without adding overhead or logging for normal running
+    SQL that executes below the threshold level (if the logging level is set appropriately.)
+  </p>
+</li>
+</ul>
 <p class="right"><a href="#top">[back to top]</a></p>
+
+<h2><a name="similiartools"/>similiar tools</h2>
+
+<h3>Some other tools and libraries that are similiar to log4jdbc.</h3>
+
+<ul class="left">
+<li>
+  <a target="othertool" href="http://www.p6spy.com/">P6Spy</a>
+  is probably the most well known JDBC logging driver but it hasn't been updated in about 4 years.
+</li>
+
+<li>
+  <a target="othertool" href="http://www.jahia.net/jahia/page597.html">SQL Profiler</a> an add-on for P6Spy, also about 4 years out of date.
+</li>
+
+<li>
+  <a target="othertool" href="http://zer0.free.fr/craftsman/spy.php">Craftsman Spy</a> appears to overlap quite a bit with the feature set in log4jdbc.  This library hasn't been updated in 2 years and depends on Jakarta Commons Logging.
+</li>
+
+<li>
+  <a target="othertool" href="http://jamonapi.sourceforge.net/"> JAMon </a> (Java Application Monitor) is a comprehensive application monitor and monitoring API which includes JDBC/SQL monitoring as part of it's very large feature set.
+</li>
+
+<li>
+  <a target="othertool" href="http://sourceforge.net/projects/jdbcproxy/">JdbcProxy</a> is another sourceforge hosted project.  The driver can also emulate another JDBC driver to test the application without a database
+</li>
+
+<li>
+  <a target="othertool" href="http://rkbloom.net/logdriver/index.html">LogDriver</a> appears to be similiar to log4jdbc and the author has written a nice <a target="othertool" href="http://java.sys-con.com/read/204723.htm">article</a> on JDBC logging in general and his motivation and experience of writing LogDriver.
+</li>
+
+</ul>
+
+</p>
+<p class="right"><a href="#top">[back to top]</a></p>
+
 <h2><a name="feedback"/>feedback</h2>
 
-<p>Feedback and suggestions would be greatly appreciated.  Email me at arthur_blake at users.sourceforge.net</p>
+<p>Feedback and suggestions would be greatly appreciated.  Email me at <b>arthur_blake at users.sourceforge.net</b></p>
+<p>Also, visit <a target="myblog" href="http://arthurblake.wordpress.com">my blog</a>.</p>
 
 <p class="right"><a href="#top">[back to top]</a></p>
 <h1>
@@ -266,11 +323,13 @@ log4jdbc is open source software, licensed under the <b>Apache 2.0 license:</b> 
 <a href="#news">news</a> |
 <a href="#features">features</a> |
 <a href="#usage">usage</a> |
-<a href="#license">license</a> |
+<a href="#advanced">advanced</a> |
+<a href="#similiartools">similiar tools</a> |
 <a href="#feedback">feedback</a>
 <br>
-<a href="apidocs-jdbc3/net/sf/log4jdbc/package-summary.html">javadoc(JDK1.4: JDBC 3)</a> |
-<a href="apidocs-jdbc4/net/sf/log4jdbc/package-summary.html">javadoc(JDK1.6: JDBC 4)</a>
+<a href="http://sourceforge.net/projects/log4jdbc/">sourceforge page</a> |
+<a href="apidocs-jdbc3/net/sf/log4jdbc/package-summary.html">JDK1.4/JDBC 3 javadoc</a> |
+<a href="apidocs-jdbc4/net/sf/log4jdbc/package-summary.html">JDK1.6/JDBC 4 javadoc</a>
 <br>
 <img class="logo" src="log4jdbc-logo-gray.png">
 

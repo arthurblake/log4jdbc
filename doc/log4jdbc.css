@@ -8,6 +8,7 @@
 .usage {text-align:left;}
 h1 {font-size:1em;color:#f06;background-color:#eee;display:block;padding:0.8em;}
 h2 {font-size:1.2em;color:#f06;background-color:#eee;display:block;height:2em;padding-top:0.8em;}
+h3 {font-size:1.1em;color:0;font-weight:bold;margin:5px;}
 a {text-decoration:none;}
 a:link {color: #f06;}
 a:visited {color: #f06;}
@@ -25,6 +26,6 @@ code,pre {color:navy;background-color:beige;font-size:11pt;}
 
 pre {border:2px dashed navy;margin-left:3em;margin-right:4em;margin-top:1em;margin-bottom:1em;white-space:pre-line;}
 
-p.ad {font-size:1em;color:blue;}
+.ad {font-size:0.8em;color:blue}
 
 .sflogo {float:right; margin-right:30px;}
