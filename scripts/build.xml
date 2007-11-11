@@ -194,7 +194,7 @@
       <!-- note that the jdk source code is referenced here so that javadoc will be generated from
           interface class methods when none is specified in the implementation -->
 
-      <sourcepath path="/jdk1.6.0/src"/>
+      <sourcepath path="/jdk1.6.0_03/src"/>
       <link href="http://java.sun.com/javase/6/docs/api/"/>
 <!--
       <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
