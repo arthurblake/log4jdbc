@@ -269,7 +269,7 @@ public class DriverSpy implements Driver
         Class.forName(driverClass);
         log.debug("  FOUND DRIVER " + driverClass);
       }
-      catch (ClassNotFoundException c)
+      catch (Throwable c)
       {
         i.remove();
       }
