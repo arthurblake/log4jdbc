@@ -16,3 +16,5 @@ o  ALL String concatenation & dumping methods should take place ONLY if logging 
 o  review dumpedSql method - make auto line breaking option (& num chars used) be options
 
 o  need log4jdbc.debug.stack.regex so that the stack matching can take place via regex
+
+o  maven2 repository support
