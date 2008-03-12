@@ -34,7 +34,7 @@
 
 
   <!-- release version -->
-  <property name="version" value="1.1beta1"/>
+  <property name="version" value="1.1"/>
 
   <target name="all" depends="cleancompile,compile,cleanjar,jar"/>
 
