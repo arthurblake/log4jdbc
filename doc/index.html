@@ -27,12 +27,13 @@
 </h1>
 
 <p>
-<b>log4jdbc</b> is a JDBC driver that can log SQL and/or JDBC calls (and optionally SQL timing information)
+<b>log4jdbc</b> is a Java JDBC driver that can log SQL and/or JDBC calls (and optionally SQL timing information)
 for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">Simple Logging Facade For Java</a> (SLF4J) logging system.
 </p>
 
 <h2><a name="news"/>news</h2>
-<p class="left"><b>2007-11-10:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=753559">log4jdbc 1.1 beta 1 released.</a>  New optional timing threshold settings for honing in on slow SQL.  See <a href="CHANGES">CHANGES</a> for all the release details.</p>
+<p class="left"><b>2008-04-11:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=810350">log4jdbc 1.1 final release out!</a>  See <a href="CHANGES">CHANGES</a> for all the release details.</p>
+<p class="left"><b>2007-11-10:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=753559">log4jdbc 1.1 beta 1 released.</a>  New optional timing threshold settings for honing in on slow SQL.</p>
 <p class="left"><b>2007-07-25:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=719640">log4jdbc 1.1 alpha 2 released.</a>  JDBC 4 support!</p>
 <p class="left"><b>2007-05-29:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=700185">log4jdbc 1.1 alpha 1 released.</a>  Most notable change is that the <a target="slf4j" href="http://slf4j.org">Simple Logging Facade for Java</a> is now used instead of <b>log4j</b> directly.
 <p class="left"><b>2007-04-21:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=688372">log4jdbc 1.0 has been released!</a>  Download it and give it a try!</p>
@@ -252,7 +253,7 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 <h2><a name="advanced"/>advanced</h2>
 <ul class="left">
 <li>A simple tool is included which you can use to post-process sql timing logs produced by log4jdbc.
-  It produces produce simple profiling reports with statistics and a dump of the sql statements that ran the slowest within the log.
+  It can output simple profiling reports with statistics and a dump of the sql statements that ran the slowest within the log.
   To invoke the tool, use the profsql.sh (for unix/linux) and profsql.cmd (for windows) scripts located in the scripts
   folder.  These scripts take as one argument, the filename of a sql timing log (generated from the
   <code>jdbc.sqltiming</code> log category.  They produce a profiling report to stdout.
@@ -331,9 +332,10 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 <a href="apidocs-jdbc3/net/sf/log4jdbc/package-summary.html">JDK1.4/JDBC 3 javadoc</a> |
 <a href="apidocs-jdbc4/net/sf/log4jdbc/package-summary.html">JDK1.6/JDBC 4 javadoc</a>
 <br>
-<img class="logo" src="log4jdbc-logo-gray.png">
-
+<img class="logo" src="log4jdbc-logo-gray.png"><br>
+<p class="copyright">Copyright &copy; 2007-2008 <a href="http://arthur.blake.name">Arthur Blake</a></p>
 </h1>
+
 <p class="ad">
 YourKit is kindly supporting open source projects with its full-featured Java Profiler.
 YourKit, LLC is creator of innovative and intelligent tools for profiling
@@ -341,6 +343,8 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 <a href="http://www.yourkit.com/java/profiler/index.jsp">YourKit Java Profiler</a> and
 <a href="http://www.yourkit.com/.net/profiler/index.jsp">YourKit .NET Profiler</a>.
 </p>
+
 <a href="http://sourceforge.net/projects/log4jdbc/"><img alt="sourceforge" title="log4jdbc sourceforge page" class="sflogo" src="sourceforge_whitebg.gif"></a>
+
 </body>
 </html>

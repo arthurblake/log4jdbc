@@ -27,5 +27,6 @@ code,pre {color:navy;background-color:beige;font-size:11pt;}
 pre {border:2px dashed navy;margin-left:3em;margin-right:4em;margin-top:1em;margin-bottom:1em;white-space:pre-line;}
 
 .ad {font-size:0.8em;color:blue}
-
+.copyright {font-size:0.8m;text-align:center}
+.copyright a {color:#ef39e9}
 .sflogo {float:right; margin-right:30px;}

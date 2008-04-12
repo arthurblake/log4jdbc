@@ -1,38 +1,53 @@
+2008-04-11 1.1 Release
+
+           o upgrade to SLF4J 1.5.  Note that log4jdbc should still work with 
+             any older (or newer) version of SLF4J too.
+           
+           o slightly better fault tolerance for when loading/probing of 
+             popular JDBC drivers fails for any reason.
+
 2007-11-10 1.1 beta 1 Release
 
-           o added HSQLDB (org.hsqldb.jdbcDriver) and H2 (org.h2.Driver)
-             to list of "well known" drivers that log4jdbc looks for at startup.
+           o added HSQLDB (org.hsqldb.jdbcDriver) and H2 (org.h2.Driver) to 
+             list of "well known" drivers that log4jdbc looks for at startup.
              
-           o added log4jdbc.sqltiming.warn.threshold and log4jdbc.sqltiming.error.threshold system property
-             settings to greatly aid in finding slow running sql.  Special thanks to Lilianne E. Blaze for the idea
-             and initial implementation.
+           o added log4jdbc.sqltiming.warn.threshold and 
+             log4jdbc.sqltiming.error.threshold system property settings to 
+             greatly aid in finding slow running sql.  Special thanks to 
+             Lilianne E. Blaze for the idea and initial implementation.
 
 2007-07-25 1.1 alpha 2 Release
 
            o JDBC 4.0 support!
              
-           o fix Null pointer exception bug that could happen with setObject call on PreparedStatementSpy
+           o fix Null pointer exception bug that could happen with setObject 
+             call on PreparedStatementSpy
              
-           o added MySQL (com.mysql.jdbc.Driver) and PostgreSQL (org.postgresql.Driver) 
-             to list of "well known" drivers that log4jdbc looks for at startup.
+           o added MySQL (com.mysql.jdbc.Driver) and PostgreSQL 
+             (org.postgresql.Driver) to list of "well known" drivers that 
+             log4jdbc looks for at startup.
 
 2007-05-29 1.1 alpha 1 Release
 
-           o Fixed problem where when sql timing log was the only log turned on, log4jdbc would not recognize that
-             logging was on at all.
+           o Fixed problem where when sql timing log was the only log turned 
+             on, log4jdbc would not recognize that logging was on at all.
 
-           o report sql exceptions in the sql timing log as well (when they occured during sql execution) and
-             prominently show that the sql FAILED, and display how long it tried to chug on the sql
-             before the exception was thrown
+           o report sql exceptions in the sql timing log as well (when they 
+             occured during sql execution) and prominently show that the sql 
+             FAILED, and display how long it tried to chug on the sql before 
+             the exception was thrown.
 
-           o Switch to Simple Logging Facade for Java SLF4J instead of using log4j directly, so that any underlying
-             logging system can be easily used.
+           o Switch to Simple Logging Facade for Java SLF4J instead of using 
+             log4j directly, so that any underlying logging system can be 
+             easily used.
 
-           o option added to ant build script to generate javadoc with ydoc to include UML diagrams within the javadoc.
+           o option added to ant build script to generate javadoc with ydoc 
+             to include UML diagrams within the javadoc.
 
            o dump batched sql correctly.
 
-           o add simple command line program (PostLogProfilerProcessor) for processing sqltiming log files to create
-             a simple profiling report from log data.
+           o add simple command line program (PostLogProfilerProcessor) for 
+             processing sqltiming log files to create a simple profiling 
+             report from log data.
 
 2007-04-21 Initial 1.0 Release
