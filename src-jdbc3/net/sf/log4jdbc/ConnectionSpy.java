@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Arthur Blake
+ * Copyright 2007-2008 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public class ConnectionSpy implements Connection, Spy
    * Create a new ConnectionSpy that wraps a given Connection.
    *
    * @param realConnection &quot;real&quot; Connection that this ConnectionSpy wraps.
-   * @param rdbmsSpecifics the RdbmsSpecifics object for formatting logging appropriate for the Rdbms used. 
+   * @param rdbmsSpecifics the RdbmsSpecifics object for formatting logging appropriate for the Rdbms used.
    */
   public ConnectionSpy(Connection realConnection, RdbmsSpecifics rdbmsSpecifics)
   {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Arthur Blake
+ * Copyright 2007-2008 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.Arrays;
  * Name of log file is passed in on the command line as the only argument.
  *
  * Assumptions:
- * 
+ *
  * 1. Each sql statement in the log is separated by a blank line.
  * 2. Each sql statement is terminated with the timing string "{executed in N msec}" where N is the number of
  *    milliseconds that the sql executed in.
@@ -243,7 +243,7 @@ public class PostLogProfilerProcessor {
      * than, equal to, or greater than the specified object.<p>
      *
      * In this case the comparison is used to sort flagged sql in descending order.
-     * @param o ProfiledSql Object to compare to this ProfiledSql.  Must not be null. 
+     * @param o ProfiledSql Object to compare to this ProfiledSql.  Must not be null.
      */
     public int compareTo(Object o) {
       return ((ProfiledSql)o).execTime.compareTo(execTime);

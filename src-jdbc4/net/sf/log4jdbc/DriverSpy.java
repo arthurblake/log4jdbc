@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Arthur Blake
+ * Copyright 2007-2008 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,11 @@ import java.util.TreeSet;
 
 /**
  * A JDBC driver which is a facade that delegates to one or more real underlying
- * JDBC drivers.  The driver will spy on any other JDBC driver that is loaded, 
- * simply by prepending <code>jdbc:log4</code> to the normal jdbc driver URL 
- * used by any other JDBC driver. The driver also loads several well known 
- * drivers at class load time, so that this driver can be "dropped in" to any 
- * java program that uses these drivers without making any code changes.  
+ * JDBC drivers.  The driver will spy on any other JDBC driver that is loaded,
+ * simply by prepending <code>jdbc:log4</code> to the normal jdbc driver URL
+ * used by any other JDBC driver. The driver also loads several well known
+ * drivers at class load time, so that this driver can be "dropped in" to any
+ * java program that uses these drivers without making any code changes.
  * The well known driver classes that are loaded are:
  * <p/>
  * <p/>
@@ -56,24 +56,24 @@ import java.util.TreeSet;
  * <p/>
  * <p/>
  * Additional drivers can be set via a system property: <b>log4jdbc.drivers</b>
- * This can be either a single driver class name or a list of comma separated 
+ * This can be either a single driver class name or a list of comma separated
  * driver class names.
  * <p/>
- * If any of the above driver classes cannot be loaded, the driver continues on 
+ * If any of the above driver classes cannot be loaded, the driver continues on
  * without failing.
  * <p/>
  * Note that the <code>getMajorVersion</code>, <code>getMinorVersion</code> and
- * <code>jdbcCompliant</code> method calls attempt to delegate to the last 
+ * <code>jdbcCompliant</code> method calls attempt to delegate to the last
  * underlying driver requested through any other call that accepts a JDBC URL.
  * <p/>
- * This can cause unexpected behavior in certain circumstances.  For example, 
- * if one of these 3 methods is called before any underlying driver has been 
- * established, then they will return default values that might not be correct 
+ * This can cause unexpected behavior in certain circumstances.  For example,
+ * if one of these 3 methods is called before any underlying driver has been
+ * established, then they will return default values that might not be correct
  * in all situations.  Similarly, if this spy driver is used to spy on more than
- * one underlying driver concurrently, the values returned by these 3 method 
+ * one underlying driver concurrently, the values returned by these 3 method
  * calls may change depending on what the last underlying driver used was at the
- * time.  This will not usually be a problem, since the driver is retrieved by 
- * it's URL from the DriverManager in the first place (thus establishing an 
+ * time.  This will not usually be a problem, since the driver is retrieved by
+ * it's URL from the DriverManager in the first place (thus establishing an
  * underlying real driver), and in most applications their is only one database.
  *
  * @author Arthur Blake
@@ -86,7 +86,7 @@ public class DriverSpy implements Driver
   private Driver lastUnderlyingDriverRequested;
 
   /**
-   * Maps driver class names to RdbmsSpecifics objects for each kind of 
+   * Maps driver class names to RdbmsSpecifics objects for each kind of
    * database.
    */
   private static Map rdbmsSpecifics;
@@ -94,13 +94,13 @@ public class DriverSpy implements Driver
   static final SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
 
   /**
-   * Optional package prefix to use for finding application generating point of 
+   * Optional package prefix to use for finding application generating point of
    * SQL.
    */
   static String DebugStackPrefix;
 
   /**
-   * Flag to indicate debug trace info should be from the calling application 
+   * Flag to indicate debug trace info should be from the calling application
    * point of view (true if DebugStackPrefix is set.)
    */
   static boolean TraceFromApplication;
@@ -110,39 +110,39 @@ public class DriverSpy implements Driver
    * SqlTimingWarnThresholdMsec milliseconds to run.  See below.
    */
   static boolean SqlTimingWarnThresholdEnabled;
-  
+
   /**
-   * An amount of time in milliseconds for which SQL that executed taking this 
-   * long or more to run shall cause a warning message to be generated on the 
+   * An amount of time in milliseconds for which SQL that executed taking this
+   * long or more to run shall cause a warning message to be generated on the
    * SQL timing logger.
-   * 
+   *
    * This threshold will <i>ONLY</i> be used if SqlTimingWarnThresholdEnabled
-   * is true.  
+   * is true.
    */
   static long SqlTimingWarnThresholdMsec;
-  
+
   /**
    * Flag to indicate if an error should be shown if SQL takes more than
    * SqlTimingErrorThresholdMsec milliseconds to run.  See below.
    */
   static boolean SqlTimingErrorThresholdEnabled;
-  
+
   /**
-   * An amount of time in milliseconds for which SQL that executed taking this 
-   * long or more to run shall cause an error message to be generated on the 
+   * An amount of time in milliseconds for which SQL that executed taking this
+   * long or more to run shall cause an error message to be generated on the
    * SQL timing logger.
-   * 
+   *
    * This threshold will <i>ONLY</i> be used if SqlTimingErrorThresholdEnabled
-   * is true.  
+   * is true.
    */
   static long SqlTimingErrorThresholdMsec;
-  
+
   /**
-   * Get a Long option from a system property and 
+   * Get a Long option from a system property and
    * log a debug message about this.
-   * 
+   *
    * @param propName System property key.
-   * 
+   *
    * @return the value of that System property key, converted
    * to a Long.  Or null if not defined or is invalid.
    */
@@ -163,7 +163,7 @@ public class DriverSpy implements Driver
       }
       catch (NumberFormatException n)
       {
-        log.debug("x " + propName + " \"" + propValue  + 
+        log.debug("x " + propName + " \"" + propValue  +
           "\" is not a valid long value");
       }
     }
@@ -171,9 +171,9 @@ public class DriverSpy implements Driver
   }
 
   /**
-   * Get a String option from a system property and 
+   * Get a String option from a system property and
    * log a debug message about this.
-   * 
+   *
    * @param propName System property key.
    * @return the value of that System property key.
    */
@@ -191,7 +191,7 @@ public class DriverSpy implements Driver
     }
     return propValue;
   }
-  
+
   static
   {
     log.debug("... log4jdbc initializing ...");
@@ -213,9 +213,9 @@ public class DriverSpy implements Driver
     {
       SqlTimingErrorThresholdMsec = thresh.longValue();
     }
-    
-    // The Set of drivers that the log4jdbc driver will preload at instantiation 
-    // time.  The driver can spy on any driver type, it's just a little bit 
+
+    // The Set of drivers that the log4jdbc driver will preload at instantiation
+    // time.  The driver can spy on any driver type, it's just a little bit
     // easier to configure log4jdbc if it's one of these types!
 
     Set subDrivers = new TreeSet();
@@ -285,10 +285,10 @@ public class DriverSpy implements Driver
 
     /** create lookup Map for specific rdbms formatters */
     rdbmsSpecifics = new HashMap();
-    rdbmsSpecifics.put("oracle.jdbc.driver.OracleDriver", 
+    rdbmsSpecifics.put("oracle.jdbc.driver.OracleDriver",
       new OracleRdbmsSpecifics());
     rdbmsSpecifics.put("net.sourceforge.jtds.jdbc.Driver", sqlServer);
-    rdbmsSpecifics.put("com.microsoft.jdbc.sqlserver.SQLServerDriver", 
+    rdbmsSpecifics.put("com.microsoft.jdbc.sqlserver.SQLServerDriver",
       sqlServer);
     rdbmsSpecifics.put("weblogic.jdbc.sqlserver.SQLServerDriver", sqlServer);
 
@@ -338,8 +338,8 @@ public class DriverSpy implements Driver
   }
 
   /**
-   * Get the major version of the driver.  This call will be delegated to the 
-   * underlying driver that is being spied upon (if there is no underlying 
+   * Get the major version of the driver.  This call will be delegated to the
+   * underlying driver that is being spied upon (if there is no underlying
    * driver found, then 1 will be returned.)
    *
    * @return the major version of the JDBC driver.
@@ -357,8 +357,8 @@ public class DriverSpy implements Driver
   }
 
   /**
-   * Get the minor version of the driver.  This call will be delegated to the 
-   * underlying driver that is being spied upon (if there is no underlying 
+   * Get the minor version of the driver.  This call will be delegated to the
+   * underlying driver that is being spied upon (if there is no underlying
    * driver found, then 0 will be returned.)
    *
    * @return the minor version of the JDBC driver.
@@ -376,16 +376,16 @@ public class DriverSpy implements Driver
   }
 
   /**
-   * Report whether the underlying driver is JDBC compliant.  If there is no 
-   * underlying driver, false will be returned, because the driver cannot 
+   * Report whether the underlying driver is JDBC compliant.  If there is no
+   * underlying driver, false will be returned, because the driver cannot
    * actually do any work without an underlying driver.
    *
-   * @return <code>true</code> if the underlying driver is JDBC Compliant; 
+   * @return <code>true</code> if the underlying driver is JDBC Compliant;
    *         <code>false</code> otherwise.
    */
   public boolean jdbcCompliant()
   {
-    return lastUnderlyingDriverRequested != null && 
+    return lastUnderlyingDriverRequested != null &&
       lastUnderlyingDriverRequested.jdbcCompliant();
   }
 
@@ -394,9 +394,9 @@ public class DriverSpy implements Driver
    * an underlying driver that this DriverSpy can spy on.
    *
    * @param url JDBC URL.
-   * 
+   *
    * @return true if this Driver can handle the URL.
-   * 
+   *
    * @throws SQLException if a database access error occurs
    */
   public boolean acceptsURL(String url) throws SQLException
@@ -418,11 +418,11 @@ public class DriverSpy implements Driver
    * that accepts the URL.
    *
    * @param url JDBC connection URL.
-   * 
+   *
    * @return Underlying driver for the given URL. Null is returned if the URL is
-   *         not a <code>jdbc:log4</code> type URL or there is no underlying 
+   *         not a <code>jdbc:log4</code> type URL or there is no underlying
    *         driver that accepts the URL.
-   *         
+   *
    * @throws SQLException if a database access error occurs.
    */
   private Driver getUnderlyingDriver(String url) throws SQLException
@@ -458,10 +458,10 @@ public class DriverSpy implements Driver
    * @param info a list of arbitrary string tag/value pairs as
    *             connection arguments. Normally at least a "user" and
    *             "password" property should be included.
-   *             
+   *
    * @return     a <code>Connection</code> object that represents a
    *             connection to the URL.
-   *         
+   *
    * @throws SQLException if a database access error occurs
    */
   public Connection connect(String url, Properties info) throws SQLException
@@ -510,7 +510,7 @@ public class DriverSpy implements Driver
    * Gets information about the possible properties for the underlying driver.
    *
    * @param url  the URL of the database to which to connect
-   * 
+   *
    * @param info a proposed list of tag/value pairs that will be sent on
    *             connect open
    * @return     an array of <code>DriverPropertyInfo</code> objects describing
@@ -519,7 +519,7 @@ public class DriverSpy implements Driver
    *
    * @throws SQLException if a database access error occurs
    */
-  public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) 
+  public DriverPropertyInfo[] getPropertyInfo(String url, Properties info)
     throws SQLException
   {
     Driver d = getUnderlyingDriver(url);

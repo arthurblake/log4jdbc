@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Arthur Blake
+ * Copyright 2007-2008 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -196,22 +196,22 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    * Special call that is called only for JDBC method calls that contain SQL.
    *
    * @param spy        the Spy wrapping the class where the SQL occurred.
-   * 
+   *
    * @param execTime   how long it took the SQL to run, in milliseconds.
-   * 
-   * @param methodCall a description of the name and call parameters of the 
+   *
+   * @param methodCall a description of the name and call parameters of the
    *                   method that generated the SQL.
-   *                   
+   *
    * @param sql        SQL that occurred.
    */
   public void sqlTimingOccured(Spy spy, long execTime, String methodCall, String sql)
   {
     // un-comment to simulate random delay to make testing easier
     //execTime = execTime + (long)(Math.random() * 5000);
-    
+
     if (sqlTimingLogger.isErrorEnabled())
     {
-      if (DriverSpy.SqlTimingErrorThresholdEnabled && 
+      if (DriverSpy.SqlTimingErrorThresholdEnabled &&
           execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
       {
         sqlTimingLogger.error(
@@ -224,7 +224,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
         {
           sqlTimingLogger.warn(
             buildSqlTimingDump(spy, execTime, methodCall, sql, true));
-        } 
+        }
         else if (sqlTimingLogger.isDebugEnabled())
         {
           sqlTimingLogger.debug(
@@ -242,21 +242,21 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   /**
    * Helper method to quickly build a SQL timing dump output String for
    * logging.
-   * 
+   *
    * @param spy        the Spy wrapping the class where the SQL occurred.
-   * 
+   *
    * @param execTime   how long it took the SQL to run, in milliseconds.
-   * 
-   * @param methodCall a description of the name and call parameters of the 
+   *
+   * @param methodCall a description of the name and call parameters of the
    *                   method that generated the SQL.
-   *                         
+   *
    * @param sql        SQL that occurred.
-   * 
+   *
    * @param debugInfo  if true, include debug info at the front of the output.
-   *        
+   *
    * @return a SQL timing dump String for logging.
    */
-  private String buildSqlTimingDump(Spy spy, long execTime, String methodCall, 
+  private String buildSqlTimingDump(Spy spy, long execTime, String methodCall,
     String sql, boolean debugInfo)
   {
     StringBuffer out = new StringBuffer();
@@ -268,18 +268,18 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       out.append(spy.getConnectionNumber());
       out.append(". ");
     }
-    
+
     out.append(sql);
     out.append(" {executed in ");
     out.append(execTime);
     out.append(" msec}");
-    
+
     return out.toString();
   }
-  
+
   /**
    * Get debugging info - the module and line number that called the logger
-   * version that prints the stack trace information from the point just before 
+   * version that prints the stack trace information from the point just before
    * we got it (net.sf.log4jdbc)
    *
    * if the optional log4jdbc.debug.stack.prefix system property is defined then
