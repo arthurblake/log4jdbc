@@ -37,6 +37,8 @@ import java.util.Map;
 /**
  * Wraps a ResultSet and reports method calls, returns and exceptions.
  *
+ * JDBC 3 version.
+ *
  * @author Arthur Blake
  */
 public class ResultSetSpy implements ResultSet, Spy
@@ -84,6 +86,7 @@ public class ResultSetSpy implements ResultSet, Spy
     this.realResultSet = realResultSet;
     this.parent = parent;
     log = SpyLogFactory.getSpyLogDelegator();
+    reportReturn("new ResultSet");
   }
 
   /**
@@ -96,7 +99,7 @@ public class ResultSetSpy implements ResultSet, Spy
     return classTypeDescription;
   }
 
-  public int getConnectionNumber()
+  public Integer getConnectionNumber()
   {
     return parent.getConnectionNumber();
   }
@@ -1328,6 +1331,7 @@ public class ResultSetSpy implements ResultSet, Spy
       }
       else
       {
+        //todo: what's going on here?
         return (Statement) reportReturn(methodCall, new StatementSpy(new ConnectionSpy(s.getConnection()), s));
       }
     }
@@ -1456,6 +1460,7 @@ public class ResultSetSpy implements ResultSet, Spy
 
   public void updateBytes(int columnIndex, byte[] x) throws SQLException
   {
+    // todo: dump array?
     String methodCall = "updateBytes(" + columnIndex + ", " + x + ")";
     try
     {
@@ -1471,6 +1476,7 @@ public class ResultSetSpy implements ResultSet, Spy
 
   public void updateBytes(String columnName, byte[] x) throws SQLException
   {
+    // todo: dump array?
     String methodCall = "updateBytes(" + columnName + ", " + x + ")";
     try
     {

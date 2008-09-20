@@ -15,7 +15,9 @@
  */
 package net.sf.log4jdbc;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -26,11 +28,13 @@ import java.util.ArrayList;
 /**
  * Wraps a Statement and reports method calls, returns and exceptions.
  *
+ * jdbc 3 version
+ *
  * @author Arthur Blake
  */
 public class StatementSpy implements Statement, Spy
 {
-  private final SpyLogDelegator log;
+  protected final SpyLogDelegator log;
 
   /**
    * The Connection that created this Statement.
@@ -43,8 +47,8 @@ public class StatementSpy implements Statement, Spy
   protected Statement realStatement;
 
   /**
-   * Create a StatementSpy that wraps another Statement, for the purpose of logging all method calls, sql,
-   * exceptions and return values.
+   * Create a StatementSpy that wraps another Statement
+   * for the purpose of logging all method calls, sql, exceptions and return values.
    *
    * @param connectionSpy Connection that created this Statement.
    * @param realStatement real underlying Statement that this StatementSpy wraps.
@@ -63,6 +67,19 @@ public class StatementSpy implements Statement, Spy
     this.connectionSpy = connectionSpy;
 
     log = SpyLogFactory.getSpyLogDelegator();
+    
+    if (realStatement instanceof CallableStatement)
+    {
+      reportReturn("new CallableStatement");
+    }
+    else if (realStatement instanceof PreparedStatement)
+    {
+      reportReturn("new PreparedStatement");      
+    }
+    else
+    {
+      reportReturn("new Statement");
+    }
   }
 
   public String getClassType()
@@ -70,7 +87,7 @@ public class StatementSpy implements Statement, Spy
     return "Statement";
   }
 
-  public int getConnectionNumber()
+  public Integer getConnectionNumber()
   {
     return connectionSpy.getConnectionNumber();
   }

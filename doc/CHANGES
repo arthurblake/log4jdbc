@@ -1,3 +1,66 @@
+2008-09-19 1.2 alpha 1 Release
+
+           o added new logger to dump connection open and close events as
+             well as dumping all open connection numbers.  This is very useful 
+             for down hunting connection leak problems.
+
+           o several new options to produce better SQL output:
+           
+             log4jdbc.dump.booleanastruefalse - many RDBMS's don't have a 
+             native boolean type and store booleans as a 1 or 0.  Setting this 
+             option to false will show boolean bind variables as 1 or 0.  
+             Setting this to true will show the boolean as true or false.  
+             (Note that the default for this setting is false, contrary to the 
+             previous way log4jdbc worked.)
+             
+             log4jdbc.dump.sql.maxlinelength - can be used to insert line 
+             breaks into long running SQL (at white space positions.)
+             previous versions of log4jdbc did this automatically with a value 
+             of 90 (the default value is 90.)  This line breaking can be turned
+             off completely by setting this to 0.
+             
+             log4jdbc.dump.fulldebugstacktrace - can be used in extreme 
+             debugging circumstances when you want to be able to see the full 
+             stack trace in the debug output.  Be extra careful when using 
+             this as it will obviously produce much much more logging output.
+             
+           o dump a null bind variable as NULL instead of <null> for more
+             accurate and reuseable SQL output.
+             
+           o several new options for controlling what types of SQL statements are 
+             logged:
+             
+             log4jdbc.dump.sql.select   default value is true
+             log4jdbc.dump.sql.insert   default value is true
+             log4jdbc.dump.sql.update   default value is true
+             log4jdbc.dump.sql.delete   default value is true
+             log4jdbc.dump.sql.create   default value is true
+             
+             The default values for all of these are true, but they can be 
+             selectively turned on and off to filter out unwanted types of sql 
+             statements.  For example, setting log4jdbc.dump.sql.delete will 
+             cause all DELETE sql commands to not be logged.
+             
+           o A new option to add a semi colon to the end of the dumped sql:
+             
+             log4jdbc.dump.sql.addsemicolon   default value is false
+             
+             Sometimes it's useful to use log4jdbc to produce sql scripts that
+             can later be fed back into a SQL tool to execute against a 
+             database and this option can help to produce more re-useable sql 
+             output script data from a log file.
+
+           o added Microsoft SQL Server 2005 Driver 
+             (com.microsoft.sqlserver.jdbc.SQLServerDriver) to 
+             list of "well known" drivers that log4jdbc looks for at startup.
+             (thanks to Rob Richards for pointing this out)
+
+             Note that the SQL Server 2000 Driver with the confusing name
+             of (com.microsoft.jdbc.sqlserver.SQLServerDriver) is also still
+             supported.
+             
+           o other miscellaneous improvements.
+
 2008-04-11 1.1 Release
 
            o upgrade to SLF4J 1.5.  Note that log4jdbc should still work with 

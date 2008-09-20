@@ -23,9 +23,18 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Savepoint;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+
 
 /**
  * Wraps a JDBC Connection and reports method calls, returns and exceptions.
+ *
+ * This version is for jdbc 3.
  *
  * @author Arthur Blake
  */
@@ -35,9 +44,51 @@ public class ConnectionSpy implements Connection, Spy
 
   private SpyLogDelegator log;
 
-  private int connectionNumber;
+  private final Integer connectionNumber;
   private static int lastConnectionNumber = 0;
-  private static final Object connectionNumberLock = new Object();
+
+  /**
+   * Contains a Mapping of connectionNumber to currently open ConnectionSpy
+   * objects.
+   */
+  private static final Map connectionTracker = new HashMap();
+
+  /**
+   * Get a dump of how many connections are open, and which connection numbers
+   * are open.
+   * 
+   * @return an open connection dump.
+   */
+  public static String getOpenConnectionsDump()
+  {
+    StringBuffer dump = new StringBuffer();
+    int size;
+    Integer[] keysArr;
+    synchronized (connectionTracker)
+    {
+      size = connectionTracker.size();
+      if (size==0)
+      {
+        return "open connections:  none";
+      }
+      Set keys = connectionTracker.keySet();
+      keysArr = (Integer[]) keys.toArray(new Integer[keys.size()]);
+    }
+
+    Arrays.sort(keysArr);
+
+    dump.append("open connections:  ");
+    for (int i=0; i < keysArr.length; i++)
+    {
+      dump.append(keysArr[i]);
+      dump.append(" ");
+    }
+
+    dump.append("(");
+    dump.append(size);
+    dump.append(")");
+    return dump.toString();
+  }
 
   /**
    * Create a new ConnectionSpy that wraps a given Connection.
@@ -46,18 +97,7 @@ public class ConnectionSpy implements Connection, Spy
    */
   public ConnectionSpy(Connection realConnection)
   {
-    setRdbmsSpecifics(DriverSpy.defaultRdbmsSpecifics); // just in case it's not initialized
-    if (realConnection == null)
-    {
-      throw new IllegalArgumentException("Must pass in a non null real Connection");
-    }
-    this.realConnection = realConnection;
-    log = SpyLogFactory.getSpyLogDelegator();
-
-    synchronized (connectionNumberLock)
-    {
-      connectionNumber = ++lastConnectionNumber;
-    }
+    this(realConnection, DriverSpy.defaultRdbmsSpecifics);
   }
 
   /**
@@ -68,6 +108,10 @@ public class ConnectionSpy implements Connection, Spy
    */
   public ConnectionSpy(Connection realConnection, RdbmsSpecifics rdbmsSpecifics)
   {
+    if (rdbmsSpecifics == null)
+    {
+      rdbmsSpecifics = DriverSpy.defaultRdbmsSpecifics;
+    }
     setRdbmsSpecifics(rdbmsSpecifics);
     if (realConnection == null)
     {
@@ -76,10 +120,13 @@ public class ConnectionSpy implements Connection, Spy
     this.realConnection = realConnection;
     log = SpyLogFactory.getSpyLogDelegator();
 
-    synchronized (connectionNumberLock)
+    synchronized (connectionTracker)
     {
-      connectionNumber = ++lastConnectionNumber;
+      connectionNumber = new Integer(++lastConnectionNumber);
+      connectionTracker.put(connectionNumber, this);
     }
+    log.connectionOpened(this);
+    reportReturn("new Connection");
   }
 
   private RdbmsSpecifics rdbmsSpecifics;
@@ -104,7 +151,7 @@ public class ConnectionSpy implements Connection, Spy
     return rdbmsSpecifics;
   }
 
-  public int getConnectionNumber()
+  public Integer getConnectionNumber()
   {
     return connectionNumber;
   }
@@ -684,6 +731,14 @@ public class ConnectionSpy implements Connection, Spy
     {
       reportException(methodCall, s);
       throw s;
+    }
+    finally
+    {
+      synchronized (connectionTracker)
+      {
+        connectionTracker.remove(connectionNumber);
+      }
+      log.connectionClosed(this);
     }
     reportReturn(methodCall);
   }

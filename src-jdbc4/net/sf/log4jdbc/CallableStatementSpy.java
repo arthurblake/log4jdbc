@@ -20,7 +20,20 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.CallableStatement;
+import java.sql.Clob;
+import java.sql.Date;
+import java.sql.NClob;
+import java.sql.PreparedStatement;
+import java.sql.Ref;
+import java.sql.RowId;
+import java.sql.SQLException;
+import java.sql.SQLXML;
+import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -31,8 +44,6 @@ import java.util.Map;
  */
 public class CallableStatementSpy extends PreparedStatementSpy implements CallableStatement
 {
-  private final SpyLogDelegator log;
-
   protected void reportAllReturns(String methodCall, String msg)
   {
     log.methodReturned(this, methodCall, msg);
@@ -44,7 +55,7 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
   private CallableStatement realCallableStatement;
 
   /**
-   * Create a CallableStatementSpy (JDBC 4.0 version) to spy upon a CallableStatement.
+   * Create a CallableStatementSpy (JDBC 4 version) to spy upon a CallableStatement.
    *
    * @param sql                   The SQL used for this CallableStatement
    * @param connectionSpy         The ConnectionSpy which produced this CallableStatementSpy
@@ -54,7 +65,6 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
   {
     super(sql, connectionSpy, realCallableStatement);
     this.realCallableStatement = realCallableStatement;
-    log = SpyLogFactory.getSpyLogDelegator();
   }
 
   public String getClassType()

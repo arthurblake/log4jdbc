@@ -39,5 +39,5 @@ public interface Spy
    *
    * @return the connection instance number.
    */
-  public int getConnectionNumber();
+  public Integer getConnectionNumber();
 }

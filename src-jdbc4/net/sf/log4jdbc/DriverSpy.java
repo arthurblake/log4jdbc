@@ -138,6 +138,47 @@ public class DriverSpy implements Driver
   static long SqlTimingErrorThresholdMsec;
 
   /**
+   * When dumping boolean values, dump them as 'true' or 'false'.
+   * If this option is not set, they will be dumped as 1 or 0 as many
+   * databases do not have a boolean type, and this allows for more
+   * portable sql dumping.
+   */
+  static boolean DumpBooleanAsTrueFalse;
+
+  /**
+   * When dumping SQL, if this is greater than 0, than the SQL will
+   * be broken up into lines that are no longer than this value.
+   */
+  static int DumpSqlMaxLineLength;
+
+  /**
+   * Options to more finely control which types of SQL statements will
+   * be dumped, when dumping SQL.
+   * By default all 5 of the following will be true.  If any one is set to
+   * false, then that particular type of SQL will not be dumped.
+   */
+  static boolean DumpSqlSelect;
+  static boolean DumpSqlInsert;
+  static boolean DumpSqlUpdate;
+  static boolean DumpSqlDelete;
+  static boolean DumpSqlCreate;
+
+  // only true if one ore more of the above 4 flags are false.
+  static boolean DumpSqlFilteringOn;
+
+  /**
+   * If true, add a semilcolon to the end of each SQL dump.
+   */
+  static boolean DumpSqlAddSemicolon;
+
+  /**
+   * If dumping in debug mode, dump the full stack trace.
+   * This will result in a VERY voluminous output, but can be very useful
+   * under some circumstances.
+   */
+  static boolean DumpFullDebugStackTrace;
+
+  /**
    * Get a Long option from a system property and
    * log a debug message about this.
    *
@@ -164,7 +205,42 @@ public class DriverSpy implements Driver
       catch (NumberFormatException n)
       {
         log.debug("x " + propName + " \"" + propValue  +
-          "\" is not a valid long value");
+          "\" is not a valid number");
+      }
+    }
+    return longPropValue;
+  }
+
+  /**
+   * Get a Long option from a system property and
+   * log a debug message about this.
+   *
+   * @param propName System property key.
+   *
+   * @return the value of that System property key, converted
+   * to a Long.  Or null if not defined or is invalid.
+   */
+  private static Long getLongOption(String propName, long defaultValue)
+  {
+    String propValue = System.getProperty(propName);
+    Long longPropValue;
+    if (propValue == null)
+    {
+      log.debug("x " + propName + " is not defined (using default of " + defaultValue +")");
+      longPropValue = new Long(defaultValue);
+    }
+    else
+    {
+      try
+      {
+        longPropValue = new Long(Long.parseLong(propValue));
+        log.debug("  " + propName + " = " + longPropValue);
+      }
+      catch (NumberFormatException n)
+      {
+        log.debug("x " + propName + " \"" + propValue  +
+          "\" is not a valid number (using default of " + defaultValue +")");
+        longPropValue = new Long(defaultValue);
       }
     }
     return longPropValue;
@@ -192,6 +268,40 @@ public class DriverSpy implements Driver
     return propValue;
   }
 
+  /**
+   * Get a boolean option from a system property and
+   * log a debug message about this.
+   *
+   * @param propName property name to get.
+   * @param defaultValue default value to use if undefined.
+   * @return
+   */
+  private static boolean getBooleanOption(String propName, boolean defaultValue)
+  {
+    String propValue = System.getProperty(propName);
+    boolean val;
+    if (propValue == null)
+    {
+      log.debug("x " + propName + " is not defined (using default value " + defaultValue + ")");
+      return defaultValue;
+    }
+    else
+    {
+      propValue = propValue.trim().toLowerCase();
+      if (propValue.length() == 0)
+      {
+        val = defaultValue;
+      }
+      else
+      {
+        val= "true".equals(propValue) ||
+          "yes".equals(propValue) || "on".equals(propValue);
+      }
+    }
+    log.debug("  " + propName + " = " + val);
+    return val;
+  }
+
   static
   {
     log.debug("... log4jdbc initializing ...");
@@ -214,6 +324,26 @@ public class DriverSpy implements Driver
       SqlTimingErrorThresholdMsec = thresh.longValue();
     }
 
+    DumpBooleanAsTrueFalse =
+      getBooleanOption("log4jdbc.dump.booleanastruefalse",false);
+
+    DumpSqlMaxLineLength = getLongOption("log4jdbc.dump.sql.maxlinelength", 90L).
+      intValue();
+
+    DumpFullDebugStackTrace =
+      getBooleanOption("log4jdbc.dump.fulldebugstacktrace",false);
+
+    DumpSqlSelect = getBooleanOption("log4jdbc.dump.sql.select",true);
+    DumpSqlInsert = getBooleanOption("log4jdbc.dump.sql.insert",true);
+    DumpSqlUpdate = getBooleanOption("log4jdbc.dump.sql.update",true);
+    DumpSqlDelete = getBooleanOption("log4jdbc.dump.sql.delete",true);
+    DumpSqlCreate = getBooleanOption("log4jdbc.dump.sql.create",true);
+
+    DumpSqlFilteringOn = !(DumpSqlSelect && DumpSqlInsert && DumpSqlUpdate &&
+      DumpSqlDelete && DumpSqlCreate);
+
+    DumpSqlAddSemicolon = getBooleanOption("log4jdbc.dump.sql.addsemicolon",false);
+
     // The Set of drivers that the log4jdbc driver will preload at instantiation
     // time.  The driver can spy on any driver type, it's just a little bit
     // easier to configure log4jdbc if it's one of these types!
@@ -222,7 +352,13 @@ public class DriverSpy implements Driver
     subDrivers.add("oracle.jdbc.driver.OracleDriver");
     subDrivers.add("com.sybase.jdbc2.jdbc.SybDriver");
     subDrivers.add("net.sourceforge.jtds.jdbc.Driver");
+
+    // MS driver for Sql Server 2000
     subDrivers.add("com.microsoft.jdbc.sqlserver.SQLServerDriver");
+
+    // MS driver for Sql Server 2005
+    subDrivers.add("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
     subDrivers.add("weblogic.jdbc.sqlserver.SQLServerDriver");
     subDrivers.add("com.informix.jdbc.IfxDriver");
     subDrivers.add("org.apache.derby.jdbc.ClientDriver");

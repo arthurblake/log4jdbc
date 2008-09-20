@@ -46,12 +46,13 @@ class RdbmsSpecifics
   {
     if (object == null)
     {
-      return "<null>";
+      return "NULL";
     }
     else
     {
       if (object instanceof String)
       {
+        // todo: need to handle imbedded quotes??
         return "'" + object + "'";
       }
       else if (object instanceof Date)
@@ -61,6 +62,12 @@ class RdbmsSpecifics
       else if (object instanceof Timestamp)
       {
         return object.toString();
+      }
+      else if (object instanceof Boolean)
+      {
+        return DriverSpy.DumpBooleanAsTrueFalse?
+            ((Boolean)object).booleanValue()?"true":"false"
+            :((Boolean)object).booleanValue()?"1":"0";
       }
       else
       {

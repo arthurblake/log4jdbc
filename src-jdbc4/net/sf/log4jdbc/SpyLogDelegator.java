@@ -24,7 +24,6 @@ package net.sf.log4jdbc;
  */
 public interface SpyLogDelegator
 {
-
   /**
    * Determine if any of the jdbc or sql loggers are turned on.
    *
@@ -54,7 +53,6 @@ public interface SpyLogDelegator
    */
   public void methodReturned(Spy spy, String methodCall, String returnMsg);
 
-
   /**
    * Called when a spied upon object is constructed.
    *
@@ -81,6 +79,20 @@ public interface SpyLogDelegator
    * @param sql        sql that occured.
    */
   public void sqlTimingOccured(Spy spy, long execTime, String methodCall, String sql);
+
+  /**
+   * Called whenever a new connection spy is created.
+   * 
+   * @param spy ConnectionSpy that was created.
+   */
+  public void connectionOpened(Spy spy);
+
+  /**
+   * Called whenever a connection spy is closed.
+   * 
+   * @param spy ConnectionSpy that was closed.
+   */
+  public void connectionClosed(Spy spy);
 
   /**
    * Log a Setup and/or administrative log message for log4jdbc.

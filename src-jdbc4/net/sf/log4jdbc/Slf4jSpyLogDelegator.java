@@ -15,6 +15,8 @@
  */
 package net.sf.log4jdbc;
 
+import java.util.StringTokenizer;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -53,6 +55,12 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    * Logger that shows the SQL timing, post execution
    */
   private final Logger sqlTimingLogger = LoggerFactory.getLogger("jdbc.sqltiming");
+  
+  /**
+   * Logger that shows connection open and close events as well as current number
+   * of open connections.
+   */
+  private final Logger connectionLogger = LoggerFactory.getLogger("jdbc.connection");
 
   // admin/setup logging for log4jdbc.
 
@@ -70,7 +78,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   public boolean isJdbcLoggingEnabled()
   {
     return jdbcLogger.isErrorEnabled() || resultSetLogger.isErrorEnabled() || sqlOnlyLogger.isErrorEnabled() ||
-      sqlTimingLogger.isErrorEnabled();
+      sqlTimingLogger.isErrorEnabled() || connectionLogger.isErrorEnabled();
   }
 
   /**
@@ -86,7 +94,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   public void exceptionOccured(Spy spy, String methodCall, Exception e, String sql, long execTime)
   {
     String classType = spy.getClassType();
-    int spyNo = spy.getConnectionNumber();
+    Integer spyNo = spy.getConnectionNumber();
     String header = spyNo + ". " + classType + "." + methodCall;
     if (sql == null)
     {
@@ -132,7 +140,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   public void methodReturned(Spy spy, String methodCall, String returnMsg)
   {
     String classType = spy.getClassType();
-    int spyNo = spy.getConnectionNumber();
+    Integer spyNo = spy.getConnectionNumber();
     String header = spyNo + ". " + classType + "." + methodCall + " returned " + returnMsg;
     if (ResultSetSpy.classTypeDescription.equals(classType))
     {
@@ -170,6 +178,34 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   }
 
   private static String nl = System.getProperty("line.separator");
+  
+  /**
+   * Determine if the given sql should be logged or not
+   * based on the various DumpSqlXXXXXX flags.
+   * 
+   * @param sql SQL to test.
+   * @return true if the SQL should be logged, false if not.
+   */
+  private boolean shouldSqlBeLogged(String sql)
+  {
+    if (sql == null)
+    {
+      return false;
+    }
+    sql = sql.trim();
+
+    if (sql.length()<6)
+    {
+      return false;
+    }
+    sql = sql.substring(0,6).toLowerCase();
+    return 
+      (DriverSpy.DumpSqlSelect && "select".equals(sql)) ||
+      (DriverSpy.DumpSqlInsert && "insert".equals(sql)) ||
+      (DriverSpy.DumpSqlUpdate && "update".equals(sql)) ||
+      (DriverSpy.DumpSqlDelete && "delete".equals(sql)) ||
+      (DriverSpy.DumpSqlCreate && "create".equals(sql));
+  }
 
   /**
    * Special call that is called only for JDBC method calls that contain SQL.
@@ -180,16 +216,72 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    */
   public void sqlOccured(Spy spy, String methodCall, String sql)
   {
-    int spyNo = spy.getConnectionNumber();
+    if (!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql))
+    {
+      sql = processSql(sql);
+      
+      if (sqlOnlyLogger.isDebugEnabled())
+      {
+        sqlOnlyLogger.debug(getDebugInfo() + nl + spy.getConnectionNumber() + ". " + sql);
+      }
+      else if (sqlOnlyLogger.isInfoEnabled())
+      {
+        sqlOnlyLogger.info(sql);
+      }
+    }
+  }
 
-    if (sqlOnlyLogger.isDebugEnabled())
+  /**
+   * Break an SQL statement up into multiple lines in an attempt to make it 
+   * more readable
+   * 
+   * @param sql SQL to break up.
+   * @return SQL broken up into multiple lines
+   */
+  private String processSql(String sql)
+  {
+    if (sql==null)
     {
-      sqlOnlyLogger.debug(getDebugInfo() + nl + spyNo + ". " + sql);
+      return null;
     }
-    else if (sqlOnlyLogger.isInfoEnabled())
+
+    sql = sql.trim();
+
+    StringBuffer output = new StringBuffer();    
+
+    if (DriverSpy.DumpSqlMaxLineLength <= 0)
     {
-      sqlOnlyLogger.info(sql);
+      output.append(sql);
     }
+    else
+    {
+      // insert line breaks into sql to make it more readable
+      StringTokenizer st = new StringTokenizer(sql);
+      String token;
+      int linelength = 0;
+  
+      while (st.hasMoreElements())
+      {
+        token = (String) st.nextElement();
+  
+        output.append(token);
+        linelength += token.length();
+        output.append(" ");
+        linelength++;
+        if (linelength > 90)
+        {
+          output.append("\n");
+          linelength = 0;
+        }
+      }
+    }
+
+    if (DriverSpy.DumpSqlAddSemicolon)
+    {
+      output.append(";");
+    }
+    
+    return output.toString();
   }
 
   /**
@@ -206,10 +298,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    */
   public void sqlTimingOccured(Spy spy, long execTime, String methodCall, String sql)
   {
-    // un-comment to simulate random delay to make testing easier
-    //execTime = execTime + (long)(Math.random() * 5000);
-
-    if (sqlTimingLogger.isErrorEnabled())
+    if (sqlTimingLogger.isErrorEnabled() && 
+        (!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql)))
     {
       if (DriverSpy.SqlTimingErrorThresholdEnabled &&
           execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
@@ -268,6 +358,13 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       out.append(spy.getConnectionNumber());
       out.append(". ");
     }
+    
+    // NOTE: if both sql dump and sql timing dump are on, the processSql
+    // algorithm will run TWICE once at the beginning and once at the end
+    // this is not very efficient but usually
+    // only one or the other dump should be on and not both.
+
+    sql = processSql(sql);
 
     out.append(sql);
     out.append(" {executed in ");
@@ -292,39 +389,72 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   {
     Throwable t = new Throwable();
     t.fillInStackTrace();
+
     StackTraceElement[] stackTrace = t.getStackTrace();
 
     if (stackTrace != null)
     {
-      int firstLog4jdbcCall = 0;
-      int lastApplicationCall = 0;
-
       String className;
-      for (int i = 0; i < stackTrace.length; i++)
+
+      StringBuffer dump = new StringBuffer();
+
+      /**
+       * The DumpFullDebugStackTrace option is useful in some situations when 
+       * we want to see the full stack trace in the debug info-  watch out 
+       * though as this will make the logs HUGE!
+       */
+      if (DriverSpy.DumpFullDebugStackTrace)
       {
-        className = stackTrace[i].getClassName();
-        if (className.startsWith("net.sf.log4jdbc"))
+        boolean first=true;
+        for (int i = 0; i < stackTrace.length; i++)
         {
-          firstLog4jdbcCall = i;
-        }
-        else if (DriverSpy.TraceFromApplication &&
-          className.startsWith(DriverSpy.DebugStackPrefix))
-        {
-          lastApplicationCall = i;
-          break;
+          className = stackTrace[i].getClassName();
+          if (!className.startsWith("net.sf.log4jdbc"))
+          {
+            if (first)
+            {
+              first = false;
+            }
+            else
+            {
+              dump.append("  ");
+            }
+            dump.append("at ");
+            dump.append(stackTrace[i]);
+            dump.append(nl);
+          }
         }
       }
-
-      StringBuffer dump = new StringBuffer(" ");
-      int j = lastApplicationCall;
-
-      if (j == 0)  // if app not found, then use whoever was the last guy that called a log4jdbc class.
+      else
       {
-        j = 1 + firstLog4jdbcCall;
-      }
+        dump.append(" ");
+        int firstLog4jdbcCall = 0;
+        int lastApplicationCall = 0;
 
-      dump.append(stackTrace[j].getClassName()).append(".").append(stackTrace[j].getMethodName()).append("(").
-        append(stackTrace[j].getFileName()).append(":").append(stackTrace[j].getLineNumber()).append(")");
+        for (int i = 0; i < stackTrace.length; i++)
+        {
+          className = stackTrace[i].getClassName();
+          if (className.startsWith("net.sf.log4jdbc"))
+          {
+            firstLog4jdbcCall = i;
+          }
+          else if (DriverSpy.TraceFromApplication &&
+            className.startsWith(DriverSpy.DebugStackPrefix))
+          {
+            lastApplicationCall = i;
+            break;
+          }
+        }
+        int j = lastApplicationCall;
+
+        if (j == 0)  // if app not found, then use whoever was the last guy that called a log4jdbc class.
+        {
+          j = 1 + firstLog4jdbcCall;
+        }
+
+        dump.append(stackTrace[j].getClassName()).append(".").append(stackTrace[j].getMethodName()).append("(").
+          append(stackTrace[j].getFileName()).append(":").append(stackTrace[j].getLineNumber()).append(")");
+      }
 
       return dump.toString();
     }
@@ -343,5 +473,42 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   {
     debugLogger.debug(msg);
   }
-}
 
+  /**
+   * Called whenever a new connection spy is created.
+   * 
+   * @param spy ConnectionSpy that was created.
+   */
+  public void connectionOpened(Spy spy)
+  {
+    if (connectionLogger.isDebugEnabled())
+    {
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection opened " + 
+        getDebugInfo());
+      connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());
+    }
+    else
+    {
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection opened");
+    }
+  }
+
+  /**
+   * Called whenever a connection spy is closed.
+   * 
+   * @param spy ConnectionSpy that was closed.
+   */
+  public void connectionClosed(Spy spy)
+  {
+    if (connectionLogger.isDebugEnabled())
+    {
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection closed " + 
+        getDebugInfo());
+      connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());
+    }
+    else
+    {
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection closed");
+    }
+  }
+}

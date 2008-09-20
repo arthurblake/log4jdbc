@@ -19,10 +19,24 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Date;
+import java.sql.NClob;
+import java.sql.ParameterMetaData;
+import java.sql.PreparedStatement;
+import java.sql.Ref;
+import java.sql.RowId;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.SQLXML;
+import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.StringTokenizer;
 import java.util.List;
 
 /**
@@ -32,8 +46,6 @@ import java.util.List;
  */
 public class PreparedStatementSpy extends StatementSpy implements PreparedStatement
 {
-
-  private final SpyLogDelegator log;
 
   /**
    * holds list of bind variables for tracing
@@ -54,6 +66,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    */
   protected void argTraceSet(int i, String typeHelper, Object arg)
   {
+    String tracedArg = rdbmsSpecifics.formatParameterObject(arg);
+
     i--;  // make the index 0 based
     synchronized (argTrace)
     {
@@ -64,15 +78,11 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
       }
       if (!showTypeHelp || typeHelper == null)
       {
-        typeHelper = "";
-      }
-      if (arg != null)
-      {
-        argTrace.set(i, typeHelper + arg.toString());
+        argTrace.set(i, tracedArg);
       }
       else
       {
-        argTrace.set(i, typeHelper + "null");
+        argTrace.set(i, typeHelper + tracedArg);
       }
     }
   }
@@ -118,29 +128,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
       dumpSql.append(sql.substring(lastPos, sql.length()));  // dump last segment
     }
 
-    // insert line breaks into sql to make it more readable
-    StringBuffer output = new StringBuffer();
-    StringTokenizer st = new StringTokenizer(dumpSql.toString());
-
-    String token;
-    int linelength = 0;
-
-    while (st.hasMoreElements())
-    {
-      token = (String) st.nextElement();
-
-      output.append(token);
-      linelength += token.length();
-      output.append(" ");
-      linelength++;
-      if (linelength > 90)
-      {
-        output.append("\n");
-        linelength = 0;
-      }
-    }
-
-    return output.toString();
+    return dumpSql.toString();
   }
 
   protected void reportAllReturns(String methodCall, String msg)
@@ -159,7 +147,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   protected RdbmsSpecifics rdbmsSpecifics;
 
   /**
-   * Create a PreparedStatementSpy (JDBC 4.0 version) for logging activity of another PreparedStatement.
+   * Create a PreparedStatementSpy (JDBC 4 version) for logging activity of another PreparedStatement.
    *
    * @param sql                   SQL for the prepared statement that is being spied upon.
    * @param connectionSpy         ConnectionSpy that was called to produce this PreparedStatement.
@@ -170,7 +158,6 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     super(connectionSpy, realPreparedStatement);  // does null check for us
     this.sql = sql;
     this.realPreparedStatement = realPreparedStatement;
-    log = SpyLogFactory.getSpyLogDelegator();
     rdbmsSpecifics = connectionSpy.getRdbmsSpecifics();
   }
 
@@ -232,7 +219,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setNull(int parameterIndex, int sqlType) throws SQLException
   {
     String methodCall = "setNull(" + parameterIndex + ", " + sqlType + ")";
-    argTraceSet(parameterIndex, null, "null");
+    argTraceSet(parameterIndex, null, null);
     try
     {
       realPreparedStatement.setNull(parameterIndex, sqlType);
@@ -248,7 +235,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setNull(int paramIndex, int sqlType, String typeName) throws SQLException
   {
     String methodCall = "setNull(" + paramIndex + ", " + sqlType + ", " + typeName + ")";
-    argTraceSet(paramIndex, null, "null");
+    argTraceSet(paramIndex, null, null);
     try
     {
       realPreparedStatement.setNull(paramIndex, sqlType, typeName);
@@ -280,7 +267,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setBoolean(int parameterIndex, boolean x) throws SQLException
   {
     String methodCall = "setBoolean(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(boolean)", Boolean.toString(x));
+    argTraceSet(parameterIndex, "(boolean)", x?Boolean.TRUE:Boolean.FALSE);
     try
     {
       realPreparedStatement.setBoolean(parameterIndex, x);
@@ -344,7 +331,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setByte(int parameterIndex, byte x) throws SQLException
   {
     String methodCall = "setByte(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(byte)", Byte.toString(x));
+    argTraceSet(parameterIndex, "(byte)", new Byte(x));
     try
     {
       realPreparedStatement.setByte(parameterIndex, x);
@@ -379,7 +366,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setShort(int parameterIndex, short x) throws SQLException
   {
     String methodCall = "setShort(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(short)", Short.toString(x));
+    argTraceSet(parameterIndex, "(short)", new Short(x));
     try
     {
       realPreparedStatement.setShort(parameterIndex, x);
@@ -414,7 +401,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setInt(int parameterIndex, int x) throws SQLException
   {
     String methodCall = "setInt(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(int)", Integer.toString(x));
+    argTraceSet(parameterIndex, "(int)", new Integer(x));
     try
     {
       realPreparedStatement.setInt(parameterIndex, x);
@@ -430,7 +417,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setLong(int parameterIndex, long x) throws SQLException
   {
     String methodCall = "setLong(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(long)", Long.toString(x));
+    argTraceSet(parameterIndex, "(long)", new Long(x));
     try
     {
       realPreparedStatement.setLong(parameterIndex, x);
@@ -446,7 +433,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setFloat(int parameterIndex, float x) throws SQLException
   {
     String methodCall = "setFloat(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(float)", Float.toString(x));
+    argTraceSet(parameterIndex, "(float)", new Float(x));
     try
     {
       realPreparedStatement.setFloat(parameterIndex, x);
@@ -462,7 +449,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setDouble(int parameterIndex, double x) throws SQLException
   {
     String methodCall = "setDouble(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(double)", Double.toString(x));
+    argTraceSet(parameterIndex, "(double)", new Double(x));
     try
     {
       realPreparedStatement.setDouble(parameterIndex, x);
@@ -511,7 +498,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setString(int parameterIndex, String x) throws SQLException
   {
     String methodCall = "setString(" + parameterIndex + ", \"" + x + "\")";
-    argTraceSet(parameterIndex, "(String)", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, "(String)", x);
+
     try
     {
       realPreparedStatement.setString(parameterIndex, x);
@@ -544,7 +532,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setDate(int parameterIndex, Date x) throws SQLException
   {
     String methodCall = "setDate(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(Date)", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, "(Date)", x);
     try
     {
       realPreparedStatement.setDate(parameterIndex, x);
@@ -573,7 +561,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   public void setRowId(int parameterIndex, RowId x) throws SQLException {
     String methodCall = "setRowId(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(RowId)", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, "(RowId)", x);
     try
     {
       realPreparedStatement.setRowId(parameterIndex, x);
@@ -588,7 +576,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   public void setNString(int parameterIndex, String value) throws SQLException {
     String methodCall = "setNString(" + parameterIndex + ", " + value + ")";
-    argTraceSet(parameterIndex, "(String)", rdbmsSpecifics.formatParameterObject(value));
+    argTraceSet(parameterIndex, "(String)", value);
     try
     {
       realPreparedStatement.setNString(parameterIndex, value);
@@ -678,7 +666,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
     String methodCall = "setSQLXML(" + parameterIndex + ", " + xmlObject + ")";
-    argTraceSet(parameterIndex, "(SQLXML)", rdbmsSpecifics.formatParameterObject(xmlObject));
+    argTraceSet(parameterIndex, "(SQLXML)", xmlObject);
     try
     {
       realPreparedStatement.setSQLXML(parameterIndex, xmlObject);
@@ -694,7 +682,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException
   {
     String methodCall = "setDate(" + parameterIndex + ", " + x + ", " + cal + ")";
-    argTraceSet(parameterIndex, "(Date)", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, "(Date)", x);
 
     try
     {
@@ -743,7 +731,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setObject(int parameterIndex, Object x, int targetSqlType, int scale) throws SQLException
   {
     String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ", " + scale + ")";
-    argTraceSet(parameterIndex, getTypeHelp(x), rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, getTypeHelp(x), x);
 
     try
     {
@@ -934,7 +922,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException
   {
     String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ")";
-    argTraceSet(parameterIndex, getTypeHelp(x), rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, getTypeHelp(x), x);
     try
     {
       realPreparedStatement.setObject(parameterIndex, x, targetSqlType);
@@ -950,7 +938,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setObject(int parameterIndex, Object x) throws SQLException
   {
     String methodCall = "setObject(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, getTypeHelp(x), rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, getTypeHelp(x), x);
     try
     {
       realPreparedStatement.setObject(parameterIndex, x);
@@ -966,7 +954,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException
   {
     String methodCall = "setTimestamp(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(Date)", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, "(Date)", x);
     try
     {
       realPreparedStatement.setTimestamp(parameterIndex, x);
@@ -982,7 +970,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException
   {
     String methodCall = "setTimestamp(" + parameterIndex + ", " + x + ", " + cal + ")";
-    argTraceSet(parameterIndex, "(Timestamp)", rdbmsSpecifics.formatParameterObject(x));
+    argTraceSet(parameterIndex, "(Timestamp)", x);
     try
     {
       realPreparedStatement.setTimestamp(parameterIndex, x, cal);

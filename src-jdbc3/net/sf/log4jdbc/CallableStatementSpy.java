@@ -39,8 +39,6 @@ import java.util.Map;
  */
 public class CallableStatementSpy extends PreparedStatementSpy implements CallableStatement
 {
-  private final SpyLogDelegator log;
-
   protected void reportAllReturns(String methodCall, String msg)
   {
     log.methodReturned(this, methodCall, msg);
@@ -52,7 +50,7 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
   private CallableStatement realCallableStatement;
 
   /**
-   * Create a CallableStatementSpy to spy upon a CallableStatement.
+   * Create a CallableStatementSpy (JDBC 3 version) to spy upon a CallableStatement.
    *
    * @param sql                   The SQL used for this CallableStatement
    * @param connectionSpy         The ConnectionSpy which produced this CallableStatementSpy
@@ -62,7 +60,6 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
   {
     super(sql, connectionSpy, realCallableStatement);
     this.realCallableStatement = realCallableStatement;
-    log = SpyLogFactory.getSpyLogDelegator();
   }
 
   public String getClassType()
@@ -624,6 +621,7 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
 
   public void setBytes(String parameterName, byte[] x) throws SQLException
   {
+    //todo: dump byte array?
     String methodCall = "setBytes(" + parameterName + ", " + x + ")";
     try
     {
@@ -1040,7 +1038,6 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
       reportException(methodCall, s);
       throw s;
     }
-
   }
 
   public void registerOutParameter(String parameterName, int sqlType, String typeName) throws SQLException
