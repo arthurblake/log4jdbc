@@ -45,10 +45,13 @@ import java.util.TreeSet;
  * <li>com.sybase.jdbc2.jdbc.SybDriver</li>
  * <li>net.sourceforge.jtds.jdbc.Driver</li>
  * <li>com.microsoft.jdbc.sqlserver.SQLServerDriver</li>
+ * <li>com.microsoft.sqlserver.jdbc.SQLServerDriver</li>
  * <li>weblogic.jdbc.sqlserver.SQLServerDriver</li>
  * <li>com.informix.jdbc.IfxDriver</li>
  * <li>org.apache.derby.jdbc.ClientDriver</li>
  * <li>org.apache.derby.jdbc.EmbeddedDriver</li>
+ * <li>com.mysql.jdbc.Driver</li>
+ * <li>org.postgresql.Driver</li>
  * <li>org.hsqldb.jdbcDriver</li>
  * <li>org.h2.Driver</li>
  * </ul>
@@ -274,7 +277,9 @@ public class DriverSpy implements Driver
    *
    * @param propName property name to get.
    * @param defaultValue default value to use if undefined.
-   * @return
+   * 
+   * @return boolean value found in property, or defaultValue if no property
+   *         found.
    */
   private static boolean getBooleanOption(String propName, boolean defaultValue)
   {
@@ -282,7 +287,8 @@ public class DriverSpy implements Driver
     boolean val;
     if (propValue == null)
     {
-      log.debug("x " + propName + " is not defined (using default value " + defaultValue + ")");
+      log.debug("x " + propName + " is not defined (using default value "
+        + defaultValue + ")");
       return defaultValue;
     }
     else

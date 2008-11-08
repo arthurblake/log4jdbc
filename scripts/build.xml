@@ -194,6 +194,7 @@
     <property name="ps" value="${path.separator}"/>
 
     <javadoc destdir="${apidocs}" packagenames="net.sf.log4jdbc.*"
+      maxmemory="512m"
       Windowtitle="log4${jdbc.prefix} ${version}"
       Header="&lt;b&gt;&lt;a href=&quot;http://log4jdbc.sourceforge.net&quot;&gt;log4${jdbc.prefix} ${version}&lt;/a&gt;&lt;/b&gt;"
       Use="true" breakiterator="true">
@@ -208,7 +209,7 @@
       <!-- note that the jdk source code is referenced here so that javadoc will be generated from
           interface class methods when none is specified in the implementation -->
 
-      <sourcepath path="/jdk1.6.0_03/src"/>
+      <sourcepath path="/jdk1.6.0_10/src"/>
       <link href="http://java.sun.com/javase/6/docs/api/"/>
 <!--
       <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
