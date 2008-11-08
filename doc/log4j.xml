@@ -37,15 +37,23 @@
     </layout>
   </appender>
 
+  <appender name="jdbc-connection" class="org.apache.log4j.FileAppender">
+    <param name="File" value="./logs/connection.log"/>
+    <param name="Append" value="false"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
+    </layout>
+  </appender>
+
   <!--
-       The Following 4 logs can be turned on and off while the server is running
+       The Following 5 logs can be turned on and off while the server is running
        LIVE in order to trace the SQL and/or all JDBC coming out of the application.
 
        To turn a log on, set the level value to INFO or DEBUG (to see class name and
        line number information in the log)  The DEBUG setting is much more inefficient
        but the output is much more useful.
 
-       To turn off JDBC logging completely, you must set all 4 logs to a level higher 
+       To turn off JDBC logging completely, you must set all 5 logs to a level higher 
        than ERROR (FATAL is suggested.)
   -->
 
@@ -75,7 +83,12 @@
     <level value="fatal"/>
     <appender-ref ref="jdbc-appender"/>
   </logger>
-
+  
+  <!-- log connection open/close events and dump of all open connection numbers -->
+  <logger name="jdbc.connection" additivity="false">
+    <level value="fatal"/>
+    <appender-ref ref="connection-appender"/>
+  </logger>
 
   <!-- this log is for internal debugging of log4jdbc, itself -->
   <!-- debug logging for log4jdbc itself -->

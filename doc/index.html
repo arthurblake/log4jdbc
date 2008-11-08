@@ -17,7 +17,8 @@
 <a href="#news">news</a> |
 <a href="#features">features</a> |
 <a href="#usage">usage</a> |
-<a href="#advanced">advanced</a> |
+<a href="#options">options</a> |
+<a href="#other">other</a> |
 <a href="#similiartools">similiar tools</a> |
 <a href="#feedback">feedback</a>
 <br>
@@ -32,7 +33,8 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 </p>
 
 <h2><a name="news"/>news</h2>
-<p class="left"><b>2008-04-11:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=810350">log4jdbc 1.1 final release out!</a>  See <a href="CHANGES">CHANGES</a> for all the release details.</p>
+<p class="left"><b>2008-11-08:</b> <a href="http://arthurblake.wordpress.com/2008/11/08/log4jdbc-12-alpha1-released/">log4jdbc 1.2 alpha 1 released.</a>  Many new options for controlling SQL output and a new log for viewing connection open/close events (very useful for hunting down connection leak issues.)  See <a href="CHANGES">CHANGES</a> for all the release details.</p>
+<p class="left"><b>2008-04-11:</b> <a href="http://arthurblake.wordpress.com/2008/04/11/log4jdbc-11-released/">log4jdbc 1.1 final release out!</a> </p>
 <p class="left"><b>2007-11-10:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=753559">log4jdbc 1.1 beta 1 released.</a>  New optional timing threshold settings for honing in on slow SQL.</p>
 <p class="left"><b>2007-07-25:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=719640">log4jdbc 1.1 alpha 2 released.</a>  JDBC 4 support!</p>
 <p class="left"><b>2007-05-29:</b> <a href="http://sourceforge.net/forum/forum.php?forum_id=700185">log4jdbc 1.1 alpha 1 released.</a>  Most notable change is that the <a target="slf4j" href="http://slf4j.org">Simple Logging Facade for Java</a> is now used instead of <b>log4j</b> directly.
@@ -47,7 +49,7 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 </li>
 
 <li>
-  Easy to configure, in most cases all you need to do is change the driver class name
+  Easy to configure, in most cases all you need to do is change the driver class name to <b>net.sf.log4jdbc.DriverSpy</b>
   and prepend <b>"jdbc:log4"</b> to your existing jdbc url, set up your logging categories and
   you're ready to go!
 </li>
@@ -84,7 +86,7 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 
 <ol class="left">
 
-<li><p> Decide if you need JDBC 3 or JDBC 4 support.  The most straightforward way to decide this is:</p>
+<li><p><b>Decide if you need JDBC 3 or JDBC 4 support.</b>  
     <ul>
       <li>If you are using JDK 1.4 or 1.5, you should use the JDBC 3 version of log4jdbc.</li>
       <li>If you are using JDK 1.6 or 1.7, you should use the JDBC 4 version of log4jdbc (even if the actual underlying JDBC driver you are using is a JDBC 3 or older driver).</li>
@@ -96,24 +98,23 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
     it's recommended that if you use JDK 1.6 or above, that you use the log4jdbc JDBC 4 driver that is compiled with JDK 1.6.
     </p>
     <p>
-    Note that JDBC 2 is not currently supported by log4jdbc (there is an older unreleased version of log4jdbc with JDBC 2 support,
-    but I decided not to release it because JDBC 3 has been out for so long, I don't anticipate much demand for a JDBC 2 version of
-    log4jdbc at this point), although if you are using JDK 1.4 and above, the log4jdbc 3.0 or 4.0 driver
-    should be able to wrap an older JDBC 2 driver as well-- log4jdbc just won't work with Java 1.3 and earlier.
-    Please <a href="#feedback">email me</a> if you really really want a JDBC 2 version of log4jdbc.  If there is enough demand, I may resurrect it.
+    Note that JDBC 2 is not currently supported by log4jdbc, although if you are
+    using JDK 1.4 and above, the log4jdbc 3 or 4 driver should be able to wrap
+    an older JDBC 2 driver as well-- log4jdbc just won't work with Java 1.3 and
+    earlier.
     </p>
+
+    <p>
+    Choose and <a href="http://sourceforge.net/project/showfiles.php?group_id=194500">download</a> one of the driver .jar files:
     </p>
-    <pre>
 
-    Choose and <a href="http://sourceforge.net/project/showfiles.php?group_id=194500&package_id=229335&release_id=527690">download</a> one of the driver .jar files:
-
-        log4jdbc3-1.1beta1.jar      JDBC 3 support for JDK 1.4 , JDK 1.5
-        log4jdbc4-1.1beta1.jar      JDBC 4 support for JDK 1.6 , JDK 1.7
-
+    <ul>
+      <li><b>log4jdbc3-1.2alpha1.jar</b> for JDBC 3 support in JDK 1.4 , JDK 1.5</li>
+      <li><b>log4jdbc4-1.2alpha1.jar</b> for JDBC 4 support in JDK 1.6 , JDK 1.7</li>
+    </ul>
     Place the log4jdbc jar that you choose into your application's classpath.
-    </pre>
-
-<li><p>Choose which java logging system you will use. </p>
+</li>
+<li><p><b>Choose which java logging system you will use.</b></p>
      In many cases, you already know this, because it is dictated by your existing application.
      log4jdbc uses the Simple Logging Facade for Java (SLF4J) which is a very simple and very flexible little library that lets you pick among many common java logging systems:</p>
      <ul>
@@ -126,22 +127,23 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
      <p> SLF4J is designed to de-couple your application from the java logging system so you can choose any one you want.  This is the same goal of Jakarta Commons Logging.  However many people have
         had headaches and issues with classloading problems in complex environments using Jakarta Commons Logging.  SLF4J solves these problems with it's much simpler design, and you can even integrate
         SLF4J to use Jakarta Commons Logging, if you really want to (or are required to) use it.</p>
-     <pre>
-
+     
+     <p>
      <a href="http://www.slf4j.org/download.html">Download</a> the latest official SLF4J release.
+     </p>
+     <p>
+     You will need two jars:  <b>slf4j-api-1.5.0.jar</b> (or the latest available version) and
+        whichever jar you pick depending on the java logging system you choose.</p>
+    <p>Place these two .jar files into your application's classpath.</p>
 
-     You will need two jars:
-
-        slf4j-api-1.4.3.jar (or the latest available version) and
-        whichever jar you pick depending on the java logging system you choose
-
-    Place these two .jar files into your application's classpath.
-    </pre>
-
-    Please read the documentation at the <a target="slf4j" href="http://slf4j.org">SLF4J website</a>.  It's really easy to set up!
+    <p>
+    Please read the documentation at the
+    <a target="slf4j" href="http://slf4j.org">SLF4J website</a>.  It's really easy to set up!
+    </p>
 
      </a>
-<li><p>Set your jdbc driver class to <code>net.sf.log4jdbc.DriverSpy</code> in your application's configuration.</p>
+     </li>
+<li><p><b>Set your JDBC driver class to <code>net.sf.log4jdbc.DriverSpy</code> in your application's configuration.</b></p>
     <p>
     The underlying driver that is being spied on in many cases will be loaded automatically
     without any additional configuration.
@@ -149,21 +151,63 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
   <p>
     The log4jdbc "spy" driver will try and load the following popular jdbc drivers:
     </p>
-      <pre>
-
-        oracle.jdbc.driver.OracleDriver              (Oracle)
-        com.sybase.jdbc2.jdbc.SybDriver              (Sybase)
-        net.sourceforge.jtds.jdbc.Driver             (jTDS SQL Server & Sybase driver)
-        com.microsoft.jdbc.sqlserver.SQLServerDriver (Microsoft SQL Server driver)
-        weblogic.jdbc.sqlserver.SQLServerDriver      (Weblogic SQL Server driver)
-        com.informix.jdbc.IfxDriver                  (Informix)
-        org.apache.derby.jdbc.ClientDriver           (Apache Derby client/server driver, aka the Java DB)
-        org.apache.derby.jdbc.EmbeddedDriver         (Apache Derby embedded driver, aka the Java DB)
-        com.mysql.jdbc.Driver                        (MySQL)
-        org.postgresql.Driver                        (PostgresSQL)
-        org.hsqldb.jdbcDriver                        (HSQLDB pure Java database)
-        org.h2.Driver                                (H2 pure Java database)
-    </pre>
+    
+    <table class="options">
+      <tbody>
+        <tr>
+          <td>oracle.jdbc.driver.OracleDriver</td>
+          <td>Oracle</td>
+        </tr>
+        <tr>
+          <td>com.sybase.jdbc2.jdbc.SybDriver</td>
+          <td>Sybase</td>
+        </tr>
+        <tr>
+          <td>net.sourceforge.jtds.jdbc.Driver</td>
+          <td>jTDS SQL Server & Sybase driver</td>
+        </tr>
+        <tr>
+          <td>com.microsoft.jdbc.sqlserver.SQLServerDriver</td>
+          <td>Microsoft SQL Server 2000 driver</td>
+        </tr>
+        <tr>
+          <td>com.microsoft.sqlserver.jdbc.SQLServerDriver</td>
+          <td>Microsoft SQL Server 2005 driver</td>
+        </tr>
+        <tr>
+          <td>weblogic.jdbc.sqlserver.SQLServerDriver</td>
+          <td>Weblogic SQL Server driver</td>
+        </tr>
+        <tr>
+          <td>com.informix.jdbc.IfxDriver</td>
+          <td>Informix</td>
+        </tr>
+        <tr>
+          <td>org.apache.derby.jdbc.ClientDriver</td>
+          <td>Apache Derby client/server driver, aka the Java DB</td>
+        </tr>
+        <tr>
+          <td>org.apache.derby.jdbc.EmbeddedDriver</td>
+          <td>Apache Derby embedded driver, aka the Java DB</td>
+        </tr>
+        <tr>
+          <td>com.mysql.jdbc.Driver</td>
+          <td>MySQL</td>
+        </tr>
+        <tr>
+          <td>org.postgresql.Driver</td>
+          <td>PostgresSQL</td>
+        </tr>
+        <tr>
+          <td>org.hsqldb.jdbcDriver</td>
+          <td>HSQLDB pure Java database</td>
+        </tr>
+        <tr>
+          <td>org.h2.Driver</td>
+          <td>H2 pure Java database</td>
+        </tr>
+      </tbody>  
+    </table>
   <p>
     If you want to use a different underlying jdbc driver that is not already in the above supported list,
     set a system property, <b>log4jdbc.drivers</b> to the class name of the additional driver.  This
@@ -173,7 +217,7 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
     (optional) <code>-Dlog4jdbc.drivers=&lt;driver&gt;[,&lt;driver&gt;...]</code>  If your driver is not one of the common preloaded drivers.
   </p>
 </li>
-<li><p> Prepend <code>jdbc:log4</code> to the normal jdbc url that you are using.</p>
+<li><p><b>Prepend <code>jdbc:log4</code> to the normal jdbc url that you are using.</b></p>
 
     <p>For example, if your normal jdbc url is</p>
 
@@ -182,49 +226,93 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
     <p><code><b>jdbc:log4</b>jdbc:derby://localhost:1527//db-derby-10.2.2.0-bin/databases/MyDatabase</code></p>
     <p>to use <b>log4jdbc.</b></p>
 </li>
-<li> <p> Set up your logging categories.  There are 4 categories that are used by log4jdbc,
-    If all 4 loggers are set to a level less than error (such as the FATAL level), then log4jdbc will not log
-    anything, and in fact the actual (real) connection to the underlying database will be returned by the log4jdbc
-    driver (thus allowing log4jdbc to be installed and available to turn on at runtime at a moment's notice,
-    without imposing any actual performance loss when not being used).  If any of the 4 logs are set to ERROR,INFO or
-    DEBUG, then log4jdbc will be activated, wrapping and logging all activity in the jdbc connections returned by the
+<li><p><b>Set up your loggers.</b>  There are 5 loggers that are used
+    by log4jdbc,
+    If all 5 are set to a level less than error
+    (such as the FATAL level), then log4jdbc will not log anything and in fact
+    the actual (real) connection to the underlying database will be returned by
+    the log4jdbc driver (thus allowing log4jdbc to be installed and available to
+    turn on at runtime at a moment's notice without imposing any actual
+    performance loss when not being used).  If any of the 4 logs are set to ERROR
+    level or above (e.g ERROR,INFO or DEBUG) then log4jdbc will be activated,
+    wrapping and logging activity in the JDBC connections returned by the
     underlying driver.</p>
-    <pre>
 
-    Each of these logs can be set at either DEBUG, INFO or ERROR
-    DEBUG includes the class name and line number (if available) at which the sql was executed.
-    INFO  includes the sql (or other information as applicable)
-    ERROR will show the stack traces in the log output when sql exceptions occur.
-
-    jdbc.sqlonly   shows only SQL in the log.  SQL executed within a prepared statement is automatically shown with
-                   it's bind arguments replaced with the data bound at that position, for greatly increased readability.
-
-    jdbc.sqltiming shows the SQL, post-execution, including timing statistics on how long the sql took to execute.
-
-    jdbc.audit     Logs ALL jdbc calls except for ResultSets.  This is a very voluminous output, and is not normally
-                   needed unless tracking down a specific jdbc problem.
-
-    jdbc.resultset Even more voluminous, because all calls to ResultSet objects are logged.
-    </pre>
+<p>Each of these logs can be set at either DEBUG, INFO or ERROR level.</p>
+ <ul>
+   <li>
+    <b>DEBUG</b> includes the class name and line number (if available) at which the SQL was executed.<br>
+      <b>Use DEBUG level with extra care, as this imposes an additional performance penalty when in use.</b> 
+    </li>
+    <li>
+    <b>INFO</b> includes the SQL (or other information as applicable.)
+    </li>
+    <li>
+    <b>ERROR</b> will show the stack traces in the log output when SQLExceptions occur.
+    </li>
+  </ul>
+<table class="options">
+  <thead>
+    <tr>
+      <th>logger</th>
+      <th>description</th>
+      <th>since</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>jdbc.sqlonly</td>
+      <td>Logs only SQL.  SQL executed within a prepared statement is automatically shown with
+      it's bind arguments replaced with the data bound at that position, for greatly increased readability.</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>jdbc.sqltiming</td>
+      <td>Logs the SQL, post-execution, including timing statistics on how long the SQL took to execute.</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>jdbc.audit</td>
+      <td>Logs ALL JDBC calls except for ResultSets.  This is a very voluminous
+        output, and is not normally needed unless tracking down a specific JDBC problem.</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>jdbc.resultset</td>
+      <td>Even more voluminous, because all calls to ResultSet objects are logged.</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>jdbc.connection</td>
+      <td>Logs connection open and close events as well as dumping all open
+          connection numbers.  This is very useful for hunting down connection
+          leak problems.</td>
+      <td>1.2alpha1</td>
+    </tr>
+  </tbody>
+</table>
 
     <p>Additionally, there is one logger named <b>log4jdbc.debug</b> which is for use with internal debugging of log4jdbc.
     At this time it just prints out information on which underlying drivers were found and not found when the
     log4jdbc spy driver loads.</p>
 
     <p>In a typical usage scenario, you might turn on only the jdbc.sqlonly logging at INFO level,
-    just to view the sql coming out of your program.</p>
+    just to view the SQL coming out of your program.</p>
 
-    <p>Then if you wanted to view how long each sql statement is taking to execute, you might use jdbc.sqltiming.</p>
+    <p>Then if you wanted to view how long each SQL statement is taking to execute, you might use jdbc.sqltiming.</p>
 
-    <p>jdbc.audit and jdbc.resultset are used for more in depth diagnosis of what is going on under the hood with jdbc
-    as potentially almost every single call to jdbc could be logged (logs can grow very large, very quickly with this!)</p>
+    <p>jdbc.audit, jdbc.resultset and jdbc.connection are used for more in depth
+      diagnosis of what is going on under the hood with JDBC
+      as potentially almost every single call to JDBC could be logged 
+      (logs can grow very large, very quickly with jdbc.audit and jdbc.resultset!)</p>
 
-    <p>SLF4J is a logging facade that can be used with many popular java logging systems.  The setup for the logging
-      categories will vary depending on which underlying logger you use.  Sample configuration files for log4j are
+    <p>Because SLF4J can be used with many popular java logging systems,
+      the setup for your loggers will vary depending on which underlying 
+      logging system you use.  Sample configuration files for log4j are
       provided here:  <a href="log4j.xml">log4j.xml</a> and <a href="log4j.properties">log4j.properties</a>.</p>
 </li>
-<li><p>Adjust debugging options.  When logging at the DEBUG level, the class file and line number (if available) for the
-    class that invoked jdbc is logged after each log statement.  This is enormously useful for finding where in the
+<li><p><b>Adjust debugging options.</b>  When logging at the DEBUG level, the class file and line number (if available) for the
+    class that invoked JDBC is logged after each log statement.  This is enormously useful for finding where in the
     code the SQL is generated.  Be careful when using this on a production system because there is a small, but
     potentially significant penalty performance for generating this data on each logging statement.</p>
 
@@ -242,7 +330,7 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
      <p>
      For example, setting a system property such as this:  <code>-Dlog4jdbc.debug.stack.prefix=com.mycompany.myapp</code>
      Would cause the call stack to be searched for the first call that came from code in the com.mycompany.myapp package or below,
-     thus if all of your sql generating code was in code located in the com.mycompany.myapp package or any subpackages,
+     thus if all of your SQL generating code was in code located in the com.mycompany.myapp package or any subpackages,
      this would be printed in the debug information, rather than the package name for a connection pool, object relational system, etc.
      </p>
 </li>
@@ -250,7 +338,185 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 
 <p class="right"><a href="#top">[back to top]</a></p>
 
-<h2><a name="advanced"/>advanced</h2>
+<h2><a name="options"/>options</h2>
+<p>
+log4jdbc options are controlled via system properties.  The simplest way to set
+these is with the java <b>-D</b> command line option.  For example:
+<p><code>
+java -D<b>log4jdbc.drivers</b>=my.funky.DriverClass -classpath ./classes my.funky.Program
+</code></p>
+</p> 
+ 
+<table class="options">
+  <thead>
+    <tr>
+      <th>system property</th>
+      <th>default</th>
+      <th>description</th>
+      <th>since</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>log4jdbc.drivers</td>
+      <td></td>
+      <td>One or more fully qualified class names for JDBC drivers that log4jdbc
+          should load and wrap.  If more than one driver needs to be specified 
+          here, they should be comma separated with no spaces.  This option is
+          not normally needed because most popular JDBC drivers are already 
+          loaded by default-- this should be used if one or more additional
+          JDBC drivers that (log4jdbc doesn't already wrap) needs to be included.</td>
+      <td>1.0</td>
+    </tr>
+
+    <tr>
+      <td>log4jdbc.debug.stack.prefix</td>
+      <td></td>
+      <td>The partial (or full) package prefix for the package
+       name of your application.  The call stack will be searched down to the 
+       first occurence of a class that has the matching prefix.  If this is not
+       set, the actual class that called into log4jdbc is used in the debug
+       output (in many cases this will be a connection pool class)
+       <br><br>
+       For example, setting a system property such as this:  
+       <code>-Dlog4jdbc.debug.stack.prefix=com.mycompany.myapp</code> 
+       Would cause the call stack to be searched for the first call that came
+       from code in the com.mycompany.myapp package or below, thus if all of
+       your sql generating code was in code located in the com.mycompany.myapp
+       package or any subpackages, this would be printed in the debug
+       information, rather than the package name for a connection pool,
+       object relational system, etc.
+      </td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>log4jdbc.sqltiming.warn.threshold</td>
+      <td></td>
+      <td>Millisecond time value.  Causes SQL that takes the number of 
+        milliseconds specified or more time to execute to be logged at 
+        the <b>warning</b> level in the sqltiming log.
+       <br><br> 
+        Note that the sqltiming log must be enabled at the warn log level for
+        this feature to work. Also the logged output for this setting will log
+        with debug information that is normally only shown when the sqltiming
+        log is enabled at the debug level. This can help you to more quickly
+        find slower running SQL without adding overhead or logging for normal
+        running SQL that executes below the threshold level (if the logging
+        level is set appropriately.) 
+        </td>
+        
+      <td>1.1beta1</td>
+    </tr>
+    <tr>
+      <td>log4jdbc.sqltiming.error.threshold</td>
+      <td></td>
+      <td>Millisecond time value.  Causes SQL that takes the number of
+       milliseconds specified or more time to execute to be logged at 
+       the <b>error</b> level in the sqltiming log.
+       <br><br>
+        Note that the sqltiming log must be enabled at the error log level for
+        this feature to work. Also the logged output for this setting will log
+        with debug information that is normally only shown when the sqltiming
+        log is enabled at the debug level. This can help you to more quickly
+        find slower running SQL without adding overhead or logging for normal
+        running SQL that executes below the threshold level (if the logging
+        level is set appropriately.) 
+      </td>
+       
+      <td>1.1beta1</td>
+    </tr>
+    
+    <tr>
+      <td>    
+        log4jdbc.dump.booleanastruefalse
+      </td>
+      <td>false</td>
+      <td>When dumping boolean values in SQL, dump them as 'true' or 'false'.
+        If this option is not set, they will be dumped as 1 or 0 as many
+        databases do not have a boolean type, and this allows for more
+        portable sql dumping.</td>
+      <td>1.2alpha1</td>
+    </tr>
+    <tr>
+      <td>    
+        log4jdbc.dump.sql.maxlinelength
+      </td>
+      <td>90</td>
+      <td>When dumping SQL, if this is greater than 0, than the dumped SQL will
+         be broken up into lines that are no longer than this value.  
+         Set this value to 0 if you don't want log4jdbc to try and break the SQL
+         into lines this way.  In future versions of log4jdbc, this will 
+         probably default to 0.</td>
+      <td>1.2alpha1</td>
+    </tr>
+    <tr>
+      <td>    
+        log4jdbc.dump.fulldebugstacktrace
+      </td>
+      <td>false</td>
+      <td>If dumping in debug mode, dump the full stack trace.
+        This will result in <i>EXTREMELY</i> voluminous output, but can be very
+        useful under some circumstances when trying to track down the call chain
+        for generated SQL.</td>
+      <td>1.2alpha1</td>
+    </tr>
+    <tr>
+      <td>    
+        log4jdbc.dump.sql.select
+      </td>
+      <td>true</td>
+      <td>Set this to false to suppress SQL select statements in the output.</td>
+      <td>1.2alpha1</td>
+    </tr>
+    <tr>
+      <td>    
+        log4jdbc.dump.sql.insert
+      </td>
+      <td>true</td>
+      <td>Set this to false to suppress SQL insert statements in the output.</td>
+      <td>1.2alpha1</td>
+    </tr>
+    <tr>
+      <td>    
+        log4jdbc.dump.sql.update
+      </td>
+      <td>true</td>
+      <td>Set this to false to suppress SQL update statements in the output.</td>
+      <td>1.2alpha1</td>
+    </tr>
+    <tr>
+      <td>    
+        log4jdbc.dump.sql.delete
+      </td>
+      <td>true</td>
+      <td>Set this to false to suppress SQL delete statements in the output.</td>
+      <td>1.2alpha1</td>
+    </tr>
+    <tr>
+      <td>    
+        log4jdbc.dump.sql.create
+      </td>
+      <td>true</td>
+      <td>Set this to false to suppress SQL create statements in the output.</td>
+      <td>1.2alpha1</td>
+    </tr>
+    <tr>
+      <td>    
+        log4jdbc.dump.sql.addsemicolon
+      </td>
+      <td>false</td>
+      <td>Set this to true to add an extra semicolon to the end of SQL in the output.
+      This can be useful when you want to generate SQL from a program with log4jdbc
+      in order to create a script to feed back into a database to run at a later time.</td>
+      <td>1.2alpha1</td>
+    </tr>
+</tbody>    
+</table>
+
+<p class="right"><a href="#top">[back to top]</a></p>
+
+<h2><a name="other"/>other</h2>
+
 <ul class="left">
 <li>A simple tool is included which you can use to post-process sql timing logs produced by log4jdbc.
   It can output simple profiling reports with statistics and a dump of the sql statements that ran the slowest within the log.
@@ -260,20 +526,7 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
   The tool is currently experimental and I expect it to evolve quite a bit over the next few releases.
   Nevertheless, it has already been very useful to me for tracking down SQL performance problems.
 </li>
-<li>
-  Starting with the 1.1 beta 1 release, you can set timing thresholds to more easily find slow running SQL.  These are set via system properties:
-  <p>
-    <code>-Dlog4jdbc.sqltiming.warn.threshold=&lt;number of milliseconds&gt;</code> causes SQL that takes &lt;number of milliseconds&gt; or more time to execute to be logged at the <b>warning</b> level in the sqltiming log.
-  </p>
-  <p>
-    <code>-Dlog4jdbc.sqltiming.error.threshold=&lt;number of milliseconds&gt;</code> causes SQL that takes &lt;number of milliseconds&gt; or more time to execute to be logged at the <b>error</b> level in the sqltiming log.
-  </p>
-  <p>
-    Note that the sqltiming log must be enabled at the warn or error log levels for these features to work.  Also the logged output for both of these settings will log with debug information that is normally only shown
-    when the sqltiming log is enabled at the debug level.  This can help you to more quickly find slower running SQL without adding overhead or logging for normal running
-    SQL that executes below the threshold level (if the logging level is set appropriately.)
-  </p>
-</li>
+
 </ul>
 <p class="right"><a href="#top">[back to top]</a></p>
 
@@ -324,7 +577,8 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 <a href="#news">news</a> |
 <a href="#features">features</a> |
 <a href="#usage">usage</a> |
-<a href="#advanced">advanced</a> |
+<a href="#options">options</a> |
+<a href="#other">other</a> |
 <a href="#similiartools">similiar tools</a> |
 <a href="#feedback">feedback</a>
 <br>
@@ -335,14 +589,6 @@ for other JDBC drivers using the <a target="slf4j" href="http://www.slf4j.org/">
 <img class="logo" src="log4jdbc-logo-gray.png"><br>
 <p class="copyright">Copyright &copy; 2007-2008 <a href="http://arthur.blake.name">Arthur Blake</a></p>
 </h1>
-
-<p class="ad">
-YourKit is kindly supporting open source projects with its full-featured Java Profiler.
-YourKit, LLC is creator of innovative and intelligent tools for profiling
-Java and .NET applications. Take a look at YourKit's leading software products:
-<a href="http://www.yourkit.com/java/profiler/index.jsp">YourKit Java Profiler</a> and
-<a href="http://www.yourkit.com/.net/profiler/index.jsp">YourKit .NET Profiler</a>.
-</p>
 
 <a href="http://sourceforge.net/projects/log4jdbc/"><img alt="sourceforge" title="log4jdbc sourceforge page" class="sflogo" src="sourceforge_whitebg.gif"></a>
 
