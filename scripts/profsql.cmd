@@ -25,4 +25,4 @@ rem *  profiling output report.                                                 
 rem *                                                                                               *
 rem *************************************************************************************************
 
-java -Xmx1024m -classpath ..\build\log4jdbc3-1.2alpha1.jar net.sf.log4jdbc.PostLogProfilerProcessor %*
+java -Xmx1024m -classpath ..\build\log4jdbc3-1.2alpha2.jar net.sf.log4jdbc.PostLogProfilerProcessor %*

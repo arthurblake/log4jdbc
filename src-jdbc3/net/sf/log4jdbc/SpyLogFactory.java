@@ -35,7 +35,6 @@ public class SpyLogFactory
    * The logging system of choice.
    */
   private static final SpyLogDelegator logger = new Slf4jSpyLogDelegator();
-  //new Log4jSpyLogDelegator();
 
   /**
    * Get the default SpyLogDelegator for logging to the logger.

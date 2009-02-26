@@ -287,8 +287,8 @@ public class DriverSpy implements Driver
     boolean val;
     if (propValue == null)
     {
-      log.debug("x " + propName + " is not defined (using default value "
-        + defaultValue + ")");
+      log.debug("x " + propName + " is not defined (using default value " +
+        defaultValue + ")");
       return defaultValue;
     }
     else

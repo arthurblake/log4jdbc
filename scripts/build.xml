@@ -6,17 +6,17 @@
 
   Tested with Apache Ant version 1.6.5 & 1.7
 
-  built with jdk 1.4.2_13 (for use with jdbc3) 
+  built with jdk 1.4.2_13 (for use with jdbc3)
   and/or jdk 1.6.0 (for use with jdbc4)
 
   Copyright 2007-2008 Arthur Blake
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
      http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,18 +28,19 @@
 <project name="log4jdbc" default="all" basedir="..">
 
   <!-- the jdbc.level flag should be set externally to either 3 or 4
-  
-       this is the jdbc version and should be 3 if using a jdk 1.4 or 1.5 (jdk 1.4 is recommended for maximum compatibility)
-       
+
+       this is the jdbc version and should be 3 if using a jdk 1.4 or 1.5
+
        the jdbc.level flag should be set to 4 if using a jdk 1.6 or greater.
 
-       defaults to jdbc3 build if not set externally 
-       
+       defaults to jdbc3 build if not set externally
+
        therefore to build both, ant should be invoked twice, setting the jdbc.level externally
        to 3 and then 4. and using the jdk 1.4 and then 1.6.
   -->
 
   <property name="jdbc.level" value="3" />
+  <property name="jvm.ver" value="1.4" />
   <property name="jdbc.prefix" value="jdbc${jdbc.level}" />
 
   <property name="src" value="src-${jdbc.prefix}" />
@@ -48,19 +49,19 @@
 
 
   <!-- release version -->
-  <property name="version" value="1.2alpha1"/>
+  <property name="version" value="1.2alpha2"/>
 
   <target name="all" depends="cleancompile,compile,cleanjar,jar"/>
 
-  <!-- 
+  <!--
        The ydoc.home.3 and ydoc.home.4 properties are only used for the ydoc.3
        and ydoc.4 targets for producing javadoc with UML
-  
-       it requires the commercial ydoc utility 
+
+       it requires the commercial ydoc utility
        (see http://www.yworks.com/en/products_ydoc.htm)
-       
+
        use the javadoc target to generate regular javadoc
-       
+
        ydoc.home.3 is for jdk1.4 / JDBC 3
        ydoc.home.4 is for jdk1.6 / JDBC 4
   -->
@@ -68,7 +69,8 @@
   <property name="ydoc.home.4" value="/ydoc-2.2_04-jdk1.5"/>
 
   <target name="compile" description="compile all the source code">
-    <javac srcdir="${src}" destdir="${classes}" deprecation="true" debug="true">
+    <javac source="${jvm.ver}" target="${jvm.ver}" srcdir="${src}" destdir="${classes}"
+      deprecation="true" debug="true">
       <classpath>
         <pathelement location="$src"/>
         <fileset dir="lib">
@@ -82,7 +84,7 @@
     <delete dir="${classes}"/>
     <mkdir dir="${classes}"/>
   </target>
-  
+
   <target name="jar" description="jar up all the class files">
     <mkdir dir="build"/>
     <jar jarfile="build/log4${jdbc.prefix}-${version}.jar" basedir="${classes}"/>
@@ -162,7 +164,7 @@
       <!-- note that the jdk source code is referenced here so that javadoc will be generated from
           interface class methods when none is specified in the implementation -->
 
-      <sourcepath path="/j2sdk1.4.2_13/src"/>
+      <sourcepath path="/jdk/1.4.2_18/src"/>
       <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
 <!--
       <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
@@ -209,11 +211,8 @@
       <!-- note that the jdk source code is referenced here so that javadoc will be generated from
           interface class methods when none is specified in the implementation -->
 
-      <sourcepath path="/jdk1.6.0_10/src"/>
+      <sourcepath path="/jdk/1.6.0_11/src"/>
       <link href="http://java.sun.com/javase/6/docs/api/"/>
-<!--
-      <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
--->
       <link href="http://www.slf4j.org/api/"/>
 
       <!-- ydoc doclet for UML diagrams, see http://www.yworks.com/en/products_ydoc.htm -->
