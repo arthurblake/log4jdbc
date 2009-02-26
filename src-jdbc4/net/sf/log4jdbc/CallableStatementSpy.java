@@ -55,6 +55,16 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
   private CallableStatement realCallableStatement;
 
   /**
+   * Get the real underlying CallableStatement that this CallableStatementSpy wraps.
+   *
+   * @return the real underlying CallableStatement.
+   */
+  public CallableStatement getRealCallableStatement()
+  {
+    return realCallableStatement;
+  }
+
+  /**
    * Create a CallableStatementSpy (JDBC 4 version) to spy upon a CallableStatement.
    *
    * @param sql                   The SQL used for this CallableStatement

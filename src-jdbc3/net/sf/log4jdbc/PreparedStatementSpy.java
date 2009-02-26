@@ -63,7 +63,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   protected void argTraceSet(int i, String typeHelper, Object arg)
   {
     String tracedArg = rdbmsSpecifics.formatParameterObject(arg);
-    
+
     i--;  // make the index 0 based
     synchronized (argTrace)
     {
@@ -123,7 +123,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     {
       dumpSql.append(sql.substring(lastPos, sql.length()));  // dump last segment
     }
-    
+
     return dumpSql.toString();
   }
 
@@ -136,6 +136,16 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    * The real PreparedStatement that this PreparedStatementSpy wraps.
    */
   protected PreparedStatement realPreparedStatement;
+
+  /**
+   * Get the real PreparedStatement that this PreparedStatementSpy wraps.
+   *
+   * @return the real PreparedStatement that this PreparedStatementSpy wraps.
+   */
+  public PreparedStatement getRealPreparedStatement()
+  {
+    return realPreparedStatement;
+  }
 
   /**
    * RdbmsSpecifics for formatting SQL for the given RDBMS.

@@ -47,6 +47,16 @@ public class StatementSpy implements Statement, Spy
   protected Statement realStatement;
 
   /**
+   * Get the real Statement that this StatementSpy wraps.
+   *
+   * @return the real Statement that this StatementSpy wraps.
+   */
+  public Statement getRealStatement()
+  {
+    return realStatement;
+  }
+
+  /**
    * Create a StatementSpy that wraps another Statement
    * for the purpose of logging all method calls, sql, exceptions and return values.
    *

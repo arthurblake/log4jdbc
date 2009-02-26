@@ -49,6 +49,16 @@ public class ConnectionSpy implements Connection, Spy
 {
   private Connection realConnection;
 
+  /**
+   * Get the real underlying Connection that this ConnectionSpy wraps.
+   *
+   * @return the real underlying Connection.
+   */
+  public Connection getRealConnection()
+  {
+    return realConnection;
+  }
+
   private SpyLogDelegator log;
 
   private final Integer connectionNumber;

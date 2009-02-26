@@ -1,3 +1,6 @@
+
+           o add getter methods across the board for the real wrapped object
+
 2008-11-08 1.2 alpha 1 Release
 
            o added a new logger "jdbc.connection" to dump connection open and
@@ -5,112 +8,112 @@
              is very useful for hunting down connection leak problems.
 
            o several new options to produce better SQL output:
-           
-             log4jdbc.dump.booleanastruefalse - many RDBMS's don't have a 
-             native boolean type and store booleans as a 1 or 0.  Setting this 
-             option to false will show boolean bind variables as 1 or 0.  
-             Setting this to true will show the boolean as true or false.  
-             (Note that the default for this setting is false, contrary to the 
+
+             log4jdbc.dump.booleanastruefalse - many RDBMS's don't have a
+             native boolean type and store booleans as a 1 or 0.  Setting this
+             option to false will show boolean bind variables as 1 or 0.
+             Setting this to true will show the boolean as true or false.
+             (Note that the default for this setting is false, contrary to the
              previous way log4jdbc worked.)
-             
-             log4jdbc.dump.sql.maxlinelength - can be used to insert line 
+
+             log4jdbc.dump.sql.maxlinelength - can be used to insert line
              breaks into long running SQL (at white space positions.)
-             previous versions of log4jdbc did this automatically with a value 
+             previous versions of log4jdbc did this automatically with a value
              of 90 (the default value is 90.)  This line breaking can be turned
              off completely by setting this to 0.
-             
-             log4jdbc.dump.fulldebugstacktrace - can be used in extreme 
-             debugging circumstances when you want to be able to see the full 
-             stack trace in the debug output.  Be extra careful when using 
+
+             log4jdbc.dump.fulldebugstacktrace - can be used in extreme
+             debugging circumstances when you want to be able to see the full
+             stack trace in the debug output.  Be extra careful when using
              this as it will obviously produce much much more logging output.
-             
+
            o dump a null bind variable as NULL instead of <null> for more
              accurate and reuseable SQL output.
-             
-           o several new options for controlling what types of SQL statements are 
+
+           o several new options for controlling what types of SQL statements are
              logged:
-             
+
              log4jdbc.dump.sql.select   default value is true
              log4jdbc.dump.sql.insert   default value is true
              log4jdbc.dump.sql.update   default value is true
              log4jdbc.dump.sql.delete   default value is true
              log4jdbc.dump.sql.create   default value is true
-             
-             The default values for all of these are true, but they can be 
-             selectively turned on and off to filter out unwanted types of sql 
-             statements.  For example, setting log4jdbc.dump.sql.delete will 
+
+             The default values for all of these are true, but they can be
+             selectively turned on and off to filter out unwanted types of sql
+             statements.  For example, setting log4jdbc.dump.sql.delete will
              cause all DELETE sql commands to not be logged.
-             
+
            o A new option to add a semi colon to the end of the dumped sql:
-             
+
              log4jdbc.dump.sql.addsemicolon   default value is false
-             
+
              Sometimes it's useful to use log4jdbc to produce sql scripts that
-             can later be fed back into a SQL tool to execute against a 
-             database and this option can help to produce more re-useable sql 
+             can later be fed back into a SQL tool to execute against a
+             database and this option can help to produce more re-useable sql
              output script data from a log file.
 
-           o added Microsoft SQL Server 2005 Driver 
-             (com.microsoft.sqlserver.jdbc.SQLServerDriver) to 
+           o added Microsoft SQL Server 2005 Driver
+             (com.microsoft.sqlserver.jdbc.SQLServerDriver) to
              list of "well known" drivers that log4jdbc looks for at startup.
              (thanks to Rob Richards for pointing this out)
 
              Note that the SQL Server 2000 Driver with the confusing name
              of (com.microsoft.jdbc.sqlserver.SQLServerDriver) is also still
              supported.
-             
+
            o other miscellaneous improvements.
 
 2008-04-11 1.1 Release
 
-           o upgrade to SLF4J 1.5.  Note that log4jdbc should still work with 
+           o upgrade to SLF4J 1.5.  Note that log4jdbc should still work with
              any older (or newer) version of SLF4J too.
-           
-           o slightly better fault tolerance for when loading/probing of 
+
+           o slightly better fault tolerance for when loading/probing of
              popular JDBC drivers fails for any reason.
 
 2007-11-10 1.1 beta 1 Release
 
-           o added HSQLDB (org.hsqldb.jdbcDriver) and H2 (org.h2.Driver) to 
+           o added HSQLDB (org.hsqldb.jdbcDriver) and H2 (org.h2.Driver) to
              list of "well known" drivers that log4jdbc looks for at startup.
-             
-           o added log4jdbc.sqltiming.warn.threshold and 
-             log4jdbc.sqltiming.error.threshold system property settings to 
-             greatly aid in finding slow running sql.  Special thanks to 
+
+           o added log4jdbc.sqltiming.warn.threshold and
+             log4jdbc.sqltiming.error.threshold system property settings to
+             greatly aid in finding slow running sql.  Special thanks to
              Lilianne E. Blaze for the idea and initial implementation.
 
 2007-07-25 1.1 alpha 2 Release
 
            o JDBC 4.0 support!
-             
-           o fix Null pointer exception bug that could happen with setObject 
+
+           o fix Null pointer exception bug that could happen with setObject
              call on PreparedStatementSpy
-             
-           o added MySQL (com.mysql.jdbc.Driver) and PostgreSQL 
-             (org.postgresql.Driver) to list of "well known" drivers that 
+
+           o added MySQL (com.mysql.jdbc.Driver) and PostgreSQL
+             (org.postgresql.Driver) to list of "well known" drivers that
              log4jdbc looks for at startup.
 
 2007-05-29 1.1 alpha 1 Release
 
-           o Fixed problem where when sql timing log was the only log turned 
+           o Fixed problem where when sql timing log was the only log turned
              on, log4jdbc would not recognize that logging was on at all.
 
-           o report sql exceptions in the sql timing log as well (when they 
-             occured during sql execution) and prominently show that the sql 
-             FAILED, and display how long it tried to chug on the sql before 
+           o report sql exceptions in the sql timing log as well (when they
+             occured during sql execution) and prominently show that the sql
+             FAILED, and display how long it tried to chug on the sql before
              the exception was thrown.
 
-           o Switch to Simple Logging Facade for Java SLF4J instead of using 
-             log4j directly, so that any underlying logging system can be 
+           o Switch to Simple Logging Facade for Java SLF4J instead of using
+             log4j directly, so that any underlying logging system can be
              easily used.
 
-           o option added to ant build script to generate javadoc with ydoc 
+           o option added to ant build script to generate javadoc with ydoc
              to include UML diagrams within the javadoc.
 
            o dump batched sql correctly.
 
-           o add simple command line program (PostLogProfilerProcessor) for 
-             processing sqltiming log files to create a simple profiling 
+           o add simple command line program (PostLogProfilerProcessor) for
+             processing sqltiming log files to create a simple profiling
              report from log data.
 
 2007-04-21 Initial 1.0 Release

@@ -72,6 +72,17 @@ public class ResultSetSpy implements ResultSet, Spy
   }
 
   private ResultSet realResultSet;
+
+  /**
+   * Get the real ResultSet that this ResultSetSpy wraps.
+   *
+   * @return the real ResultSet that this ResultSetSpy wraps.
+   */
+  public ResultSet getRealResultSet()
+  {
+    return realResultSet;
+  }
+
   private StatementSpy parent;
 
   /**

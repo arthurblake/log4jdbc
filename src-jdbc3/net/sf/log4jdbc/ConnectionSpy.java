@@ -29,8 +29,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-
-
 /**
  * Wraps a JDBC Connection and reports method calls, returns and exceptions.
  *
@@ -41,6 +39,16 @@ import java.util.Set;
 public class ConnectionSpy implements Connection, Spy
 {
   private Connection realConnection;
+
+  /**
+   * Get the real underlying Connection that this ConnectionSpy wraps.
+   *
+   * @return the real underlying Connection.
+   */
+  public Connection getRealConnection()
+  {
+    return realConnection;
+  }
 
   private SpyLogDelegator log;
 
@@ -56,7 +64,7 @@ public class ConnectionSpy implements Connection, Spy
   /**
    * Get a dump of how many connections are open, and which connection numbers
    * are open.
-   * 
+   *
    * @return an open connection dump.
    */
   public static String getOpenConnectionsDump()

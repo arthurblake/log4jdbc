@@ -142,6 +142,16 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   protected PreparedStatement realPreparedStatement;
 
   /**
+   * Get the real PreparedStatement that this PreparedStatementSpy wraps.
+   *
+   * @return the real PreparedStatement that this PreparedStatementSpy wraps.
+   */
+  public PreparedStatement getRealPreparedStatement()
+  {
+    return realPreparedStatement;
+  }
+
+  /**
    * RdbmsSpecifics for formatting SQL for the given RDBMS.
    */
   protected RdbmsSpecifics rdbmsSpecifics;
