@@ -155,6 +155,14 @@ public class DriverSpy implements Driver
   static int DumpSqlMaxLineLength;
 
   /**
+   * If this is true, display a special warning in the log along with the SQL
+   * when the application uses a Statement (as opposed to a PreparedStatement.)
+   * Using Statements for frequently used SQL can sometimes result in
+   * performance and/or security problems.
+   */
+  static boolean StatementUsageWarn;
+
+  /**
    * Options to more finely control which types of SQL statements will
    * be dumped, when dumping SQL.
    * By default all 5 of the following will be true.  If any one is set to
@@ -277,7 +285,7 @@ public class DriverSpy implements Driver
    *
    * @param propName property name to get.
    * @param defaultValue default value to use if undefined.
-   * 
+   *
    * @return boolean value found in property, or defaultValue if no property
    *         found.
    */
@@ -338,6 +346,9 @@ public class DriverSpy implements Driver
 
     DumpFullDebugStackTrace =
       getBooleanOption("log4jdbc.dump.fulldebugstacktrace",false);
+
+    StatementUsageWarn =
+      getBooleanOption("log4jdbc.statement.warn",false);
 
     DumpSqlSelect = getBooleanOption("log4jdbc.dump.sql.select",true);
     DumpSqlInsert = getBooleanOption("log4jdbc.dump.sql.insert",true);

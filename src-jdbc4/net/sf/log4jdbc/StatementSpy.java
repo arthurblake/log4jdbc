@@ -77,14 +77,14 @@ public class StatementSpy implements Statement, Spy
     this.connectionSpy = connectionSpy;
 
     log = SpyLogFactory.getSpyLogDelegator();
-    
+
     if (realStatement instanceof CallableStatement)
     {
       reportReturn("new CallableStatement");
     }
     else if (realStatement instanceof PreparedStatement)
     {
-      reportReturn("new PreparedStatement");      
+      reportReturn("new PreparedStatement");
     }
     else
     {
@@ -277,7 +277,8 @@ public class StatementSpy implements Statement, Spy
   {
     // redirect to one more method call ONLY so that stack trace search is consistent
     // with the reportReturn calls
-    _reportSql(StatementSqlWarning + sql, methodCall);
+    _reportSql((DriverSpy.StatementUsageWarn?StatementSqlWarning:"") +
+      sql, methodCall);
   }
 
   /**
@@ -291,7 +292,8 @@ public class StatementSpy implements Statement, Spy
   {
     // redirect to one more method call ONLY so that stack trace search is consistent
     // with the reportReturn calls
-    _reportSqlTiming(execTime, StatementSqlWarning + sql, methodCall);
+    _reportSqlTiming(execTime, (DriverSpy.StatementUsageWarn?StatementSqlWarning:"") +
+      sql, methodCall);
   }
 
   /**
@@ -529,6 +531,7 @@ public class StatementSpy implements Statement, Spy
       reportException(methodCall, s, sql, System.currentTimeMillis()-tstart);
       throw s;
     }
+    currentBatch.clear();
     return (int[])reportReturn(methodCall,updateResults);
   }
 

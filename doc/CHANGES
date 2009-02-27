@@ -1,5 +1,16 @@
+           o (Issue 1) fix bug where batch of logged SQL wasn't cleared
+             properly when using batched SQL.
 
-           o add getter methods across the board for the real wrapped object
+           o Added log4jdbc.statement.warn system property; defaults to false.
+
+             This is a new option to control the SQL Statement warnings in the
+             log.  When Statement objects are used by the application, the SQL
+             in the log is preceded by "{WARNING: Statement used to run SQL}"
+             This was always on in previous releases.  Now it
+             is off by default, and can be turned on by setting this property.
+
+           o (Issue 2) add getter methods across the board for the real
+             wrapped object.
 
 2008-11-08 1.2 alpha 1 Release
 
@@ -30,8 +41,8 @@
            o dump a null bind variable as NULL instead of <null> for more
              accurate and reuseable SQL output.
 
-           o several new options for controlling what types of SQL statements are
-             logged:
+           o several new options for controlling what types of SQL statements
+             are logged:
 
              log4jdbc.dump.sql.select   default value is true
              log4jdbc.dump.sql.insert   default value is true
