@@ -1,3 +1,5 @@
+2009-02-26 1.2 alpha 2 Release
+
            o (Issue 1) fix bug where batch of logged SQL wasn't cleared
              properly when using batched SQL.
 
