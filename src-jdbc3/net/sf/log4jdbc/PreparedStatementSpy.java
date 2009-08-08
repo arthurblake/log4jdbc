@@ -62,7 +62,22 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    */
   protected void argTraceSet(int i, String typeHelper, Object arg)
   {
-    String tracedArg = rdbmsSpecifics.formatParameterObject(arg);
+    String tracedArg;
+    try
+    {
+      tracedArg = rdbmsSpecifics.formatParameterObject(arg);
+    }
+    catch (Throwable t)
+    {
+      // rdbmsSpecifics should NEVER EVER throw an exception!!
+      // but just in case it does, we trap it.
+      log.debug("rdbmsSpecifics threw an exception while trying to format a " +
+        "parameter object [" + arg + "] this is very bad!!! (" +
+        t.getMessage() + ")");
+
+      // backup - so that at least we won't harm the application using us
+      tracedArg = arg==null?"null":arg.toString();
+    }
 
     i--;  // make the index 0 based
     synchronized (argTrace)

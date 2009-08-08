@@ -1,3 +1,8 @@
+TBD        1.2 alpha 3 Release
+
+           o Check for exception that should not, but in some cases could 
+             occur when trying to format parameter arguments.
+
 2009-02-26 1.2 alpha 2 Release
 
            o (Issue 1) fix bug where batch of logged SQL wasn't cleared
