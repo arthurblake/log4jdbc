@@ -49,7 +49,7 @@
 
 
   <!-- release version -->
-  <property name="version" value="1.2alpha2"/>
+  <property name="version" value="1.2alpha3"/>
 
   <target name="all" depends="cleancompile,compile,cleanjar,jar"/>
 
@@ -95,16 +95,18 @@
   </target>
 
 
-  <target name="cleanjavadoc">
+  <target name="cleanjavadoc" description="clean javadoc">
     <delete dir="${apidocs}" />
     <mkdir dir="${apidocs}" />
   </target>
-
-  <target name="cleanrelease">
+  
+  <target name="cleanrelease" description="clean up any release files">
     <delete file="../log4jdbc-${version}.zip"/>
     <delete file="../log4jdbc-${version}.tar"/>
     <delete file="../log4jdbc-${version}.tar.gz"/>
   </target>
+  
+  <target name="clean" depends="cleanrelease,cleanjavadoc,cleanjar,cleancompile" description="clean up all build artifacts"/>
 
   <target name="release" depends="cleanrelease" description="make a complete release distribution (a .jar zip and tar.gz file for release)">
     <zip destfile="../log4jdbc-${version}.zip">
