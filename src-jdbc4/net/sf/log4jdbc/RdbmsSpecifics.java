@@ -17,6 +17,8 @@ package net.sf.log4jdbc;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * Encapsulate sql formatting details about a particular relational database management system so that
@@ -32,6 +34,12 @@ class RdbmsSpecifics
   RdbmsSpecifics()
   {
   }
+
+  private static final DateFormat dateFormat = 
+    new SimpleDateFormat("MM/dd/yyyy");
+
+  private static final DateFormat timestampFormat = 
+    new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
   /**
    * Format an Object that is being bound to a PreparedStatement parameter, for display. The goal is to reformat the
@@ -57,11 +65,11 @@ class RdbmsSpecifics
       }
       else if (object instanceof Date)
       {
-        return object.toString();
+        return "'" + dateFormat.format(object) + "'";
       }
       else if (object instanceof Timestamp)
       {
-        return object.toString();
+        return "'" + timestampFormat.format(object) + "'";
       }
       else if (object instanceof Boolean)
       {
