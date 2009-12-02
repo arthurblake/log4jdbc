@@ -262,7 +262,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
         linelength += token.length();
         output.append(" ");
         linelength++;
-        if (linelength > 90)
+        if (linelength > DriverSpy.DumpSqlMaxLineLength)
         {
           output.append("\n");
           linelength = 0;
