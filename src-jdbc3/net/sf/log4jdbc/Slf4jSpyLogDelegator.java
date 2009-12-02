@@ -127,41 +127,35 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       }
     }
   }
-
+  
   /**
-   * Called when a jdbc method from a Connection, Statement, PreparedStatement, CallableStatement or ResultSet
-   * returns.
+   * Called when a JDBC method from a Connection, Statement, PreparedStatement,
+   * CallableStatement or ResultSet returns.
    *
-   * @param spy        the Spy wrapping the class that called the method that returned.
-   * @param methodCall a description of the name and call parameters of the method that returned.
-   * @param returnMsg  return value converted to a String for integral types, or String representation for Object
-   *                   return types this will be null for void return types.
+   * @param spy        the Spy wrapping the class that called the method that 
+   *                   returned.
+   * @param methodCall a description of the name and call parameters of the 
+   *                   method that returned.
+   * @param returnMsg  return value converted to a String for integral types, or
+   *                   String representation for Object.  Return types this will
+   *                   be null for void return types.
    */
   public void methodReturned(Spy spy, String methodCall, String returnMsg)
   {
     String classType = spy.getClassType();
-    Integer spyNo = spy.getConnectionNumber();
-    String header = spyNo + ". " + classType + "." + methodCall + " returned " + returnMsg;
-    if (ResultSetSpy.classTypeDescription.equals(classType))
+    Logger logger=ResultSetSpy.classTypeDescription.equals(classType)?
+      resultSetLogger:jdbcLogger;
+    if (logger.isInfoEnabled())
     {
-      if (resultSetLogger.isDebugEnabled())
+      String header = spy.getConnectionNumber() + ". " + classType + "." + 
+        methodCall + " returned " + returnMsg;
+      if (logger.isDebugEnabled())
       {
-        resultSetLogger.debug(header + " " + getDebugInfo());
+        logger.debug(header + " " + getDebugInfo());
       }
-      else if (resultSetLogger.isInfoEnabled())
+      else
       {
-        resultSetLogger.info(header);
-      }
-    }
-    else
-    {
-      if (jdbcLogger.isDebugEnabled())
-      {
-        jdbcLogger.debug(header + " " + getDebugInfo());
-      }
-      else if (jdbcLogger.isInfoEnabled())
-      {
-        jdbcLogger.info(header);
+        logger.info(header);
       }
     }
   }
