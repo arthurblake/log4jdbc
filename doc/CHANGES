@@ -1,7 +1,18 @@
-TBD        1.2 alpha 3 Release
+TBD        1.2 beta 1 Release
 
            o Check for exception that should not, but in some cases could 
              occur when trying to format parameter arguments.
+
+           o Use only one type of date format so that time portion of Date
+             types is not dropped!
+
+           o use to_date function for Oracle (Issue 14)
+           
+           o performance improvements
+           
+           o fix: respect DumpSqlMaxLineLength option. 
+           
+           o various other fixes (including Issues 8 and 9)
 
 2009-02-26 1.2 alpha 2 Release
 
