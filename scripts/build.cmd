@@ -11,7 +11,7 @@ REM and target java versions anyway.
 
 set ANT_HOME=c:\apache-ant-1.7.1
 
-set JAVA_HOME=C:\jdk\1.4.2_19
+set JAVA_HOME=C:\jdk\1.4.2_18
 set PATH=%JAVA_HOME%\bin;%ANT_HOME%\bin
 
 call java -version

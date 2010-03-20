@@ -49,7 +49,7 @@
 
 
   <!-- release version -->
-  <property name="version" value="1.2alpha3"/>
+  <property name="version" value="1.2beta1"/>
 
   <target name="all" depends="cleancompile,compile,cleanjar,jar"/>
 
