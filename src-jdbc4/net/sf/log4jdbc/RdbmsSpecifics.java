@@ -15,8 +15,7 @@
  */
 package net.sf.log4jdbc;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -35,10 +34,7 @@ class RdbmsSpecifics
   {
   }
 
-  private static final DateFormat dateFormat = 
-    new SimpleDateFormat("MM/dd/yyyy");
-
-  private static final DateFormat timestampFormat = 
+  protected static final DateFormat dateFormat = 
     new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
   /**
@@ -66,10 +62,6 @@ class RdbmsSpecifics
       else if (object instanceof Date)
       {
         return "'" + dateFormat.format(object) + "'";
-      }
-      else if (object instanceof Timestamp)
-      {
-        return "'" + timestampFormat.format(object) + "'";
       }
       else if (object instanceof Boolean)
       {
