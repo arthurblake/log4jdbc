@@ -1,4 +1,4 @@
-TBD        1.2 beta 1 Release
+2010-03-20 1.2 beta 1 Release
 
            o Check for exception that should not, but in some cases could 
              occur when trying to format parameter arguments.
