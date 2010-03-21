@@ -7,7 +7,7 @@ REM for JDBC 3 and JDBC 4 versions respectively
 set ANT_HOME=c:\apache-ant-1.7.1
 set ANT_OPTS=-Xmx512m
 
-set JAVA_HOME=C:\jdk\1.4.2_19
+set JAVA_HOME=C:\jdk\1.4.2_18
 set PATH=%JAVA_HOME%\bin;%ANT_HOME%\bin
 
 call java -version

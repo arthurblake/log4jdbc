@@ -102,8 +102,6 @@
   
   <target name="cleanrelease" description="clean up any release files">
     <delete file="../log4jdbc-${version}.zip"/>
-    <delete file="../log4jdbc-${version}.tar"/>
-    <delete file="../log4jdbc-${version}.tar.gz"/>
   </target>
   
   <target name="clean" depends="cleanrelease,cleanjavadoc,cleanjar,cleancompile" description="clean up all build artifacts"/>
@@ -112,11 +110,6 @@
     <zip destfile="../log4jdbc-${version}.zip">
       <zipfileset dir="." prefix="log4jdbc-${version}" excludes="*.zip,*.tar.gz,*,iml,*.ipr,*.iws,thirdparty-stuff/**,classes*/**"/>
     </zip>
-    <tar destfile="../log4jdbc-${version}.tar">
-      <tarfileset dir="." prefix="log4jdbc-${version}" excludes="*.zip,*.tar.gz,*,iml,*.ipr,*.iws,thirdparty-stuff/**,classes*/**"/>
-    </tar>
-    <gzip destfile="../log4jdbc-${version}.tar.gz" src="../log4jdbc-${version}.tar"/>
-    <delete file="../log4jdbc-${version}.tar"/>
   </target>
 
   <!-- make the javadoc (or ydoc which includes UML diagrams) -->
