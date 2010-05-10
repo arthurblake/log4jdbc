@@ -33,9 +33,11 @@ import java.util.TreeSet;
  * A JDBC driver which is a facade that delegates to one or more real underlying
  * JDBC drivers.  The driver will spy on any other JDBC driver that is loaded,
  * simply by prepending <code>jdbc:log4</code> to the normal jdbc driver URL
- * used by any other JDBC driver. The driver also loads several well known
- * drivers at class load time, so that this driver can be "dropped in" to any
- * java program that uses these drivers without making any code changes.
+ * used by any other JDBC driver. The driver, by default, also loads several 
+ * well known drivers at class load time, so that this driver can be 
+ * "dropped in" to any Java program that uses these drivers without making any 
+ * code changes.
+ * <p/>
  * The well known driver classes that are loaded are:
  * <p/>
  * <p/>
@@ -61,6 +63,11 @@ import java.util.TreeSet;
  * Additional drivers can be set via a system property: <b>log4jdbc.drivers</b>
  * This can be either a single driver class name or a list of comma separated
  * driver class names.
+ * <p/>
+ * The autoloading behavior can be disabled by setting a system property:
+ * <b>log4jdbc.auto.load.popular.drivers</b> to false.  If that is done, then
+ * the only drivers that log4jdbc will attempt to load are the ones specified
+ * in <b>log4jdbc.drivers</b>.
  * <p/>
  * If any of the above driver classes cannot be loaded, the driver continues on
  * without failing.
@@ -188,6 +195,11 @@ public class DriverSpy implements Driver
    * under some circumstances.
    */
   static boolean DumpFullDebugStackTrace;
+  
+  /**
+   * Attempt to Automatically load a set of popular JDBC drivers?
+   */
+  static boolean AutoLoadPopularDrivers;
 
   /**
    * Get a Long option from a system property and
@@ -237,7 +249,8 @@ public class DriverSpy implements Driver
     Long longPropValue;
     if (propValue == null)
     {
-      log.debug("x " + propName + " is not defined (using default of " + defaultValue +")");
+      log.debug("x " + propName + " is not defined (using default of " + 
+        defaultValue +")");
       longPropValue = new Long(defaultValue);
     }
     else
@@ -341,8 +354,8 @@ public class DriverSpy implements Driver
     DumpBooleanAsTrueFalse =
       getBooleanOption("log4jdbc.dump.booleanastruefalse",false);
 
-    DumpSqlMaxLineLength = getLongOption("log4jdbc.dump.sql.maxlinelength", 90L).
-      intValue();
+    DumpSqlMaxLineLength = getLongOption("log4jdbc.dump.sql.maxlinelength",
+      90L).intValue();
 
     DumpFullDebugStackTrace =
       getBooleanOption("log4jdbc.dump.fulldebugstacktrace",false);
@@ -359,31 +372,39 @@ public class DriverSpy implements Driver
     DumpSqlFilteringOn = !(DumpSqlSelect && DumpSqlInsert && DumpSqlUpdate &&
       DumpSqlDelete && DumpSqlCreate);
 
-    DumpSqlAddSemicolon = getBooleanOption("log4jdbc.dump.sql.addsemicolon",false);
+    DumpSqlAddSemicolon = getBooleanOption("log4jdbc.dump.sql.addsemicolon",
+      false);
+
+    AutoLoadPopularDrivers = getBooleanOption(
+      "log4jdbc.auto.load.popular.drivers", true);
 
     // The Set of drivers that the log4jdbc driver will preload at instantiation
     // time.  The driver can spy on any driver type, it's just a little bit
     // easier to configure log4jdbc if it's one of these types!
 
     Set subDrivers = new TreeSet();
-    subDrivers.add("oracle.jdbc.driver.OracleDriver");
-    subDrivers.add("com.sybase.jdbc2.jdbc.SybDriver");
-    subDrivers.add("net.sourceforge.jtds.jdbc.Driver");
 
-    // MS driver for Sql Server 2000
-    subDrivers.add("com.microsoft.jdbc.sqlserver.SQLServerDriver");
+    if (AutoLoadPopularDrivers)
+    {
+      subDrivers.add("oracle.jdbc.driver.OracleDriver");
+      subDrivers.add("com.sybase.jdbc2.jdbc.SybDriver");
+      subDrivers.add("net.sourceforge.jtds.jdbc.Driver");
 
-    // MS driver for Sql Server 2005
-    subDrivers.add("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+      // MS driver for Sql Server 2000
+      subDrivers.add("com.microsoft.jdbc.sqlserver.SQLServerDriver");
 
-    subDrivers.add("weblogic.jdbc.sqlserver.SQLServerDriver");
-    subDrivers.add("com.informix.jdbc.IfxDriver");
-    subDrivers.add("org.apache.derby.jdbc.ClientDriver");
-    subDrivers.add("org.apache.derby.jdbc.EmbeddedDriver");
-    subDrivers.add("com.mysql.jdbc.Driver");
-    subDrivers.add("org.postgresql.Driver");
-    subDrivers.add("org.hsqldb.jdbcDriver");
-    subDrivers.add("org.h2.Driver");
+      // MS driver for Sql Server 2005
+      subDrivers.add("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+      subDrivers.add("weblogic.jdbc.sqlserver.SQLServerDriver");
+      subDrivers.add("com.informix.jdbc.IfxDriver");
+      subDrivers.add("org.apache.derby.jdbc.ClientDriver");
+      subDrivers.add("org.apache.derby.jdbc.EmbeddedDriver");
+      subDrivers.add("com.mysql.jdbc.Driver");
+      subDrivers.add("org.postgresql.Driver");
+      subDrivers.add("org.hsqldb.jdbcDriver");
+      subDrivers.add("org.h2.Driver");
+    }
 
     // look for additional driver specified in system properties
     String moreDrivers = getStringOption("log4jdbc.drivers");
