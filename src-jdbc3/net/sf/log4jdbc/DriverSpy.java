@@ -15,6 +15,8 @@
  */
 package net.sf.log4jdbc;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Driver;
@@ -60,11 +62,11 @@ import java.util.TreeSet;
  * </code>
  * <p/>
  * <p/>
- * Additional drivers can be set via a system property: <b>log4jdbc.drivers</b>
+ * Additional drivers can be set via a property: <b>log4jdbc.drivers</b>
  * This can be either a single driver class name or a list of comma separated
  * driver class names.
  * <p/>
- * The autoloading behavior can be disabled by setting a system property:
+ * The autoloading behavior can be disabled by setting a property:
  * <b>log4jdbc.auto.load.popular.drivers</b> to false.  If that is done, then
  * the only drivers that log4jdbc will attempt to load are the ones specified
  * in <b>log4jdbc.drivers</b>.
@@ -202,17 +204,18 @@ public class DriverSpy implements Driver
   static boolean AutoLoadPopularDrivers;
 
   /**
-   * Get a Long option from a system property and
+   * Get a Long option from a property and
    * log a debug message about this.
    *
-   * @param propName System property key.
+   * @param props Properties to get option from.
+   * @param propName property key.
    *
-   * @return the value of that System property key, converted
+   * @return the value of that property key, converted
    * to a Long.  Or null if not defined or is invalid.
    */
-  private static Long getLongOption(String propName)
+  private static Long getLongOption(Properties props, String propName)
   {
-    String propValue = System.getProperty(propName);
+    String propValue = props.getProperty(propName);
     Long longPropValue = null;
     if (propValue == null)
     {
@@ -235,17 +238,19 @@ public class DriverSpy implements Driver
   }
 
   /**
-   * Get a Long option from a system property and
+   * Get a Long option from a property and
    * log a debug message about this.
+   * 
+   * @param props Properties to get option from.
+   * @param propName property key.
    *
-   * @param propName System property key.
-   *
-   * @return the value of that System property key, converted
+   * @return the value of that property key, converted
    * to a Long.  Or null if not defined or is invalid.
    */
-  private static Long getLongOption(String propName, long defaultValue)
+  private static Long getLongOption(Properties props, String propName, 
+    long defaultValue)
   {
-    String propValue = System.getProperty(propName);
+    String propValue = props.getProperty(propName);
     Long longPropValue;
     if (propValue == null)
     {
@@ -271,15 +276,16 @@ public class DriverSpy implements Driver
   }
 
   /**
-   * Get a String option from a system property and
+   * Get a String option from a property and
    * log a debug message about this.
    *
-   * @param propName System property key.
-   * @return the value of that System property key.
+   * @param props Properties to get option from.
+   * @param propName property key.
+   * @return the value of that property key.
    */
-  private static String getStringOption(String propName)
+  private static String getStringOption(Properties props, String propName)
   {
-    String propValue = System.getProperty(propName);
+    String propValue = props.getProperty(propName);
     if (propValue == null || propValue.length()==0)
     {
       log.debug("x " + propName + " is not defined");
@@ -293,18 +299,20 @@ public class DriverSpy implements Driver
   }
 
   /**
-   * Get a boolean option from a system property and
+   * Get a boolean option from a property and
    * log a debug message about this.
-   *
+   * 
+   * @param props Properties to get option from.
    * @param propName property name to get.
    * @param defaultValue default value to use if undefined.
    *
    * @return boolean value found in property, or defaultValue if no property
    *         found.
    */
-  private static boolean getBooleanOption(String propName, boolean defaultValue)
+  private static boolean getBooleanOption(Properties props, String propName,
+    boolean defaultValue)
   {
-    String propValue = System.getProperty(propName);
+    String propValue = props.getProperty(propName);
     boolean val;
     if (propValue == null)
     {
@@ -333,18 +341,52 @@ public class DriverSpy implements Driver
   {
     log.debug("... log4jdbc initializing ...");
 
-    // look for additional driver specified in system properties
-    DebugStackPrefix = getStringOption("log4jdbc.debug.stack.prefix");
+    InputStream propStream = 
+      DriverSpy.class.getResourceAsStream("/log4jdbc.properties");
+    
+    Properties props = new Properties(System.getProperties());
+    if (propStream != null)
+    {
+      try
+      {
+        props.load(propStream);
+      }
+      catch (IOException e)
+      {
+        log.debug("ERROR!  io exception loading " +
+          "log4jdbc.properties from classpath: " + e.getMessage());
+      }
+      finally
+      {
+        try
+        {
+          propStream.close();
+        }
+        catch (IOException e)
+        {
+          log.debug("ERROR!  io exception closing property file stream: " + 
+            e.getMessage());
+				}
+      }
+      log.debug("  log4jdbc.properties loaded from classpath");
+    }
+    else
+    {
+      log.debug("  log4jdbc.properties not found on classpath");
+    }
+
+    // look for additional driver specified in properties
+    DebugStackPrefix = getStringOption(props, "log4jdbc.debug.stack.prefix");
     TraceFromApplication = DebugStackPrefix != null;
 
-    Long thresh = getLongOption("log4jdbc.sqltiming.warn.threshold");
+    Long thresh = getLongOption(props, "log4jdbc.sqltiming.warn.threshold");
     SqlTimingWarnThresholdEnabled = (thresh != null);
     if (SqlTimingWarnThresholdEnabled)
     {
       SqlTimingWarnThresholdMsec = thresh.longValue();
     }
 
-    thresh = getLongOption("log4jdbc.sqltiming.error.threshold");
+    thresh = getLongOption(props, "log4jdbc.sqltiming.error.threshold");
     SqlTimingErrorThresholdEnabled = (thresh != null);
     if (SqlTimingErrorThresholdEnabled)
     {
@@ -352,30 +394,30 @@ public class DriverSpy implements Driver
     }
 
     DumpBooleanAsTrueFalse =
-      getBooleanOption("log4jdbc.dump.booleanastruefalse",false);
+      getBooleanOption(props, "log4jdbc.dump.booleanastruefalse",false);
 
-    DumpSqlMaxLineLength = getLongOption("log4jdbc.dump.sql.maxlinelength",
-      90L).intValue();
+    DumpSqlMaxLineLength = getLongOption(props, 
+      "log4jdbc.dump.sql.maxlinelength", 90L).intValue();
 
     DumpFullDebugStackTrace =
-      getBooleanOption("log4jdbc.dump.fulldebugstacktrace",false);
+      getBooleanOption(props, "log4jdbc.dump.fulldebugstacktrace",false);
 
     StatementUsageWarn =
-      getBooleanOption("log4jdbc.statement.warn",false);
+      getBooleanOption(props, "log4jdbc.statement.warn",false);
 
-    DumpSqlSelect = getBooleanOption("log4jdbc.dump.sql.select",true);
-    DumpSqlInsert = getBooleanOption("log4jdbc.dump.sql.insert",true);
-    DumpSqlUpdate = getBooleanOption("log4jdbc.dump.sql.update",true);
-    DumpSqlDelete = getBooleanOption("log4jdbc.dump.sql.delete",true);
-    DumpSqlCreate = getBooleanOption("log4jdbc.dump.sql.create",true);
+    DumpSqlSelect = getBooleanOption(props, "log4jdbc.dump.sql.select",true);
+    DumpSqlInsert = getBooleanOption(props, "log4jdbc.dump.sql.insert",true);
+    DumpSqlUpdate = getBooleanOption(props, "log4jdbc.dump.sql.update",true);
+    DumpSqlDelete = getBooleanOption(props, "log4jdbc.dump.sql.delete",true);
+    DumpSqlCreate = getBooleanOption(props, "log4jdbc.dump.sql.create",true);
 
     DumpSqlFilteringOn = !(DumpSqlSelect && DumpSqlInsert && DumpSqlUpdate &&
       DumpSqlDelete && DumpSqlCreate);
 
-    DumpSqlAddSemicolon = getBooleanOption("log4jdbc.dump.sql.addsemicolon",
-      false);
+    DumpSqlAddSemicolon = getBooleanOption(props,
+      "log4jdbc.dump.sql.addsemicolon", false);
 
-    AutoLoadPopularDrivers = getBooleanOption(
+    AutoLoadPopularDrivers = getBooleanOption(props,
       "log4jdbc.auto.load.popular.drivers", true);
 
     // The Set of drivers that the log4jdbc driver will preload at instantiation
@@ -406,8 +448,8 @@ public class DriverSpy implements Driver
       subDrivers.add("org.h2.Driver");
     }
 
-    // look for additional driver specified in system properties
-    String moreDrivers = getStringOption("log4jdbc.drivers");
+    // look for additional driver specified in properties
+    String moreDrivers = getStringOption(props, "log4jdbc.drivers");
 
     if (moreDrivers != null)
     {
@@ -416,7 +458,7 @@ public class DriverSpy implements Driver
       for (int i = 0; i < moreDriversArr.length; i++)
       {
         subDrivers.add(moreDriversArr[i]);
-        log.debug ("    will look for additional driver " + moreDriversArr[i]);
+        log.debug ("    will look for specific driver " + moreDriversArr[i]);
       }
     }
 

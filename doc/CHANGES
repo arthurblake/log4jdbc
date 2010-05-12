@@ -2,7 +2,10 @@ TBD        1.2 beta 2 Release
 
            o add system property log4jdbc.auto.load.popular.drivers for 
              disabling auto-loading of drivers
-             
+
+           o look first for log4jdbc property settings in optional 
+             log4jdbc.properties in the classpath.
+
 2010-03-20 1.2 beta 1 Release
 
            o Check for exception that should not, but in some cases could 
