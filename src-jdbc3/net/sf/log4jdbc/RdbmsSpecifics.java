@@ -34,8 +34,7 @@ class RdbmsSpecifics
   {
   }
 
-  protected static final DateFormat dateFormat = 
-    new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+  protected static final String dateFormat = "MM/dd/yyyy HH:mm:ss.SSS";
 
   /**
    * Format an Object that is being bound to a PreparedStatement parameter, for display. The goal is to reformat the
@@ -61,7 +60,7 @@ class RdbmsSpecifics
       }
       else if (object instanceof Date)
       {
-        return "'" + dateFormat.format(object) + "'";
+        return "'" + new SimpleDateFormat(dateFormat).format(object) + "'";
       }
       else if (object instanceof Boolean)
       {

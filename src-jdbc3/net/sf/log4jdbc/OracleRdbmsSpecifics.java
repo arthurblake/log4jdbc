@@ -15,6 +15,7 @@
  */
 package net.sf.log4jdbc;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -37,8 +38,8 @@ class OracleRdbmsSpecifics extends RdbmsSpecifics
       //
       // for example: 
       //   to_date('12/31/2011 23:59:59.150, 'mm/dd/yyyy hh24:mi:ss.ff3')
-      return "to_date('" + dateFormat.format(object) + "', " +
-        "'mm/dd/yyyy hh24:mi:ss.ff3')";
+      return "to_date('" + new SimpleDateFormat(dateFormat).format(object) +
+        "', 'mm/dd/yyyy hh24:mi:ss.ff3')";
     }
     else
     {

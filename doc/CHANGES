@@ -5,6 +5,8 @@ TBD        1.2 beta 2 Release
 
            o look first for log4jdbc property settings in optional 
              log4jdbc.properties in the classpath.
+             
+           o Fix non-threadsafe usage of SimpleDateFormat (Issue 18)
 
 2010-03-20 1.2 beta 1 Release
 

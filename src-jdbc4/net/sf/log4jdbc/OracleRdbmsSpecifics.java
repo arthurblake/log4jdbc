@@ -15,6 +15,7 @@
  */
 package net.sf.log4jdbc;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -28,17 +29,17 @@ class OracleRdbmsSpecifics extends RdbmsSpecifics
   {
     super();
   }
-  
+
   String formatParameterObject(Object object)
   {
     if (object != null && object instanceof Date)
     {
       // Use Oracle's to_date function to insure it comes across as a date
       //
-      // for example: 
+      // for example:
       //   to_date('12/31/2011 23:59:59.150, 'mm/dd/yyyy hh24:mi:ss.ff3')
-      return "to_date('" + dateFormat.format(object) + "', " +
-        "'mm/dd/yyyy hh24:mi:ss.ff3')";
+      return "to_date('" + new SimpleDateFormat(dateFormat).format(object) +
+        "', 'mm/dd/yyyy hh24:mi:ss.ff3')";
     }
     else
     {
