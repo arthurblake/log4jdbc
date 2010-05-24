@@ -1,12 +1,15 @@
 TBD        1.2 beta 2 Release
 
-           o add system property log4jdbc.auto.load.popular.drivers for 
+           o add new option, log4jdbc.auto.load.popular.drivers for 
              disabling auto-loading of drivers
 
            o look first for log4jdbc property settings in optional 
              log4jdbc.properties in the classpath.
              
            o Fix non-threadsafe usage of SimpleDateFormat (Issue 18)
+
+           o add new option, log4jdbc.trim.sql to trim the SQL before logging
+             it.
 
 2010-03-20 1.2 beta 1 Release
 

@@ -239,7 +239,10 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       return null;
     }
 
-    sql = sql.trim();
+    if (DriverSpy.TrimSql)
+    {
+      sql = sql.trim();
+    }
 
     StringBuffer output = new StringBuffer();
 

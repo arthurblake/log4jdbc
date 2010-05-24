@@ -204,6 +204,11 @@ public class DriverSpy implements Driver
   static boolean AutoLoadPopularDrivers;
 
   /**
+   * Trim SQL before logging it?
+   */
+  static boolean TrimSql;
+
+  /**
    * Get a Long option from a property and
    * log a debug message about this.
    *
@@ -419,6 +424,8 @@ public class DriverSpy implements Driver
 
     AutoLoadPopularDrivers = getBooleanOption(props,
       "log4jdbc.auto.load.popular.drivers", true);
+
+    TrimSql = getBooleanOption(props, "log4jdbc.trim.sql", true);
 
     // The Set of drivers that the log4jdbc driver will preload at instantiation
     // time.  The driver can spy on any driver type, it's just a little bit

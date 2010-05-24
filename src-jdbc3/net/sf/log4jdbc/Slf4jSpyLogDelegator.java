@@ -17,6 +17,8 @@ package net.sf.log4jdbc;
 
 import java.util.StringTokenizer;
 
+import net.sf.log4jdbc.DriverSpy;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -239,7 +241,10 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       return null;
     }
 
-    sql = sql.trim();
+    if (DriverSpy.TrimSql)
+    {
+      sql = sql.trim();
+    }
 
     StringBuffer output = new StringBuffer();
 
