@@ -11,6 +11,13 @@ TBD        1.2 beta 2 Release
            o add new option, log4jdbc.trim.sql to trim the SQL before logging
              it.
 
+           o add new option, log4jdbc.suppress.generated.keys.exception that
+             will ignore any exception produced by the method, 
+             Statement.getGeneratedKeys().  This flag is useful in Coldfusion
+             environments which typically call this method after every update,
+             even if unwarranted, and ignoring the exception, thus clogging up 
+             the logs with these exception reports.
+
 2010-03-20 1.2 beta 1 Release
 
            o Check for exception that should not, but in some cases could 

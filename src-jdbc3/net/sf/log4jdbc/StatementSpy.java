@@ -587,7 +587,10 @@ public class StatementSpy implements Statement, Spy
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s);
+      if (!DriverSpy.SuppressGetGeneratedKeysException)
+      {
+        reportException(methodCall, s);
+      }
       throw s;
     }
   }
