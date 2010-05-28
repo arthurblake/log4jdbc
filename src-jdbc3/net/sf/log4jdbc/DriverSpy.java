@@ -448,6 +448,7 @@ public class DriverSpy implements Driver
     if (AutoLoadPopularDrivers)
     {
       subDrivers.add("oracle.jdbc.driver.OracleDriver");
+      subDrivers.add("oracle.jdbc.OracleDriver");
       subDrivers.add("com.sybase.jdbc2.jdbc.SybDriver");
       subDrivers.add("net.sourceforge.jtds.jdbc.Driver");
 
@@ -517,11 +518,12 @@ public class DriverSpy implements Driver
     }
 
     SqlServerRdbmsSpecifics sqlServer = new SqlServerRdbmsSpecifics();
+    OracleRdbmsSpecifics oracle = new OracleRdbmsSpecifics();
 
     /** create lookup Map for specific rdbms formatters */
     rdbmsSpecifics = new HashMap();
-    rdbmsSpecifics.put("oracle.jdbc.driver.OracleDriver",
-      new OracleRdbmsSpecifics());
+    rdbmsSpecifics.put("oracle.jdbc.driver.OracleDriver", oracle);
+    rdbmsSpecifics.put("oracle.jdbc.OracleDriver", oracle);
     rdbmsSpecifics.put("net.sourceforge.jtds.jdbc.Driver", sqlServer);
     rdbmsSpecifics.put("com.microsoft.jdbc.sqlserver.SQLServerDriver",
       sqlServer);

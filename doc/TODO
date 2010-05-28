@@ -18,3 +18,5 @@ o  review dumpedSql method - make auto line breaking option (& num chars used) b
 o  need log4jdbc.debug.stack.regex so that the stack matching can take place via regex
 
 o  maven2 repository support
+
+o  this may be a better solution to SimpleDateFormat contention issue:  http://www.javaspecialists.eu/archive/Issue172.html

@@ -18,6 +18,10 @@ TBD        1.2 beta 2 Release
              even if unwarranted, and ignoring the exception, thus clogging up 
              the logs with these exception reports.
 
+           o add support for the newer oracle.jdbc.OracleDriver driver (the
+             older oracle.jdbc.driver.OracleDriver driver is still supported
+             as well) and add corrected date formatting for Oracle.
+
 2010-03-20 1.2 beta 1 Release
 
            o Check for exception that should not, but in some cases could 
