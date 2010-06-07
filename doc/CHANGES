@@ -21,6 +21,8 @@ TBD        1.2 beta 2 Release
            o add support for the newer oracle.jdbc.OracleDriver driver (the
              older oracle.jdbc.driver.OracleDriver driver is still supported
              as well) and add corrected date formatting for Oracle.
+             
+           o fix possible null pointer issue with setBlob and setClob (Issue 21)
 
 2010-03-20 1.2 beta 1 Release
 

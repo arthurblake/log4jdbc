@@ -308,7 +308,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setBlob(int i, Blob x) throws SQLException
   {
     String methodCall = "setBlob(" + i + ", " + x + ")";
-    argTraceSet(i, "(Blob)", "<Blob of size " + x.length() + ">");
+    argTraceSet(i, "(Blob)", 
+      x==null?null:("<Blob of size " + x.length() + ">"));
     try
     {
       realPreparedStatement.setBlob(i, x);
@@ -324,7 +325,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setClob(int i, Clob x) throws SQLException
   {
     String methodCall = "setClob(" + i + ", " + x + ")";
-    argTraceSet(i, "(Clob)", "<Clob of size " + x.length() + ">");
+    argTraceSet(i, "(Clob)",
+      x==null?null:("<Clob of size " + x.length() + ">"));
     try
     {
       realPreparedStatement.setClob(i, x);
