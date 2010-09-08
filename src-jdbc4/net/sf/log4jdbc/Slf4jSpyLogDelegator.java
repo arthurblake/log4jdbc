@@ -132,9 +132,9 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    * Called when a JDBC method from a Connection, Statement, PreparedStatement,
    * CallableStatement or ResultSet returns.
    *
-   * @param spy        the Spy wrapping the class that called the method that 
+   * @param spy        the Spy wrapping the class that called the method that
    *                   returned.
-   * @param methodCall a description of the name and call parameters of the 
+   * @param methodCall a description of the name and call parameters of the
    *                   method that returned.
    * @param returnMsg  return value converted to a String for integral types, or
    *                   String representation for Object.  Return types this will
@@ -147,7 +147,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       resultSetLogger:jdbcLogger;
     if (logger.isInfoEnabled())
     {
-      String header = spy.getConnectionNumber() + ". " + classType + "." + 
+      String header = spy.getConnectionNumber() + ". " + classType + "." +
         methodCall + " returned " + returnMsg;
       if (logger.isDebugEnabled())
       {
@@ -212,15 +212,14 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   {
     if (!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql))
     {
-      sql = processSql(sql);
-
       if (sqlOnlyLogger.isDebugEnabled())
       {
-        sqlOnlyLogger.debug(getDebugInfo() + nl + spy.getConnectionNumber() + ". " + sql);
+        sqlOnlyLogger.debug(getDebugInfo() + nl + spy.getConnectionNumber() +
+          ". " + processSql(sql));
       }
       else if (sqlOnlyLogger.isInfoEnabled())
       {
-        sqlOnlyLogger.info(sql);
+        sqlOnlyLogger.info(processSql(sql));
       }
     }
   }

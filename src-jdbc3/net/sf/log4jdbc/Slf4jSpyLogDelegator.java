@@ -214,15 +214,14 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   {
     if (!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql))
     {
-      sql = processSql(sql);
-
       if (sqlOnlyLogger.isDebugEnabled())
       {
-        sqlOnlyLogger.debug(getDebugInfo() + nl + spy.getConnectionNumber() + ". " + sql);
+        sqlOnlyLogger.debug(getDebugInfo() + nl + spy.getConnectionNumber() + 
+          ". " + processSql(sql));
       }
       else if (sqlOnlyLogger.isInfoEnabled())
       {
-        sqlOnlyLogger.info(sql);
+        sqlOnlyLogger.info(processSql(sql));
       }
     }
   }
