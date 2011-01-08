@@ -1984,16 +1984,7 @@ public class ResultSetSpy implements ResultSet, Spy
     String methodCall = "getStatement()";
     try
     {
-      Statement s = realResultSet.getStatement();
-      if (s == null)
-      {
-        return (Statement) reportReturn(methodCall, s);
-      }
-      else
-      {
-        //todo: what's going on here?
-        return (Statement) reportReturn(methodCall, new StatementSpy(new ConnectionSpy(s.getConnection()), s));
-      }
+      return (Statement) reportReturn(methodCall, realResultSet.getStatement());
     }
     catch (SQLException s)
     {
