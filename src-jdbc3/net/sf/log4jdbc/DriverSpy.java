@@ -35,9 +35,9 @@ import java.util.TreeSet;
  * A JDBC driver which is a facade that delegates to one or more real underlying
  * JDBC drivers.  The driver will spy on any other JDBC driver that is loaded,
  * simply by prepending <code>jdbc:log4</code> to the normal jdbc driver URL
- * used by any other JDBC driver. The driver, by default, also loads several 
- * well known drivers at class load time, so that this driver can be 
- * "dropped in" to any Java program that uses these drivers without making any 
+ * used by any other JDBC driver. The driver, by default, also loads several
+ * well known drivers at class load time, so that this driver can be
+ * "dropped in" to any Java program that uses these drivers without making any
  * code changes.
  * <p/>
  * The well known driver classes that are loaded are:
@@ -197,7 +197,7 @@ public class DriverSpy implements Driver
    * under some circumstances.
    */
   static boolean DumpFullDebugStackTrace;
-  
+
   /**
    * Attempt to Automatically load a set of popular JDBC drivers?
    */
@@ -207,6 +207,13 @@ public class DriverSpy implements Driver
    * Trim SQL before logging it?
    */
   static boolean TrimSql;
+
+  /**
+   * Remove extra Lines in the SQL that consist of only white space?
+   * Only when 2 or more lines in a row like this occur, will the extra lines (beyond 1)
+   * be removed.
+   */
+  static boolean TrimExtraBlankLinesInSql;
 
   /**
    * Coldfusion typically calls PreparedStatement.getGeneratedKeys() after
@@ -253,21 +260,21 @@ public class DriverSpy implements Driver
   /**
    * Get a Long option from a property and
    * log a debug message about this.
-   * 
+   *
    * @param props Properties to get option from.
    * @param propName property key.
    *
    * @return the value of that property key, converted
    * to a Long.  Or null if not defined or is invalid.
    */
-  private static Long getLongOption(Properties props, String propName, 
+  private static Long getLongOption(Properties props, String propName,
     long defaultValue)
   {
     String propValue = props.getProperty(propName);
     Long longPropValue;
     if (propValue == null)
     {
-      log.debug("x " + propName + " is not defined (using default of " + 
+      log.debug("x " + propName + " is not defined (using default of " +
         defaultValue +")");
       longPropValue = new Long(defaultValue);
     }
@@ -314,7 +321,7 @@ public class DriverSpy implements Driver
   /**
    * Get a boolean option from a property and
    * log a debug message about this.
-   * 
+   *
    * @param props Properties to get option from.
    * @param propName property name to get.
    * @param defaultValue default value to use if undefined.
@@ -354,9 +361,9 @@ public class DriverSpy implements Driver
   {
     log.debug("... log4jdbc initializing ...");
 
-    InputStream propStream = 
+    InputStream propStream =
       DriverSpy.class.getResourceAsStream("/log4jdbc.properties");
-    
+
     Properties props = new Properties(System.getProperties());
     if (propStream != null)
     {
@@ -377,9 +384,9 @@ public class DriverSpy implements Driver
         }
         catch (IOException e)
         {
-          log.debug("ERROR!  io exception closing property file stream: " + 
+          log.debug("ERROR!  io exception closing property file stream: " +
             e.getMessage());
-				}
+        }
       }
       log.debug("  log4jdbc.properties loaded from classpath");
     }
@@ -409,7 +416,7 @@ public class DriverSpy implements Driver
     DumpBooleanAsTrueFalse =
       getBooleanOption(props, "log4jdbc.dump.booleanastruefalse",false);
 
-    DumpSqlMaxLineLength = getLongOption(props, 
+    DumpSqlMaxLineLength = getLongOption(props,
       "log4jdbc.dump.sql.maxlinelength", 90L).intValue();
 
     DumpFullDebugStackTrace =
@@ -435,8 +442,10 @@ public class DriverSpy implements Driver
 
     TrimSql = getBooleanOption(props, "log4jdbc.trim.sql", true);
 
-    SuppressGetGeneratedKeysException = 
-      getBooleanOption(props, "log4jdbc.suppress.generated.keys.exception", 
+    TrimExtraBlankLinesInSql = getBooleanOption(props, "log4jdbc.trim.sql.extrablanklines", true);
+
+    SuppressGetGeneratedKeysException =
+      getBooleanOption(props, "log4jdbc.suppress.generated.keys.exception",
       false);
 
     // The Set of drivers that the log4jdbc driver will preload at instantiation

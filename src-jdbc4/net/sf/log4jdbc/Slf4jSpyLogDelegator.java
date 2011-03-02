@@ -15,6 +15,9 @@
  */
 package net.sf.log4jdbc;
 
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.StringTokenizer;
 
 import org.slf4j.LoggerFactory;
@@ -243,7 +246,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       sql = sql.trim();
     }
 
-    StringBuffer output = new StringBuffer();
+    StringBuilder output = new StringBuilder();
 
     if (DriverSpy.DumpSqlMaxLineLength <= 0)
     {
@@ -277,7 +280,52 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       output.append(";");
     }
 
-    return output.toString();
+    String stringOutput = output.toString();
+    
+    if (DriverSpy.TrimExtraBlankLinesInSql)
+    {
+      LineNumberReader lineReader = new LineNumberReader(new StringReader(stringOutput));
+
+      output = new StringBuilder();
+
+      int contiguousBlankLines = 0;
+      try
+      {
+        while (true)
+        {
+          String line = lineReader.readLine();
+          if (line==null)
+          {
+            break;
+          }
+
+          // is this line blank?
+          if (line.trim().length() == 0)
+          {
+          	contiguousBlankLines ++;
+          	// skip contiguous blank lines
+          	if (contiguousBlankLines > 1)
+          	{
+              continue;
+          	}
+          }
+          else
+          {
+          	contiguousBlankLines = 0;
+          	output.append(line);
+          }
+          output.append("\n");
+        }
+      }
+      catch (IOException e)
+      {
+      	// since we are reading from a buffer, this isn't likely to happen,
+      	// but if it does we just ignore it and treat it like its the end of the stream
+      }
+      stringOutput = output.toString();
+    }
+
+    return stringOutput;
   }
 
   /**

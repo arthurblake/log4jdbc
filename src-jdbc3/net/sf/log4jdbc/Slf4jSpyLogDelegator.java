@@ -15,9 +15,10 @@
  */
 package net.sf.log4jdbc;
 
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.StringTokenizer;
-
-import net.sf.log4jdbc.DriverSpy;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -129,14 +130,14 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       }
     }
   }
-  
+
   /**
    * Called when a JDBC method from a Connection, Statement, PreparedStatement,
    * CallableStatement or ResultSet returns.
    *
-   * @param spy        the Spy wrapping the class that called the method that 
+   * @param spy        the Spy wrapping the class that called the method that
    *                   returned.
-   * @param methodCall a description of the name and call parameters of the 
+   * @param methodCall a description of the name and call parameters of the
    *                   method that returned.
    * @param returnMsg  return value converted to a String for integral types, or
    *                   String representation for Object.  Return types this will
@@ -149,7 +150,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       resultSetLogger:jdbcLogger;
     if (logger.isInfoEnabled())
     {
-      String header = spy.getConnectionNumber() + ". " + classType + "." + 
+      String header = spy.getConnectionNumber() + ". " + classType + "." +
         methodCall + " returned " + returnMsg;
       if (logger.isDebugEnabled())
       {
@@ -216,7 +217,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     {
       if (sqlOnlyLogger.isDebugEnabled())
       {
-        sqlOnlyLogger.debug(getDebugInfo() + nl + spy.getConnectionNumber() + 
+        sqlOnlyLogger.debug(getDebugInfo() + nl + spy.getConnectionNumber() +
           ". " + processSql(sql));
       }
       else if (sqlOnlyLogger.isInfoEnabled())
@@ -279,7 +280,52 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       output.append(";");
     }
 
-    return output.toString();
+    String stringOutput = output.toString();
+    
+    if (DriverSpy.TrimExtraBlankLinesInSql)
+    {
+      LineNumberReader lineReader = new LineNumberReader(new StringReader(stringOutput));
+
+      output = new StringBuffer();
+
+      int contiguousBlankLines = 0;
+      try
+      {
+        while (true)
+        {
+          String line = lineReader.readLine();
+          if (line==null)
+          {
+            break;
+          }
+
+          // is this line blank?
+          if (line.trim().length() == 0)
+          {
+          	contiguousBlankLines ++;
+          	// skip contiguous blank lines
+          	if (contiguousBlankLines > 1)
+          	{
+              continue;
+          	}
+          }
+          else
+          {
+          	contiguousBlankLines = 0;
+          	output.append(line);
+          }
+          output.append("\n");
+        }
+      }
+      catch (IOException e)
+      {
+      	// since we are reading from a buffer, this isn't likely to happen,
+      	// but if it does we just ignore it and treat it like its the end of the stream
+      }
+      stringOutput = output.toString();
+    }
+
+    return stringOutput;
   }
 
   /**

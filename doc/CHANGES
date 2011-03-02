@@ -1,3 +1,13 @@
+TBD        1.2 Release
+
+           o add new option, log4jdbc.trim.sql.extrablanklines for removing
+             extra blank lines from sql output.
+
+           o fix issue where extra connection was being created when 
+             ResultSet.getStatement was being called (Issue 33.)
+
+           o performance enhancement when logging not enabled (Issue 29.)
+
 2010-06-09 1.2 beta 2 Release
 
            o add new option, log4jdbc.auto.load.popular.drivers for 

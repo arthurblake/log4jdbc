@@ -209,6 +209,13 @@ public class DriverSpy implements Driver
   static boolean TrimSql;
 
   /**
+   * Remove extra Lines in the SQL that consist of only white space?
+   * Only when 2 or more lines in a row like this occur, will the extra lines (beyond 1)
+   * be removed.
+   */
+  static boolean TrimExtraBlankLinesInSql;
+
+  /**
    * Coldfusion typically calls PreparedStatement.getGeneratedKeys() after
    * every SQL update call, even if it's not warranted.  This typically produces
    * an exception that is ignored by Coldfusion.  If this flag is true, then
@@ -379,7 +386,7 @@ public class DriverSpy implements Driver
         {
           log.debug("ERROR!  io exception closing property file stream: " +
             e.getMessage());
-				}
+        }
       }
       log.debug("  log4jdbc.properties loaded from classpath");
     }
@@ -435,9 +442,11 @@ public class DriverSpy implements Driver
 
     TrimSql = getBooleanOption(props, "log4jdbc.trim.sql", true);
 
+    TrimExtraBlankLinesInSql = getBooleanOption(props, "log4jdbc.trim.sql.extrablanklines", true);
+
     SuppressGetGeneratedKeysException =
-    	getBooleanOption(props, "log4jdbc.suppress.generated.keys.exception",
-    	false);
+      getBooleanOption(props, "log4jdbc.suppress.generated.keys.exception",
+      false);
 
     // The Set of drivers that the log4jdbc driver will preload at instantiation
     // time.  The driver can spy on any driver type, it's just a little bit
