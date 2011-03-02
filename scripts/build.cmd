@@ -17,7 +17,7 @@ set PATH=%JAVA_HOME%\bin;%ANT_HOME%\bin
 call java -version
 call ant -Djdbc.level=3 -Djvm.ver=1.4 all
 
-set JAVA_HOME=C:\jdk\1.6.0_18
+set JAVA_HOME=C:\jdk\1.6.0_21
 set PATH=%JAVA_HOME%\bin;%ANT_HOME%\bin
 
 call java -version
