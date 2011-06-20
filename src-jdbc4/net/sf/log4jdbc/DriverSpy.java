@@ -528,6 +528,7 @@ public class DriverSpy implements Driver
 
     SqlServerRdbmsSpecifics sqlServer = new SqlServerRdbmsSpecifics();
     OracleRdbmsSpecifics oracle = new OracleRdbmsSpecifics();
+    MySqlRdbmsSpecifics mySql = new MySqlRdbmsSpecifics();
 
     /** create lookup Map for specific rdbms formatters */
     rdbmsSpecifics = new HashMap();
@@ -537,6 +538,7 @@ public class DriverSpy implements Driver
     rdbmsSpecifics.put("com.microsoft.jdbc.sqlserver.SQLServerDriver",
       sqlServer);
     rdbmsSpecifics.put("weblogic.jdbc.sqlserver.SQLServerDriver", sqlServer);
+    rdbmsSpecifics.put("com.mysql.jdbc.Driver", mySql);
 
     log.debug("... log4jdbc initialized! ...");
   }

@@ -1,5 +1,7 @@
 TBD        1.2 Release
 
+           o new SQL formatter to more reliably dump sql that can be run for MySql (Issue 34)
+
            o don't show debug info in sql timing dump unless debug is enabled on the logger
              (to make the sql timing dump consistent with the way other the loggers work)
 
