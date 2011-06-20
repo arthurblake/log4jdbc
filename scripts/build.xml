@@ -159,7 +159,7 @@
       <!-- note that the jdk source code is referenced here so that javadoc will be generated from
           interface class methods when none is specified in the implementation -->
 
-      <sourcepath path="/jdk/1.4.2_18/src"/>
+      <sourcepath path="/jdk/1.4.2_19/src"/>
       <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
 <!--
       <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
@@ -206,7 +206,7 @@
       <!-- note that the jdk source code is referenced here so that javadoc will be generated from
           interface class methods when none is specified in the implementation -->
 
-      <sourcepath path="/jdk/1.6.0_11/src"/>
+      <sourcepath path="/jdk/1.6.0_21/src"/>
       <link href="http://java.sun.com/javase/6/docs/api/"/>
       <link href="http://www.slf4j.org/api/"/>
 
