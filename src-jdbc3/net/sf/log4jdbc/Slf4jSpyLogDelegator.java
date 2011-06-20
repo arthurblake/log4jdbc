@@ -349,7 +349,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
           execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
       {
         sqlTimingLogger.error(
-          buildSqlTimingDump(spy, execTime, methodCall, sql, true));
+          buildSqlTimingDump(spy, execTime, methodCall, sql, sqlTimingLogger.isDebugEnabled()));
       }
       else if (sqlTimingLogger.isWarnEnabled())
       {
@@ -357,7 +357,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
           execTime >= DriverSpy.SqlTimingWarnThresholdMsec)
         {
           sqlTimingLogger.warn(
-            buildSqlTimingDump(spy, execTime, methodCall, sql, true));
+            buildSqlTimingDump(spy, execTime, methodCall, sql, sqlTimingLogger.isDebugEnabled()));
         }
         else if (sqlTimingLogger.isDebugEnabled())
         {

@@ -1,5 +1,8 @@
 TBD        1.2 Release
 
+           o don't show debug info in sql timing dump unless debug is enabled on the logger
+             (to make the sql timing dump consistent with the way other the loggers work)
+
            o add new option, log4jdbc.trim.sql.extrablanklines for removing
              extra blank lines from sql output.
 
