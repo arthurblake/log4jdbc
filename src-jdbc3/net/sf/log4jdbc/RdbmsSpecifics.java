@@ -16,7 +16,6 @@
 package net.sf.log4jdbc;
 
 import java.util.Date;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -55,8 +54,7 @@ class RdbmsSpecifics
     {
       if (object instanceof String)
       {
-        // todo: need to handle imbedded quotes??
-        return "'" + object + "'";
+      	return "'" + escapeString((String)object) + "'";
       }
       else if (object instanceof Date)
       {
@@ -73,6 +71,28 @@ class RdbmsSpecifics
         return object.toString();
       }
     }
+  }
+
+  /**
+   * Make sure string is escaped properly so that it will run in a SQL query analyzer tool.
+   * At this time all we do is double any single tick marks.
+   * Do not call this with a null string or else an exception will occur.
+   *
+   * @return the input String, escaped.
+   */
+  String escapeString(String in)
+  {
+    StringBuffer out = new StringBuffer();
+    for (int i=0, j=in.length(); i < j; i++)
+    {
+      char c = in.charAt(i); 
+      if (c == '\'')
+      {
+        out.append(c);
+      }
+      out.append(c);
+    }
+    return out.toString();
   }
 
 }
