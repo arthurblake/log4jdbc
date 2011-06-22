@@ -1,5 +1,7 @@
 TBD        1.2 Release
 
+           o process SQL consistently when the sql is dumped because an exception occurred.
+
            o new SQL formatter to more reliably dump sql that can be run for MySql (Issue 34)
 
            o don't show debug info in sql timing dump unless debug is enabled on the logger

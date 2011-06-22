@@ -107,6 +107,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     }
     else
     {
+      sql = processSql(sql);
       jdbcLogger.error(header + " " + sql, e);
 
       // if at debug level, display debug info to error log
