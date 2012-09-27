@@ -1,4 +1,4 @@
-TBD				1.2.1 release
+TBD        1.2.1 release
 
            o bug fix ResultSetSpy.getStatement should return wrapped Statement,
              not real Statement (Issue 55)
