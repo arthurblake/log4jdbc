@@ -1,3 +1,8 @@
+TBD				1.2.1 release
+
+           o bug fix ResultSetSpy.getStatement should return wrapped Statement,
+             not real Statement (Issue 55)
+
 2012-02-17 1.2 Release
 
            o escape single quotes in PreparedStatement/CallableStatement bind variables (Issue 36.)

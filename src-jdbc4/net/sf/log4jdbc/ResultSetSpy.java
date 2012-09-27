@@ -1982,15 +1982,7 @@ public class ResultSetSpy implements ResultSet, Spy
   public Statement getStatement() throws SQLException
   {
     String methodCall = "getStatement()";
-    try
-    {
-      return (Statement) reportReturn(methodCall, realResultSet.getStatement());
-    }
-    catch (SQLException s)
-    {
-      reportException(methodCall, s);
-      throw s;
-    }
+    return (Statement) reportReturn(methodCall, parent);
   }
 
   public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException
