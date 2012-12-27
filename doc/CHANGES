@@ -1,7 +1,9 @@
 TBD        1.2.1 release
 
+           o getArray method improperly labeled as getURL (Issue 61.)
+
            o bug fix ResultSetSpy.getStatement should return wrapped Statement,
-             not real Statement (Issue 55)
+             not real Statement (Issue 55.)
 
 2012-02-17 1.2 Release
 
