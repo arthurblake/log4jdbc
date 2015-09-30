@@ -1,4 +1,5 @@
 2015-09-30 1.3 release
+
            o add new option, "log4jdbc.trim.sql.lines" which when set,
              will trim SQL line by line (for beginning of line, only trimming
              consistent white space) If this option is selected, the TrimSql
