@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
  *
  * @author Arthur Blake
  */
-class RdbmsSpecifics
+public class RdbmsSpecifics
 {
   /**
    * Default constructor.
