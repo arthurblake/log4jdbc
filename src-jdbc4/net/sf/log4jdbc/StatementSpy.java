@@ -433,7 +433,7 @@ public class StatementSpy implements Statement, Spy
    * Tracking of current batch (see addBatch, clearBatch and executeBatch)
    * //todo: should access to this List be synchronized?
    */
-  protected List currentBatch = new ArrayList();
+  protected List<String> currentBatch = new ArrayList<String>();
 
   public void addBatch(String sql) throws SQLException
   {
