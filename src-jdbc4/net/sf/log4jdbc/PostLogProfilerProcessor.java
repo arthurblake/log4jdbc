@@ -91,7 +91,7 @@ public class PostLogProfilerProcessor {
   /**
    * Collection of all sql that took longer than "threshold" msec to run.
    */
-  private List flaggedSql = new LinkedList();
+  private List<ProfiledSql> flaggedSql = new LinkedList<ProfiledSql>();
 
   /**
    * Process given filename, and produce sql profiling report to given PrintStream.
@@ -227,7 +227,7 @@ public class PostLogProfilerProcessor {
     flaggedSql.add(new ProfiledSql(msec,sql));
   }
 
-  private class ProfiledSql implements Comparable {
+  private class ProfiledSql implements Comparable<ProfiledSql> {
     private Long execTime;
     private String sql;
 
@@ -245,8 +245,8 @@ public class PostLogProfilerProcessor {
      * In this case the comparison is used to sort flagged sql in descending order.
      * @param o ProfiledSql Object to compare to this ProfiledSql.  Must not be null.
      */
-    public int compareTo(Object o) {
-      return ((ProfiledSql)o).execTime.compareTo(execTime);
+    public int compareTo(ProfiledSql o) {
+      return o.execTime.compareTo(execTime);
     }
 
     public Long getExecTime() {

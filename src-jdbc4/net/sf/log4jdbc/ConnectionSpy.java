@@ -33,7 +33,6 @@ import java.sql.SQLXML;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -68,7 +67,7 @@ public class ConnectionSpy implements Connection, Spy
    * Contains a Mapping of connectionNumber to currently open ConnectionSpy
    * objects.
    */
-  private static final Map connectionTracker = new HashMap();
+  private static final Map<Integer, ConnectionSpy> connectionTracker = new HashMap<Integer, ConnectionSpy>();
 
   /**
    * Get a dump of how many connections are open, and which connection numbers
@@ -88,7 +87,7 @@ public class ConnectionSpy implements Connection, Spy
       {
         return "open connections:  none";
       }
-      Set keys = connectionTracker.keySet();
+      Set<Integer> keys = connectionTracker.keySet();
       keysArr = (Integer[]) keys.toArray(new Integer[keys.size()]);
     }
 
