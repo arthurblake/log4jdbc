@@ -55,6 +55,7 @@ import java.util.TreeSet;
  * <li>org.apache.derby.jdbc.ClientDriver</li>
  * <li>org.apache.derby.jdbc.EmbeddedDriver</li>
  * <li>com.mysql.jdbc.Driver</li>
+ * <li>com.mysql.cj.jdbc.Driver</li>
  * <li>org.postgresql.Driver</li>
  * <li>org.hsqldb.jdbcDriver</li>
  * <li>org.h2.Driver</li>
@@ -479,6 +480,8 @@ public class DriverSpy implements Driver
 			subDrivers.add("org.apache.derby.jdbc.ClientDriver");
 			subDrivers.add("org.apache.derby.jdbc.EmbeddedDriver");
 			subDrivers.add("com.mysql.jdbc.Driver");
+			// for Connector/J 6.0
+			subDrivers.add("com.mysql.cj.jdbc.Driver");
 			subDrivers.add("org.postgresql.Driver");
 			subDrivers.add("org.hsqldb.jdbcDriver");
 			subDrivers.add("org.h2.Driver");
@@ -546,6 +549,7 @@ public class DriverSpy implements Driver
 			sqlServer);
 		rdbmsSpecifics.put("weblogic.jdbc.sqlserver.SQLServerDriver", sqlServer);
 		rdbmsSpecifics.put("com.mysql.jdbc.Driver", mySql);
+		rdbmsSpecifics.put("com.mysql.cj.jdbc.Driver", mySql);
 
 		log.debug("... log4jdbc initialized! ...");
 	}
