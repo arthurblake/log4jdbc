@@ -182,6 +182,9 @@ public class DriverSpy implements Driver
 	static boolean DumpSqlDelete;
 	static boolean DumpSqlCreate;
 
+	static boolean reportOriginalSql;
+	static boolean shouldUseMarkersForTimingReports;
+
 	// only true if one ore more of the above 4 flags are false.
 	static boolean DumpSqlFilteringOn;
 
@@ -414,6 +417,8 @@ public class DriverSpy implements Driver
 			SqlTimingErrorThresholdMsec = thresh.longValue();
 		}
 
+		shouldUseMarkersForTimingReports = getBooleanOption(props, "log4jdbc.sqltiming.usemarkersfortimingreports", false);
+
 		DumpBooleanAsTrueFalse = getBooleanOption(props,
 			"log4jdbc.dump.booleanastruefalse", false);
 
@@ -431,6 +436,7 @@ public class DriverSpy implements Driver
 		DumpSqlUpdate = getBooleanOption(props, "log4jdbc.dump.sql.update", true);
 		DumpSqlDelete = getBooleanOption(props, "log4jdbc.dump.sql.delete", true);
 		DumpSqlCreate = getBooleanOption(props, "log4jdbc.dump.sql.create", true);
+		reportOriginalSql = getBooleanOption(props, "log4jdbc.dump.sql.reportoriginal", false);
 
 		DumpSqlFilteringOn = !(DumpSqlSelect && DumpSqlInsert && DumpSqlUpdate &&
 			DumpSqlDelete && DumpSqlCreate);

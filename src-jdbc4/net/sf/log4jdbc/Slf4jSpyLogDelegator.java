@@ -24,6 +24,8 @@ import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * Delegates JDBC spy logging events to the the Simple Logging Facade for Java
@@ -33,6 +35,17 @@ import org.slf4j.LoggerFactory;
  */
 public class Slf4jSpyLogDelegator implements SpyLogDelegator
 {
+	public static ExecutionTimeMarkerFactory markerFactory;
+
+	static {
+		Slf4jSpyLogDelegator.markerFactory = new ExecutionTimeMarkerFactory() {
+			@Override
+			public Marker create(long executionTime) {
+				return MarkerFactory.getMarker("{\"executedInMsec\"=" + executionTime + "}");
+			}
+		};
+	}
+
 	/**
 	 * Create a SpyLogDelegator specific to the Simple Logging Facade for Java
 	 * (slf4j).
@@ -216,6 +229,10 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 			(DriverSpy.DumpSqlUpdate && "update".equals(sql)) ||
 			(DriverSpy.DumpSqlDelete && "delete".equals(sql)) ||
 			(DriverSpy.DumpSqlCreate && "create".equals(sql));
+	}
+
+	public boolean shouldUseMarkersForTimingReports() {
+		return DriverSpy.shouldUseMarkersForTimingReports;
 	}
 
 	/**
@@ -468,35 +485,58 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	public void sqlTimingOccured(Spy spy, long execTime, String methodCall,
 		String sql)
 	{
-		if (sqlTimingLogger.isErrorEnabled() &&
-			(!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql)))
+		if (!shouldReportTimingOccured(sql)) {
+			return;
+		}
+
+		String message = buildSqlTimingDump(spy, execTime, methodCall, sql, sqlTimingLogger.isDebugEnabled());
+		Marker marker = Slf4jSpyLogDelegator.markerFactory.create(execTime);
+
+		if (DriverSpy.SqlTimingErrorThresholdEnabled &&
+			execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
 		{
-			if (DriverSpy.SqlTimingErrorThresholdEnabled &&
-				execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
-			{
-				sqlTimingLogger.error(buildSqlTimingDump(spy, execTime, methodCall,
-					sql, sqlTimingLogger.isDebugEnabled()));
+			if (shouldUseMarkersForTimingReports()) {
+				sqlTimingLogger.error(marker, message);
+			} else {
+				sqlTimingLogger.error(message);
 			}
-			else if (sqlTimingLogger.isWarnEnabled())
-			{
-				if (DriverSpy.SqlTimingWarnThresholdEnabled &&
-					execTime >= DriverSpy.SqlTimingWarnThresholdMsec)
-				{
-					sqlTimingLogger.warn(buildSqlTimingDump(spy, execTime, methodCall,
-						sql, sqlTimingLogger.isDebugEnabled()));
-				}
-				else if (sqlTimingLogger.isDebugEnabled())
-				{
-					sqlTimingLogger.debug(buildSqlTimingDump(spy, execTime, methodCall,
-						sql, true));
-				}
-				else if (sqlTimingLogger.isInfoEnabled())
-				{
-					sqlTimingLogger.info(buildSqlTimingDump(spy, execTime, methodCall,
-						sql, false));
-				}
+
+			return;
+		}
+
+		if (!sqlTimingLogger.isWarnEnabled()) {
+			return;
+		}
+
+		if (DriverSpy.SqlTimingWarnThresholdEnabled &&
+			execTime >= DriverSpy.SqlTimingWarnThresholdMsec)
+		{
+			if (shouldUseMarkersForTimingReports()) {
+				sqlTimingLogger.warn(marker, message);
+			} else {
+				sqlTimingLogger.warn(message);
 			}
 		}
+		else if (sqlTimingLogger.isDebugEnabled())
+		{
+			if (shouldUseMarkersForTimingReports()) {
+				sqlTimingLogger.debug(marker, message);
+			} else {
+				sqlTimingLogger.debug();
+			}
+		}
+		else if (sqlTimingLogger.isInfoEnabled())
+		{
+			if (shouldUseMarkersForTimingReports()) {
+				sqlTimingLogger.info(marker, message);
+			} else {
+				sqlTimingLogger.info(message);
+			}
+		}
+	}
+
+	private boolean shouldReportTimingOccured(String sql) {
+		return sqlTimingLogger.isErrorEnabled() && (!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql));
 	}
 
 	/**
@@ -536,9 +576,12 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 		sql = processSql(sql);
 
 		out.append(sql);
-		out.append(" {executed in ");
-		out.append(execTime);
-		out.append(" msec}");
+
+		if (!shouldUseMarkersForTimingReports()) {
+			out.append(" {executed in ");
+			out.append(execTime);
+			out.append(" msec}");
+		}
 
 		return out.toString();
 	}
@@ -683,5 +726,9 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 		{
 			connectionLogger.info(spy.getConnectionNumber() + ". Connection closed");
 		}
+	}
+
+	public static interface ExecutionTimeMarkerFactory {
+		Marker create(long executionTime);
 	}
 }

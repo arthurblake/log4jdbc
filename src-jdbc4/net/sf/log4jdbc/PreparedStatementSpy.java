@@ -106,6 +106,10 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   protected String dumpedSql()
   {
+    if (DriverSpy.reportOriginalSql) {
+      return sql;
+    }
+
     StringBuffer dumpSql = new StringBuffer();
     int lastPos = 0;
     int Qpos = sql.indexOf('?', lastPos);  // find position of first question mark
