@@ -522,7 +522,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 			if (shouldUseMarkersForTimingReports()) {
 				sqlTimingLogger.debug(marker, message);
 			} else {
-				sqlTimingLogger.debug();
+				sqlTimingLogger.debug(message);
 			}
 		}
 		else if (sqlTimingLogger.isInfoEnabled())
