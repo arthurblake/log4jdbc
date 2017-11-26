@@ -231,6 +231,8 @@ public class DriverSpy implements Driver
 	 */
 	static boolean SuppressGetGeneratedKeysException;
 
+	static SqlQueryPrettifier sqlPrettifier;
+
 	/**
 	 * Get a Long option from a property and log a debug message about this.
 	 * 
@@ -364,6 +366,13 @@ public class DriverSpy implements Driver
 	static
 	{
 		log.debug("... log4jdbc initializing ...");
+
+		sqlPrettifier = new SqlQueryPrettifier() {
+			@Override
+			public String prettifySql(String sql) {
+				return sql;
+			}
+		};
 
 		InputStream propStream = DriverSpy.class
 			.getResourceAsStream("/log4jdbc.properties");
@@ -790,5 +799,9 @@ public class DriverSpy implements Driver
 
 		lastUnderlyingDriverRequested = d;
 		return d.getPropertyInfo(url, info);
+	}
+
+	public static interface SqlQueryPrettifier {
+		String prettifySql(String sql);
 	}
 }
