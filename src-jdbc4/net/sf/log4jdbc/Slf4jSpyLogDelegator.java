@@ -122,6 +122,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	public void exceptionOccured(Spy spy, String methodCall, Exception e,
 		String sql, long execTime)
 	{
+		sql = DriverSpy.sqlPrettifier.prettifySql(sql);
+
 		String classType = spy.getClassType();
 		Integer spyNo = spy.getConnectionNumber();
 		String header = spyNo + ". " + classType + "." + methodCall;
@@ -245,6 +247,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	 */
 	public void sqlOccured(Spy spy, String methodCall, String sql)
 	{
+		sql = DriverSpy.sqlPrettifier.prettifySql(sql);
+
 		if (!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql))
 		{
 			if (sqlOnlyLogger.isDebugEnabled())
@@ -485,6 +489,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	public void sqlTimingOccured(Spy spy, long execTime, String methodCall,
 		String sql)
 	{
+		sql = DriverSpy.sqlPrettifier.prettifySql(sql);
+
 		if (!shouldReportTimingOccured(sql)) {
 			return;
 		}

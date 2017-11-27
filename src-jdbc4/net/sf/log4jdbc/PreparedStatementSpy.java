@@ -107,7 +107,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   protected String dumpedSql()
   {
     if (DriverSpy.reportOriginalSql) {
-      return DriverSpy.sqlPrettifier.prettifySql(sql);
+      return sql;
     }
 
     StringBuffer dumpSql = new StringBuffer();
@@ -147,9 +147,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
       dumpSql.append(sql.substring(lastPos, sql.length()));  // dump last segment
     }
 
-    String sqlWithArguments = dumpSql.toString();
-
-    return DriverSpy.sqlPrettifier.prettifySql(sqlWithArguments);
+    return dumpSql.toString();
   }
 
   protected void reportAllReturns(String methodCall, String msg)
