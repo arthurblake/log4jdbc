@@ -231,7 +231,7 @@ public class DriverSpy implements Driver
 	 */
 	static boolean SuppressGetGeneratedKeysException;
 
-	static SqlQueryPrettifier sqlPrettifier;
+	public static SqlQueryPrettifier sqlPrettifier;
 
 	/**
 	 * Get a Long option from a property and log a debug message about this.
