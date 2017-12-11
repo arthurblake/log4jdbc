@@ -40,8 +40,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	static {
 		Slf4jSpyLogDelegator.markerFactory = new ExecutionTimeMarkerFactory() {
 			@Override
-			public Marker create(long executionTime) {
-				return MarkerFactory.getMarker("{\"executedInMsec\"=" + executionTime + "}");
+			public Marker create(String sql, long executionTime) {
+				return MarkerFactory.getMarker("{\"sql\"=\"" + sql + "\",\"executedInMsec\"=" + executionTime + "}");
 			}
 		};
 	}
@@ -496,7 +496,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 		}
 
 		String message = buildSqlTimingDump(spy, execTime, methodCall, sql, sqlTimingLogger.isDebugEnabled());
-		Marker marker = Slf4jSpyLogDelegator.markerFactory.create(execTime);
+		Marker marker = Slf4jSpyLogDelegator.markerFactory.create(sql, execTime);
 
 		if (DriverSpy.SqlTimingErrorThresholdEnabled &&
 			execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
@@ -735,6 +735,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	}
 
 	public static interface ExecutionTimeMarkerFactory {
-		Marker create(long executionTime);
+		Marker create(String sql, long executionTime);
 	}
 }
