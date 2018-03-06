@@ -107,11 +107,11 @@ public class StatementSpy implements Statement, Spy
    * @param methodCall description of method call and arguments passed to it that generated the exception.
    * @param exception exception that was generated
    * @param sql SQL associated with the call.
-   * @param execTime amount of time that the jdbc driver was chugging on the SQL before it threw an exception.
+   * @param execTimeNanoSec amount of time that the jdbc driver was chugging on the SQL before it threw an exception.
    */
-  protected void reportException(String methodCall, SQLException exception, String sql, long execTime)
+  protected void reportException(String methodCall, SQLException exception, String sql, long execTimeNanoSec)
   {
-    log.exceptionOccured(this, methodCall, exception, sql, execTime);
+    log.exceptionOccured(this, methodCall, exception, sql, execTimeNanoSec);
   }
 
   /**
@@ -284,30 +284,30 @@ public class StatementSpy implements Statement, Spy
   /**
    * Report SQL for logging with a warning that it was generated from a statement.
    *
-   * @param execTime   execution time in msec.
+   * @param execTimeNanoSec   execution time in nanoseconds.
    * @param sql        the SQL being run
    * @param methodCall the name of the method that was running the SQL
    */
-  protected void reportStatementSqlTiming(long execTime, String sql, String methodCall)
+  protected void reportStatementSqlTiming(long execTimeNanoSec, String sql, String methodCall)
   {
     // redirect to one more method call ONLY so that stack trace search is consistent
     // with the reportReturn calls
-    _reportSqlTiming(execTime, (DriverSpy.StatementUsageWarn?StatementSqlWarning:"") +
+    _reportSqlTiming(execTimeNanoSec, (DriverSpy.StatementUsageWarn?StatementSqlWarning:"") +
       sql, methodCall);
   }
 
   /**
    * Report SQL for logging.
    *
-   * @param execTime   execution time in msec.
+   * @param execTimeNanoSec   execution time in nanoseconds.
    * @param sql        the SQL being run
    * @param methodCall the name of the method that was running the SQL
    */
-  protected void reportSqlTiming(long execTime, String sql, String methodCall)
+  protected void reportSqlTiming(long execTimeNanoSec, String sql, String methodCall)
   {
     // redirect to one more method call ONLY so that stack trace search is consistent
     // with the reportReturn calls
-    _reportSqlTiming(execTime, sql, methodCall);
+    _reportSqlTiming(execTimeNanoSec, sql, methodCall);
   }
 
   /**
@@ -328,9 +328,9 @@ public class StatementSpy implements Statement, Spy
     log.sqlOccured(this, methodCall, sql);
   }
 
-  private void _reportSqlTiming(long execTime, String sql, String methodCall)
+  private void _reportSqlTiming(long execTimeNanoSec, String sql, String methodCall)
   {
-    log.sqlTimingOccured(this, execTime, methodCall, sql);
+    log.sqlTimingOccured(this, execTimeNanoSec, methodCall, sql);
   }
 
   // implementation of interface methods
@@ -352,16 +352,16 @@ public class StatementSpy implements Statement, Spy
   {
     String methodCall = "executeUpdate(" + sql + ", " + columnNames + ")";
     reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
     try
     {
       int result = realStatement.executeUpdate(sql, columnNames);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
+      reportStatementSqlTiming(System.nanoTime() - tstartNano, sql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -370,16 +370,16 @@ public class StatementSpy implements Statement, Spy
   {
     String methodCall = "execute(" + sql + ", " + columnNames + ")";
     reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
     try
     {
       boolean result = realStatement.execute(sql, columnNames);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
+      reportStatementSqlTiming(System.nanoTime() - tstartNano, sql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -518,17 +518,17 @@ public class StatementSpy implements Statement, Spy
 
     sql = batchReport.toString();
     reportSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
 
     int[] updateResults;
     try
     {
       updateResults = realStatement.executeBatch();
-      reportSqlTiming(System.currentTimeMillis()-tstart, sql, methodCall);
+      reportSqlTiming(System.nanoTime() - tstartNano, sql, methodCall);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis()-tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
     currentBatch.clear();
@@ -658,17 +658,17 @@ public class StatementSpy implements Statement, Spy
   {
     String methodCall = "executeQuery(" + sql + ")";
     reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
     try
     {
       ResultSet result = realStatement.executeQuery(sql);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
+      reportStatementSqlTiming(System.nanoTime() - tstartNano, sql, methodCall);
       ResultSetSpy r = new ResultSetSpy(this, result);
       return (ResultSet) reportReturn(methodCall, r);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -691,16 +691,16 @@ public class StatementSpy implements Statement, Spy
   {
     String methodCall = "executeUpdate(" + sql + ")";
     reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
     try
     {
       int result = realStatement.executeUpdate(sql);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
+      reportStatementSqlTiming(System.nanoTime() - tstartNano, sql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -836,16 +836,17 @@ public class StatementSpy implements Statement, Spy
   {
     String methodCall = "execute(" + sql + ")";
     reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
+
     try
     {
       boolean result = realStatement.execute(sql);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
+      reportStatementSqlTiming(System.nanoTime() - tstartNano, sql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -854,16 +855,17 @@ public class StatementSpy implements Statement, Spy
   {
     String methodCall = "executeUpdate(" + sql + ", " + autoGeneratedKeys + ")";
     reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
+
     try
     {
       int result = realStatement.executeUpdate(sql, autoGeneratedKeys);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
+      reportStatementSqlTiming( System.nanoTime() - tstartNano, sql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -872,16 +874,17 @@ public class StatementSpy implements Statement, Spy
   {
     String methodCall = "execute(" + sql + ", " + autoGeneratedKeys + ")";
     reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
+
     try
     {
       boolean result = realStatement.execute(sql, autoGeneratedKeys);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
+      reportStatementSqlTiming(System.nanoTime() - tstartNano, sql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -890,16 +893,17 @@ public class StatementSpy implements Statement, Spy
   {
     String methodCall = "executeUpdate(" + sql + ", " + columnIndexes + ")";
     reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
+
     try
     {
       int result = realStatement.executeUpdate(sql, columnIndexes);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
+      reportStatementSqlTiming(System.nanoTime() - tstartNano, sql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -908,16 +912,17 @@ public class StatementSpy implements Statement, Spy
   {
     String methodCall = "execute(" + sql + ", " + columnIndexes + ")";
     reportStatementSql(sql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
+
     try
     {
       boolean result = realStatement.execute(sql, columnIndexes);
-      reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
+      reportStatementSqlTiming(System.nanoTime() - tstartNano, sql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, sql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, sql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
