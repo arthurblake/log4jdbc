@@ -21,6 +21,7 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Post processes an existing sqltiming log, and creates a profiling report from it.
@@ -29,8 +30,8 @@ import java.util.Arrays;
  * Assumptions:
  *
  * 1. Each sql statement in the log is separated by a blank line.
- * 2. Each sql statement is terminated with the timing string "{executed in N msec}" where N is the number of
- *    milliseconds that the sql executed in.
+ * 2. Each sql statement is terminated with the timing string "{executed in N nanoSec}" where N is the number of
+ *    nanoseconds that the sql executed in.
  *
  */
 public class PostLogProfilerProcessor {
@@ -64,24 +65,24 @@ public class PostLogProfilerProcessor {
   private long lineNo = 0L;
 
   /**
-   * Total number of milliseconds that all processed sql took to run.
+   * Total number of nanoseconds that all processed sql took to run.
    */
-  private long totalMsec = 0L;
+  private long totalNanoSec = 0L;
 
   /**
-   * Milliseconds of the worst single offending sql statement.
+   * Nanoseconds of the worst single offending sql statement.
    */
-  private long maxMsec = 0L;
+  private long maxNanoSec = 0L;
 
   /**
-   * Total combined milliseconds of all flagged sql statements.
+   * Total combined nanoseconds of all flagged sql statements.
    */
-  private long flaggedSqlTotalMsec = 0L;
+  private long flaggedSqlTotalNanoSec = 0L;
 
   /**
    * Threshold at which sql is deemed to be running slow enough to be flagged.
    */
-  private long threshold = 100L;
+  private long threshold = TimeUnit.MILLISECONDS.toNanos(100L);
 
   /**
    * How many top offender sql statements to display in final report
@@ -89,7 +90,7 @@ public class PostLogProfilerProcessor {
   private long topOffenderCount = 1000L;
 
   /**
-   * Collection of all sql that took longer than "threshold" msec to run.
+   * Collection of all sql that took longer than "threshold" nanoseconds to run.
    */
   private List flaggedSql = new LinkedList();
 
@@ -144,27 +145,27 @@ public class PostLogProfilerProcessor {
     // display report to stdout
 
     out.println("Number of sql statements:  " + totalSql);
-    out.println("Total number of msec    :  " + totalMsec);
-    if (totalMsec>0)
+    out.println("Total number of nanoseconds    :  " + totalNanoSec);
+    if (totalNanoSec>0)
     {
-      out.println("Average msec/statement  :  " + totalSql/totalMsec);
+      out.println("Average nanosecond/statement  :  " + totalSql/totalNanoSec);
     }
 
     int flaggedSqlStmts = flaggedSql.size();
 
     if (flaggedSqlStmts>0)
     {
-      out.println("Sql statements that took more than "+ threshold + " msec were flagged.");
+      out.println("Sql statements that took more than "+ threshold + " nanoseconds were flagged.");
       out.println("Flagged sql statements              :  " + flaggedSqlStmts);
-      out.println("Flagged sql Total number of msec    :  " + flaggedSqlTotalMsec);
-      out.println("Flagged sql Average msec/statement  :  " + flaggedSqlTotalMsec/flaggedSqlStmts);
+      out.println("Flagged sql Total number of nanoseconds    :  " + flaggedSqlTotalNanoSec);
+      out.println("Flagged sql Average nanosecond/statement  :  " + flaggedSqlTotalNanoSec/flaggedSqlStmts);
 
       out.println("sorting...");
 
       Object[] flaggedSqlArray = flaggedSql.toArray();
       Arrays.sort(flaggedSqlArray);
 
-      int execTimeSize = ("" + maxMsec).length();
+      int execTimeSize = ("" + maxNanoSec).length();
 
 
       if (topOffenderCount > flaggedSqlArray.length)
@@ -179,7 +180,7 @@ public class PostLogProfilerProcessor {
       for (int i=0; i < topOffenderCount; i++)
       {
         p = (ProfiledSql) flaggedSqlArray[i];
-        out.println(Utilities.rightJustify(execTimeSize,""+p.getExecTime()) + " " + p.getSql());
+        out.println(Utilities.rightJustify(execTimeSize,""+p.getExecTimeNanoSec()) + " " + p.getSql());
       }
     }
   }
@@ -191,7 +192,7 @@ public class PostLogProfilerProcessor {
     {
       totalSql++;
       String sqlStr = sql.toString();
-      if (sqlStr.endsWith("msec}"))
+      if (sqlStr.endsWith("nanoSec}"))
       {
         int executedIn = sqlStr.indexOf("{executed in ");
         if (executedIn == -1)
@@ -201,18 +202,18 @@ public class PostLogProfilerProcessor {
         }
 
         //todo: proper error handling for parse
-        String msecStr = sqlStr.substring(executedIn+13, sqlStr.length()-6);
-        long msec = Long.parseLong(msecStr);
-        totalMsec +=msec;
-        if (msec > maxMsec)
+        String nanoSecStr = sqlStr.substring(executedIn+13, sqlStr.length()-9);
+        long nanoSec = Long.parseLong(nanoSecStr);
+        totalNanoSec +=nanoSec;
+        if (nanoSec > maxNanoSec)
         {
-          maxMsec = msec;
+          maxNanoSec = nanoSec;
         }
 
-        if (msec >threshold)
+        if (nanoSec >threshold)
         {
-          flagSql(msec,sqlStr);
-          flaggedSqlTotalMsec += msec;
+          flagSql(nanoSec,sqlStr);
+          flaggedSqlTotalNanoSec += nanoSec;
         }
       }
       else
@@ -222,18 +223,18 @@ public class PostLogProfilerProcessor {
     }
   }
 
-  private void flagSql(long msec, String sql)
+  private void flagSql(long nanoSec, String sql)
   {
-    flaggedSql.add(new ProfiledSql(msec,sql));
+    flaggedSql.add(new ProfiledSql(nanoSec,sql));
   }
 
   private class ProfiledSql implements Comparable {
-    private Long execTime;
+    private Long execTimeNanoSec;
     private String sql;
 
-    public ProfiledSql (long msec, String sql)
+    public ProfiledSql (long nanoSec, String sql)
     {
-      this.execTime= new Long(msec);
+      this.execTimeNanoSec= new Long(nanoSec);
       this.sql = sql;
     }
 
@@ -246,11 +247,11 @@ public class PostLogProfilerProcessor {
      * @param o ProfiledSql Object to compare to this ProfiledSql.  Must not be null.
      */
     public int compareTo(Object o) {
-      return ((ProfiledSql)o).execTime.compareTo(execTime);
+      return ((ProfiledSql)o).execTimeNanoSec.compareTo(execTimeNanoSec);
     }
 
-    public Long getExecTime() {
-      return execTime;
+    public Long getExecTimeNanoSec() {
+      return execTimeNanoSec;
     }
 
     public String getSql() {
@@ -259,7 +260,7 @@ public class PostLogProfilerProcessor {
 
     public String toString()
     {
-      return this.execTime + " msec:  " + this.sql;
+      return this.execTimeNanoSec + " nanoseconds:  " + this.sql;
     }
   }
 }

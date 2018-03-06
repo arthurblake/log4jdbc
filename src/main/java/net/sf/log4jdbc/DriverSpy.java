@@ -119,35 +119,35 @@ public class DriverSpy implements Driver
 
 	/**
 	 * Flag to indicate if a warning should be shown if SQL takes more than
-	 * SqlTimingWarnThresholdMsec milliseconds to run. See below.
+	 * SqlTimingWarnThresholdNanoSec nanoseconds to run. See below.
 	 */
 	static boolean SqlTimingWarnThresholdEnabled;
 
 	/**
-	 * An amount of time in milliseconds for which SQL that executed taking this
+	 * An amount of time in nanoseconds for which SQL that executed taking this
 	 * long or more to run shall cause a warning message to be generated on the
 	 * SQL timing logger.
 	 * 
 	 * This threshold will <i>ONLY</i> be used if SqlTimingWarnThresholdEnabled is
 	 * true.
 	 */
-	static long SqlTimingWarnThresholdMsec;
+	static long SqlTimingWarnThresholdNanoSec;
 
 	/**
 	 * Flag to indicate if an error should be shown if SQL takes more than
-	 * SqlTimingErrorThresholdMsec milliseconds to run. See below.
+	 * SqlTimingErrorThresholdNanoSec nanoseconds to run. See below.
 	 */
 	static boolean SqlTimingErrorThresholdEnabled;
 
 	/**
-	 * An amount of time in milliseconds for which SQL that executed taking this
+	 * An amount of time in nanoseconds for which SQL that executed taking this
 	 * long or more to run shall cause an error message to be generated on the SQL
 	 * timing logger.
 	 * 
 	 * This threshold will <i>ONLY</i> be used if SqlTimingErrorThresholdEnabled
 	 * is true.
 	 */
-	static long SqlTimingErrorThresholdMsec;
+	static long SqlTimingErrorThresholdNanoSec;
 
 	/**
 	 * When dumping boolean values, dump them as 'true' or 'false'. If this option
@@ -416,14 +416,14 @@ public class DriverSpy implements Driver
 		SqlTimingWarnThresholdEnabled = (thresh != null);
 		if (SqlTimingWarnThresholdEnabled)
 		{
-			SqlTimingWarnThresholdMsec = thresh.longValue();
+			SqlTimingWarnThresholdNanoSec = thresh.longValue();
 		}
 
 		thresh = getLongOption(props, "log4jdbc.sqltiming.error.threshold");
 		SqlTimingErrorThresholdEnabled = (thresh != null);
 		if (SqlTimingErrorThresholdEnabled)
 		{
-			SqlTimingErrorThresholdMsec = thresh.longValue();
+			SqlTimingErrorThresholdNanoSec = thresh.longValue();
 		}
 
 		shouldUseMarkersForTimingReports = getBooleanOption(props, "log4jdbc.sqltiming.usemarkersfortimingreports", false);

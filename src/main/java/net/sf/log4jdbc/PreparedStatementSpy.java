@@ -415,16 +415,16 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     String methodCall = "execute()";
     String dumpedSql = dumpedSql();
     reportSql(dumpedSql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
     try
     {
       boolean result = realPreparedStatement.execute();
-      reportSqlTiming(System.currentTimeMillis() - tstart, dumpedSql, methodCall);
+      reportSqlTiming(System.nanoTime() - tstartNano, dumpedSql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, dumpedSql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, dumpedSql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -732,17 +732,18 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     String methodCall = "executeQuery()";
     String dumpedSql = dumpedSql();
     reportSql(dumpedSql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
+
     try
     {
       ResultSet r = realPreparedStatement.executeQuery();
-      reportSqlTiming(System.currentTimeMillis() - tstart, dumpedSql, methodCall);
+      reportSqlTiming(System.nanoTime() - tstartNano, dumpedSql, methodCall);
       ResultSetSpy rsp = new ResultSetSpy(this, r);
       return (ResultSet) reportReturn(methodCall, rsp);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, dumpedSql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, dumpedSql, System.nanoTime() - tstartNano);
       throw s;
     }
   }
@@ -1019,16 +1020,17 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     String methodCall = "executeUpdate()";
     String dumpedSql = dumpedSql();
     reportSql(dumpedSql, methodCall);
-    long tstart = System.currentTimeMillis();
+    long tstartNano = System.nanoTime();
+
     try
     {
       int result = realPreparedStatement.executeUpdate();
-      reportSqlTiming(System.currentTimeMillis() - tstart, dumpedSql, methodCall);
+      reportSqlTiming(System.nanoTime() - tstartNano, dumpedSql, methodCall);
       return reportReturn(methodCall, result);
     }
     catch (SQLException s)
     {
-      reportException(methodCall, s, dumpedSql, System.currentTimeMillis() - tstart);
+      reportException(methodCall, s, dumpedSql, System.nanoTime() - tstartNano);
       throw s;
     }
   }

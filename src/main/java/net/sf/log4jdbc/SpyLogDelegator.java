@@ -38,10 +38,10 @@ public interface SpyLogDelegator
    * @param methodCall a description of the name and call parameters of the method generated the Exception.
    * @param e          the Exception that was thrown.
    * @param sql        optional sql that occured just before the exception occured.
-   * @param execTime   optional amount of time that passed before an exception was thrown when sql was being executed.
+   * @param execTimeNanoSec   optional amount of time that passed before an exception was thrown when sql was being executed.
    *                   caller should pass -1 if not used
    */
-  public void exceptionOccured(Spy spy, String methodCall, Exception e, String sql, long execTime);
+  public void exceptionOccured(Spy spy, String methodCall, Exception e, String sql, long execTimeNanoSec);
 
   /**
    * Called when spied upon method call returns.
@@ -74,11 +74,11 @@ public interface SpyLogDelegator
    * Similar to sqlOccured, but reported after SQL executes and used to report timing stats on the SQL
    *
    * @param spy the    Spy wrapping the class where the SQL occured.
-   * @param execTime   how long it took the sql to run, in msec.
+   * @param execTimeNanoSec   how long it took the sql to run, in nanoseconds.
    * @param methodCall a description of the name and call parameters of the method that generated the SQL.
    * @param sql        sql that occured.
    */
-  public void sqlTimingOccured(Spy spy, long execTime, String methodCall, String sql);
+  public void sqlTimingOccured(Spy spy, long execTimeNanoSec, String methodCall, String sql);
 
   /**
    * Called whenever a new connection spy is created.

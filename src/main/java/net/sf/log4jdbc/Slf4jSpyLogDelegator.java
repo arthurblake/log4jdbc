@@ -40,8 +40,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	static {
 		Slf4jSpyLogDelegator.markerFactory = new ExecutionTimeMarkerFactory() {
 			@Override
-			public Marker create(String sql, long executionTime) {
-				return MarkerFactory.getMarker("{\"sql\"=\"" + sql + "\",\"executedInMsec\"=" + executionTime + "}");
+			public Marker create(String sql, long executionTimeNanoSec) {
+				return MarkerFactory.getMarker("{\"sql\"=\"" + sql + "\",\"executedInNanoSec\"=" + executionTimeNanoSec + "}");
 			}
 		};
 	}
@@ -115,12 +115,11 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	 *        method generated the Exception.
 	 * @param e the Exception that was thrown.
 	 * @param sql optional sql that occured just before the exception occured.
-	 * @param execTime optional amount of time that passed before an exception was
+	 * @param execTimeNanoSec optional amount of time that passed before an exception was
 	 *        thrown when sql was being executed. caller should pass -1 if not
 	 *        used
 	 */
-	public void exceptionOccured(Spy spy, String methodCall, Exception e,
-		String sql, long execTime)
+	public void exceptionOccured(Spy spy, String methodCall, Exception e, String sql, long execTimeNanoSec)
 	{
 		sql = DriverSpy.sqlPrettifier.prettifySql(sql);
 
@@ -152,12 +151,12 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 			if (sqlTimingLogger.isDebugEnabled())
 			{
 				sqlTimingLogger.error(getDebugInfo() + nl + spyNo + ". " + sql +
-					" {FAILED after " + execTime + " msec}", e);
+					" {FAILED after " + execTimeNanoSec + " nanoSec}", e);
 			}
 			else
 			{
 				sqlTimingLogger.error(header + " FAILED! " + sql + " {FAILED after " +
-					execTime + " msec}", e);
+					execTimeNanoSec + " nanoSec}", e);
 			}
 		}
 	}
@@ -479,15 +478,14 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	 * 
 	 * @param spy the Spy wrapping the class where the SQL occurred.
 	 * 
-	 * @param execTime how long it took the SQL to run, in milliseconds.
+	 * @param execTimeNanoSec how long it took the SQL to run, in nanoseconds.
 	 * 
 	 * @param methodCall a description of the name and call parameters of the
 	 *        method that generated the SQL.
 	 * 
 	 * @param sql SQL that occurred.
 	 */
-	public void sqlTimingOccured(Spy spy, long execTime, String methodCall,
-		String sql)
+	public void sqlTimingOccured(Spy spy, long execTimeNanoSec, String methodCall, String sql)
 	{
 		sql = DriverSpy.sqlPrettifier.prettifySql(sql);
 
@@ -495,11 +493,11 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 			return;
 		}
 
-		String message = buildSqlTimingDump(spy, execTime, methodCall, sql, sqlTimingLogger.isDebugEnabled());
-		Marker marker = Slf4jSpyLogDelegator.markerFactory.create(sql, execTime);
+		String message = buildSqlTimingDump(spy, execTimeNanoSec, methodCall, sql, sqlTimingLogger.isDebugEnabled());
+		Marker marker = Slf4jSpyLogDelegator.markerFactory.create(sql, execTimeNanoSec);
 
 		if (DriverSpy.SqlTimingErrorThresholdEnabled &&
-			execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
+			execTimeNanoSec >= DriverSpy.SqlTimingErrorThresholdNanoSec)
 		{
 			if (shouldUseMarkersForTimingReports()) {
 				sqlTimingLogger.error(marker, message);
@@ -515,7 +513,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 		}
 
 		if (DriverSpy.SqlTimingWarnThresholdEnabled &&
-			execTime >= DriverSpy.SqlTimingWarnThresholdMsec)
+			execTimeNanoSec >= DriverSpy.SqlTimingWarnThresholdNanoSec)
 		{
 			if (shouldUseMarkersForTimingReports()) {
 				sqlTimingLogger.warn(marker, message);
@@ -550,7 +548,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	 * 
 	 * @param spy the Spy wrapping the class where the SQL occurred.
 	 * 
-	 * @param execTime how long it took the SQL to run, in milliseconds.
+	 * @param execTimeNanoSec how long it took the SQL to run, in nanoseconds.
 	 * 
 	 * @param methodCall a description of the name and call parameters of the
 	 *        method that generated the SQL.
@@ -561,7 +559,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	 * 
 	 * @return a SQL timing dump String for logging.
 	 */
-	private String buildSqlTimingDump(Spy spy, long execTime, String methodCall,
+	private String buildSqlTimingDump(Spy spy, long execTimeNanoSec, String methodCall,
 		String sql, boolean debugInfo)
 	{
 		StringBuffer out = new StringBuffer();
@@ -585,8 +583,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 
 		if (!shouldUseMarkersForTimingReports()) {
 			out.append(" {executed in ");
-			out.append(execTime);
-			out.append(" msec}");
+			out.append(execTimeNanoSec);
+			out.append(" nanoSec}");
 		}
 
 		return out.toString();
@@ -735,6 +733,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	}
 
 	public static interface ExecutionTimeMarkerFactory {
-		Marker create(String sql, long executionTime);
+		Marker create(String sql, long executionTimeNanoSec);
 	}
 }
