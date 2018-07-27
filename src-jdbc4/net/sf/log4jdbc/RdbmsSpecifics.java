@@ -15,8 +15,12 @@
  */
 package net.sf.log4jdbc;
 
+import org.apache.commons.codec.binary.Hex;
+
+import java.nio.ByteBuffer;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 /**
  * Encapsulate sql formatting details about a particular relational database management system so that
@@ -65,6 +69,21 @@ public class RdbmsSpecifics
         return DriverSpy.DumpBooleanAsTrueFalse?
             ((Boolean)object).booleanValue()?"true":"false"
             :((Boolean)object).booleanValue()?"1":"0";
+      }
+      else if (object instanceof byte[])
+      {
+        byte[] bytes = (byte[])object;
+        if (bytes.length == 16)
+        {
+          ByteBuffer bb = ByteBuffer.wrap((byte[])object);
+          long high = bb.getLong();
+          long low = bb.getLong();
+          java.util.UUID uuid = new UUID(high, low);
+          return uuid.toString();
+        } else
+        {
+          return Hex.encodeHexString(bytes);
+        }
       }
       else
       {

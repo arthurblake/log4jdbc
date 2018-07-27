@@ -1016,4 +1016,14 @@ public class StatementSpy implements Statement, Spy
     }
   }
 
+  public void closeOnCompletion() throws SQLException
+  {
+    realStatement.closeOnCompletion();
+  }
+
+  public boolean isCloseOnCompletion() throws SQLException
+  {
+    return realStatement.isCloseOnCompletion();
+  }
+
 }

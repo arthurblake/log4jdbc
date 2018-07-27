@@ -543,7 +543,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   {
     //todo: dump array?
     String methodCall = "setBytes(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(byte[])", "<byte[]>");
+//    argTraceSet(parameterIndex, "(byte[])", "<byte[]>");
+    argTraceSet(parameterIndex, "(byte[])", x);
     try
     {
       realPreparedStatement.setBytes(parameterIndex, x);

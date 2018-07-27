@@ -2934,4 +2934,14 @@ public class ResultSetSpy implements ResultSet, Spy
       throw s;
     }
   }
+
+  public <T> T getObject(int columnIndex, Class<T> type) throws SQLException
+  {
+    return realResultSet.getObject(columnIndex, type);
+  }
+
+  public <T> T getObject(String columnLabel, Class<T> type) throws SQLException
+  {
+    return realResultSet.getObject(columnLabel, type);
+  }
 }

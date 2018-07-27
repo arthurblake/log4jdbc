@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 /**
  * Wraps a JDBC Connection and reports method calls, returns and exceptions.
@@ -937,5 +938,30 @@ public class ConnectionSpy implements Connection, Spy
       reportException(methodCall,s);
       throw s;
     }
+  }
+
+  public int getNetworkTimeout() throws SQLException
+  {
+    return realConnection.getNetworkTimeout();
+  }
+
+  public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
+  {
+    realConnection.setNetworkTimeout(executor, milliseconds);
+  }
+
+  public String getSchema() throws SQLException
+  {
+    return realConnection.getSchema();
+  }
+
+  public void setSchema(String schema) throws SQLException
+  {
+    realConnection.setSchema(schema);
+  }
+
+  public void abort(Executor executor) throws SQLException
+  {
+    realConnection.abort(executor);
   }
 }
