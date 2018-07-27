@@ -1,8 +1,7 @@
 # log4jdbc
-A more extensive README will be created soon. For now, you can view the usage instructions at the old Google Code hosting site:
 
-https://code.google.com/p/log4jdbc/
+Forked from https://github.com/arthurblake/log4jdbc .
 
-You can download the prebuilt jars at:
+You can view the usage instructions at the old Google Code hosting site: https://code.google.com/p/log4jdbc/
 
-https://code.google.com/p/log4jdbc/downloads/list
+To build the jar: `mvn clean package`.
