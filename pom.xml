@@ -4,12 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.sf</groupId>
+    <groupId>livongo</groupId>
     <artifactId>log4jdbc4</artifactId>
-    <version>1.3</version>
+    <version>1.3.1</version>
     <packaging>jar</packaging>
     <name>log4jbdc4</name>
     <url>https://github.com/arthurblake/log4jdbc</url>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
     <build>
         <sourceDirectory>${project.basedir}/src-jdbc4</sourceDirectory>
