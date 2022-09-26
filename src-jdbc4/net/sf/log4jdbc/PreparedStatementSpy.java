@@ -52,7 +52,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    */
   protected final List argTrace = new ArrayList();
 
-  private static final boolean showParams = Boolean.parseBoolean(System.getProperty("SQL_SHOW_PARAMS"));
+  private static final boolean showParams = Boolean.parseBoolean(System.getProperty("LOG4JDBC_SQL_SHOW_PARAMS"));
 
   // a way to turn on and off type help...
   // todo:  make this a configurable parameter
