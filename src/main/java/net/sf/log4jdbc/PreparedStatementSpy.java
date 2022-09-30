@@ -52,7 +52,18 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    */
   protected final List argTrace = new ArrayList();
 
-  private static final boolean showParams = Boolean.parseBoolean(System.getProperty("LOG4JDBC_SQL_SHOW_PARAMS"));
+  private static final boolean showParams;
+
+  static {
+    final String f = Boolean.FALSE.toString();
+    final String key = "LOG4JDBC_SQL_SHOW_PARAMS";
+    final String prop = System.getProperty(key, f);
+    showParams = Boolean.parseBoolean(prop);
+
+    if (!showParams && !prop.equals(f)) {
+      throw new IllegalArgumentException("Value of " + key + " should be either 'true' or 'false'. Was '" + prop + "'.");
+    }
+  }
 
   // a way to turn on and off type help...
   // todo:  make this a configurable parameter
