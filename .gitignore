@@ -1,3 +1,10 @@
-.idea/
-target/
-log4jdbc4.iml
+.idea
+.fleet
+.vscode
+.eclipse
+.project
+
+target
+*.iml
+
+.DS_Store
