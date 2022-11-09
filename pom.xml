@@ -76,4 +76,18 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>LivongoArtifactory</id>
+			<name>ext-release-local</name>
+			<url>https://${env.ARTIFACTORY_HOST}/artifactory/ext-release-local</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>LivongoArtifactorySnapshot</id>
+			<name>maven-snapshot-local</name>
+			<url>https://${env.ARTIFACTORY_HOST}/artifactory/maven-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
