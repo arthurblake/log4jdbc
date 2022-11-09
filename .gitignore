@@ -1,2 +1,10 @@
+.idea
+.fleet
+.vscode
+.eclipse
+.project
+
+target
+*.iml
 
 .DS_Store

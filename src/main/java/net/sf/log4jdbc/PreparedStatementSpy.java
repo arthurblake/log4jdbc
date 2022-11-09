@@ -52,6 +52,19 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    */
   protected final List argTrace = new ArrayList();
 
+  private static final boolean showParams;
+
+  static {
+    final String f = Boolean.FALSE.toString();
+    final String key = "LOG4JDBC_SQL_SHOW_PARAMS";
+    final String prop = System.getProperty(key, f);
+    showParams = Boolean.parseBoolean(prop);
+
+    if (!showParams && !prop.equals(f)) {
+      throw new IllegalArgumentException("Value of " + key + " should be either 'true' or 'false'. Was '" + prop + "'.");
+    }
+  }
+
   // a way to turn on and off type help...
   // todo:  make this a configurable parameter
   // todo, debug arrays and streams in a more useful manner.... if possible
@@ -104,8 +117,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   private String sql;
 
-  protected String dumpedSql()
-  {
+  private String sqlWithParams() {
     StringBuffer dumpSql = new StringBuffer();
     int lastPos = 0;
     int Qpos = sql.indexOf('?', lastPos);  // find position of first question mark
@@ -144,6 +156,11 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     }
 
     return dumpSql.toString();
+  }
+
+  protected String dumpedSql()
+  {
+    return showParams ? sqlWithParams() : sql;
   }
 
   protected void reportAllReturns(String methodCall, String msg)
@@ -1151,3 +1168,4 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   }
 
 }
+
