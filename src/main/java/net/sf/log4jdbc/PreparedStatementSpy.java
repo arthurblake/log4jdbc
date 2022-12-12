@@ -163,6 +163,13 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     return showParams ? sqlWithParams() : sql;
   }
 
+  @Override
+  protected void reportException(String methodCall, SQLException exception, String sql, long execTime) {
+    // Throw, but do not log SQL exceptions if showing SQL arguments is disabled. Exception messages may contain
+    // sensitive data, so it's a caller's responsibility to handle exceptions properly.
+    if (showParams) super.reportException(methodCall, exception, sql, execTime);
+  }
+
   protected void reportAllReturns(String methodCall, String msg)
   {
     log.methodReturned(this, methodCall, msg);

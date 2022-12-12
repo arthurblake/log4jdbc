@@ -122,7 +122,7 @@ public class StatementSpy implements Statement, Spy
    */
   protected void reportException(String methodCall, SQLException exception, String sql)
   {
-    log.exceptionOccured(this, methodCall, exception, sql, -1L);
+    reportException(methodCall, exception, sql, -1L);
   }
 
   /**
@@ -133,7 +133,7 @@ public class StatementSpy implements Statement, Spy
    */
   protected void reportException(String methodCall, SQLException exception)
   {
-    log.exceptionOccured(this, methodCall, exception, null, -1L);
+    reportException(methodCall, exception, null, -1L);
   }
 
   /**
