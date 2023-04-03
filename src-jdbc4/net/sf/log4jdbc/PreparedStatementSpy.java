@@ -15,6 +15,7 @@
  */
 package net.sf.log4jdbc;
 
+import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -308,7 +309,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setBlob(int i, Blob x) throws SQLException
   {
     String methodCall = "setBlob(" + i + ", " + x + ")";
-    argTraceSet(i, "(Blob)", 
+    argTraceSet(i, "(Blob)",
       x==null?null:("<Blob of size " + x.length() + ">"));
     try
     {
@@ -541,9 +542,14 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   public void setBytes(int parameterIndex, byte[] x) throws SQLException
   {
-    //todo: dump array?
     String methodCall = "setBytes(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(byte[])", "<byte[]>");
+
+    StringBuilder sb = new StringBuilder();
+    for (byte b : x) {
+      sb.append(String.format("%02X", b));
+    }
+    argTraceSet(parameterIndex, "(byte[])", sb.toString());
+
     try
     {
       realPreparedStatement.setBytes(parameterIndex, x);
