@@ -212,3 +212,7 @@ There are various forks of log4jdbc out there in Maven.
 There has never been an official log4jdbc maven artifact published.
 
 ----------------------
+
+# FAQ
+
+[Here](FAQ.md)
