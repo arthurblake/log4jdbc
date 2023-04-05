@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2015 Arthur Blake
+ * Copyright 2007-2023 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,4 +47,3 @@ public class SpyLogFactory
     return logger;
   }
 }
-

@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2015 Arthur Blake
+ * Copyright 2007-2023 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,14 +82,14 @@ public interface SpyLogDelegator
 
   /**
    * Called whenever a new connection spy is created.
-   * 
+   *
    * @param spy ConnectionSpy that was created.
    */
   public void connectionOpened(Spy spy);
 
   /**
    * Called whenever a connection spy is closed.
-   * 
+   *
    * @param spy ConnectionSpy that was closed.
    */
   public void connectionClosed(Spy spy);
