@@ -172,7 +172,9 @@ Starting with log4jdbc 1.2 beta 2, you can also define any of these property set
 
 ----------------------
 ## Other
+
 A simple tool is included which you can use to post-process sql timing logs produced by log4jdbc. It can output simple profiling reports with statistics and a dump of the sql statements that ran the slowest within the log. To invoke the tool, use profsql.sh (for unix/linux) and profsql.cmd (for windows) located in the scripts folder. These scripts take as one argument, the filename of a sql timing log (generated from the jdbc.sqltiming log category. They produce a profiling report to stdout. The tool is currently experimental and I expect it to evolve quite a bit over the next few releases. Nevertheless, it has already been very useful to me for tracking down SQL performance problems.
+
 ----------------------
 ## Similar Tools
 
