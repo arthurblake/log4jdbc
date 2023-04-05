@@ -60,6 +60,7 @@ import java.util.logging.Logger;
  * <li>org.apache.derby.jdbc.EmbeddedDriver</li>
  * <li>com.mysql.jdbc.Driver</li>
  * <li>com.mysql.cj.jdbc.Driver</li>
+ * <li>org.mariadb.jdbc.Driver</li>
  * <li>org.postgresql.Driver</li>
  * <li>org.hsqldb.jdbcDriver</li>
  * <li>org.h2.Driver</li>
@@ -469,28 +470,22 @@ public class DriverSpy implements Driver
 
 		if (AutoLoadPopularDrivers)
 		{
-			subDrivers.add("oracle.jdbc.driver.OracleDriver");
-			subDrivers.add("oracle.jdbc.OracleDriver");
-			subDrivers.add("com.sybase.jdbc2.jdbc.SybDriver");
-			subDrivers.add("net.sourceforge.jtds.jdbc.Driver");
-
-			// MS driver for Sql Server 2000
-			subDrivers.add("com.microsoft.jdbc.sqlserver.SQLServerDriver");
-
-			// MS driver for Sql Server 2005
-			subDrivers.add("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-
-			subDrivers.add("weblogic.jdbc.sqlserver.SQLServerDriver");
-			subDrivers.add("com.informix.jdbc.IfxDriver");
-			subDrivers.add("org.apache.derby.jdbc.ClientDriver");
-			subDrivers.add("org.apache.derby.jdbc.EmbeddedDriver");
-			subDrivers.add("com.mysql.jdbc.Driver");
-
-			// Connector/J 6.0
-			subDrivers.add("com.mysql.cj.jdbc.Driver");
-			subDrivers.add("org.postgresql.Driver");
-			subDrivers.add("org.hsqldb.jdbcDriver");
-			subDrivers.add("org.h2.Driver");
+			subDrivers.add("oracle.jdbc.driver.OracleDriver");              // Old Oracle
+			subDrivers.add("oracle.jdbc.OracleDriver");                     // Newer Oracle
+			subDrivers.add("com.sybase.jdbc2.jdbc.SybDriver");              // Sybase
+			subDrivers.add("net.sourceforge.jtds.jdbc.Driver");             // SQL Server jTDS
+			subDrivers.add("com.microsoft.jdbc.sqlserver.SQLServerDriver"); // MS SQL Server 2000
+			subDrivers.add("com.microsoft.sqlserver.jdbc.SQLServerDriver"); // MS SQL Server 2005+
+			subDrivers.add("weblogic.jdbc.sqlserver.SQLServerDriver");      // SQL Server Weblogic
+			subDrivers.add("com.informix.jdbc.IfxDriver");                  // Informix
+			subDrivers.add("org.apache.derby.jdbc.ClientDriver");           // Derby (aka Java DB) Client
+			subDrivers.add("org.apache.derby.jdbc.EmbeddedDriver");         // Derby (aka Java DB) Embedded
+			subDrivers.add("com.mysql.jdbc.Driver");                        // MySQL
+			subDrivers.add("com.mysql.cj.jdbc.Driver");                     // Connector/J 6.0
+			subDrivers.add("org.mariadb.jdbc.Driver");                      // MariaDB (MySQL fork)
+			subDrivers.add("org.postgresql.Driver");                        // Postgres
+			subDrivers.add("org.hsqldb.jdbcDriver");                        // HyperSQL
+			subDrivers.add("org.h2.Driver");                                // h2
 		}
 
 		// look for additional driver specified in properties
@@ -546,7 +541,7 @@ public class DriverSpy implements Driver
 		OracleRdbmsSpecifics oracle = new OracleRdbmsSpecifics();
 		MySqlRdbmsSpecifics mySql = new MySqlRdbmsSpecifics();
 
-		/** create lookup Map for specific rdbms formatters */
+		/** create lookup Map for specific RDBMS formatters */
 		rdbmsSpecifics = new HashMap<String, RdbmsSpecifics>();
 		rdbmsSpecifics.put("oracle.jdbc.driver.OracleDriver", oracle);
 		rdbmsSpecifics.put("oracle.jdbc.OracleDriver", oracle);
@@ -556,6 +551,7 @@ public class DriverSpy implements Driver
 		rdbmsSpecifics.put("weblogic.jdbc.sqlserver.SQLServerDriver", sqlServer);
 		rdbmsSpecifics.put("com.mysql.jdbc.Driver", mySql);
 		rdbmsSpecifics.put("com.mysql.cj.jdbc.Driver", mySql);
+		rdbmsSpecifics.put("org.mariadb.jdbc.Driver", mySql);
 
 		log.debug("... log4jdbc initialized! ...");
 	}
