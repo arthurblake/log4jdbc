@@ -1,10 +1,10 @@
-o  what about jdbc 2 back support??
+
 
 o  configuration that doesn't rely on system properties (jdbc parms?)
 
 o  PostLogProfilerProcessor needs to be able to handle exceptions in log, & needs to be more efficient, also needs command
    line switches to control the thresholds & counts, etc.
-   
+
 o  intelligent array dumper?
 
 o  check for more different kinds of JDBC drivers at startup time
@@ -17,6 +17,10 @@ o  review dumpedSql method - make auto line breaking option (& num chars used) b
 
 o  need log4jdbc.debug.stack.regex so that the stack matching can take place via regex
 
-o  maven2 repository support
-
 o  this may be a better solution to SimpleDateFormat contention issue:  http://www.javaspecialists.eu/archive/Issue172.html
+
+o  maven support
+
+o option to parse SQL (must be optional for performance)
+
+o format SQL (must be optional for performance)

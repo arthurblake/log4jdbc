@@ -15,7 +15,6 @@
  */
 package net.sf.log4jdbc;
 
-import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;

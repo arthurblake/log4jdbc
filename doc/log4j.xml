@@ -53,7 +53,7 @@
        line number information in the log)  The DEBUG setting is much more inefficient
        but the output is much more useful.
 
-       To turn off JDBC logging completely, you must set all 5 logs to a level higher 
+       To turn off JDBC logging completely, you must set all 5 logs to a level higher
        than ERROR (FATAL is suggested.)
   -->
 
@@ -83,7 +83,7 @@
     <level value="fatal"/>
     <appender-ref ref="jdbc-appender"/>
   </logger>
-  
+
   <!-- log connection open/close events and dump of all open connection numbers -->
   <logger name="jdbc.connection" additivity="false">
     <level value="fatal"/>

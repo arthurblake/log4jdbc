@@ -1,3 +1,8 @@
+PENDING   1.4 release
+					o update for JDBC 4.2
+
+					o add MariaDB support (assuming MySQL equivalent formatting)
+
 2015-09-30 1.3 release
 
            o add new option, "log4jdbc.trim.sql.lines" which when set,
