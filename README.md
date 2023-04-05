@@ -66,6 +66,7 @@ The log4jdbc "spy" driver will try and load the following popular jdbc drivers:
 | org.apache.derby.jdbc.ClientDriver | Apache Derby client/server driver, aka the Java DB |
 | org.apache.derby.jdbc.EmbeddedDriver | Apache Derby embedded driver, aka the Java DB |
 | com.mysql.jdbc.Driver | MySQL |
+| com.mysql.cj.jdbc.Driver | Connector/J 6.0 |
 | org.postgresql.Driver | PostgresSQL |
 | org.hsqldb.jdbcDriver | HSQLDB pure Java database |
 | org.h2.Driver | H2 pure Java database |

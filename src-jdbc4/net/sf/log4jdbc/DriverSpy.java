@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * A JDBC driver which is a facade that delegates to one or more real underlying
  * JDBC drivers. The driver will spy on any other JDBC driver that is loaded,
  * simply by prepending <code>jdbc:log4</code> to the normal jdbc driver URL
- * used by any other JDBC driver. The driver, by default, also loads several
+ * used by any other JDBC driver. The driver, by default, also loads a bunch of
  * well known drivers at class load time, so that this driver can be
  * "dropped in" to any Java program that uses these drivers without making any
  * code changes.
@@ -47,7 +47,9 @@ import java.util.logging.Logger;
  * <p/>
  * <code>
  * <ul>
+ *
  * <li>oracle.jdbc.driver.OracleDriver</li>
+ * <li>oracle.jdbc.OracleDriver</li>
  * <li>com.sybase.jdbc2.jdbc.SybDriver</li>
  * <li>net.sourceforge.jtds.jdbc.Driver</li>
  * <li>com.microsoft.jdbc.sqlserver.SQLServerDriver</li>
@@ -61,6 +63,7 @@ import java.util.logging.Logger;
  * <li>org.postgresql.Driver</li>
  * <li>org.hsqldb.jdbcDriver</li>
  * <li>org.h2.Driver</li>
+ *
  * </ul>
  * </code>
  * <p/>
