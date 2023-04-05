@@ -39,8 +39,8 @@
        to 3 and then 4. and using the jdk 1.4 and then 1.6.
   -->
 
-  <property name="jdbc.level" value="3" />
-  <property name="jvm.ver" value="1.4" />
+  <property name="jdbc.level" value="4" />
+  <property name="jvm.ver" value="1.8" />
   <property name="jdbc.prefix" value="jdbc${jdbc.level}" />
 
   <property name="src" value="src-${jdbc.prefix}" />
@@ -93,7 +93,6 @@
   <target name="cleanjar" description="delete the jar file">
     <delete file="build/log4${jdbc.prefix}-${version}.jar" description="delete the jar file"/>
   </target>
-
 
   <target name="cleanjavadoc" description="clean javadoc">
     <delete dir="${apidocs}" />

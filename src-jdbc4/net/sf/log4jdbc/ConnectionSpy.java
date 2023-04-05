@@ -33,10 +33,10 @@ import java.sql.SQLXML;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 /**
  * Wraps a JDBC Connection and reports method calls, returns and exceptions.
@@ -68,7 +68,7 @@ public class ConnectionSpy implements Connection, Spy
    * Contains a Mapping of connectionNumber to currently open ConnectionSpy
    * objects.
    */
-  private static final Map connectionTracker = new HashMap();
+  private static final Map<Integer, Connection> connectionTracker = new HashMap<>();
 
   /**
    * Get a dump of how many connections are open, and which connection numbers
@@ -88,7 +88,7 @@ public class ConnectionSpy implements Connection, Spy
       {
         return "open connections:  none";
       }
-      Set keys = connectionTracker.keySet();
+      Set<Integer> keys = connectionTracker.keySet();
       keysArr = (Integer[]) keys.toArray(new Integer[keys.size()]);
     }
 
@@ -938,4 +938,77 @@ public class ConnectionSpy implements Connection, Spy
       throw s;
     }
   }
+
+	public void setSchema(String schema) throws SQLException
+	{
+    String methodCall = "setSchema(" + schema + ")";
+    try
+    {
+      realConnection.setSchema(schema);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+	}
+
+	public String getSchema() throws SQLException
+	{
+		String methodCall = "getSchema()";
+		try
+		{
+			return (String) reportReturn(methodCall, realConnection.getSchema());
+		}
+		catch (SQLException s)
+		{
+			reportException(methodCall, s);
+			throw s;
+		}
+	}
+
+	public void abort(Executor executor) throws SQLException
+	{
+    String methodCall = "abort(Executor)";
+    try
+    {
+      realConnection.abort(executor);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+	}
+
+	public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
+	{
+    String methodCall = "setNetworkTimeout(Executor, " + milliseconds + ")";
+    try
+    {
+      realConnection.setNetworkTimeout(executor, milliseconds);
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+    reportReturn(methodCall);
+	}
+
+	public int getNetworkTimeout() throws SQLException
+	{
+    String methodCall = "getNetworkTimeout()";
+    try
+    {
+      return reportReturn(methodCall, realConnection.getNetworkTimeout());
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
+	}
 }

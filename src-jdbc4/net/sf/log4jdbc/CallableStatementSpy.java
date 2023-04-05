@@ -1704,4 +1704,31 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
     }
   }
 
+	public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
+		String name = type==null?"null": type.getName();
+    String methodCall = "getObject(" + parameterIndex + ", " + name + ")";
+    try
+    {
+      return (T)reportReturn(methodCall, realCallableStatement.getObject(parameterIndex, type));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+	}
+
+	public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
+		String name = type==null?"null": type.getName();
+    String methodCall = "getObject(" + parameterName + ", " + name + ")";
+    try
+    {
+      return (T)reportReturn(methodCall, realCallableStatement.getObject(parameterName, type));
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall, s);
+      throw s;
+    }
+	}
 }

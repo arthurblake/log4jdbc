@@ -2907,11 +2907,21 @@ public class ResultSetSpy implements ResultSet, Spy
   }
 
   public <T> T unwrap(Class<T> iface) throws SQLException {
-    String methodCall = "unwrap(" + (iface==null?"null":iface.getName()) + ")";
+		String name = iface==null?"null":iface.getName();
+    String methodCall = "unwrap(" + name + ")";
     try
     {
-      //todo: double check this logic
-      return (T)reportReturn(methodCall, (iface != null && (iface == ResultSet.class || iface == Spy.class))?(T)this:realResultSet.unwrap(iface));
+			T result = null;
+			if (iface == ResultSetSpy.class || iface == Spy.class)
+			{
+				result = (T) this;
+			}
+			else
+			{
+				result = realResultSet.unwrap(iface);
+			}
+			reportReturn(methodCall, (Object) result);
+			return result;
     }
     catch (SQLException s)
     {
@@ -2934,4 +2944,38 @@ public class ResultSetSpy implements ResultSet, Spy
       throw s;
     }
   }
+
+	public <T> T getObject(int columnIndex, Class<T> type) throws SQLException
+	{
+		String typeName = type==null?"null":type.getName();
+    String methodCall = "getObject(" + columnIndex +", " + typeName + ")";
+    try
+    {
+			T result = realResultSet.getObject(columnIndex, type);
+      reportReturn(methodCall, (Object) result);
+			return result;
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
+	}
+
+	public <T> T getObject(String columnLabel, Class<T> type) throws SQLException
+	{
+		String typeName = type==null?"null":type.getName();
+    String methodCall = "getObject(" + columnLabel +", " + typeName + ")";
+    try
+    {
+			T result = realResultSet.getObject(columnLabel, type);
+      reportReturn(methodCall, (Object) result);
+			return result;
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;
+    }
+	}
 }
