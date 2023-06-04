@@ -139,7 +139,7 @@ public class ConnectionSpy implements Connection, Spy
 
     synchronized (connectionTracker)
     {
-      connectionNumber = new Integer(++lastConnectionNumber);
+      connectionNumber = ++lastConnectionNumber;
       connectionTracker.put(connectionNumber, this);
     }
     log.connectionOpened(this);

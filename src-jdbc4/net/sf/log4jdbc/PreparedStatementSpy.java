@@ -428,7 +428,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setInt(int parameterIndex, int x) throws SQLException
   {
     String methodCall = "setInt(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(int)", new Integer(x));
+    argTraceSet(parameterIndex, "(int)", x);
     try
     {
       realPreparedStatement.setInt(parameterIndex, x);
@@ -444,7 +444,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setLong(int parameterIndex, long x) throws SQLException
   {
     String methodCall = "setLong(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(long)", new Long(x));
+    argTraceSet(parameterIndex, "(long)", x);
     try
     {
       realPreparedStatement.setLong(parameterIndex, x);
