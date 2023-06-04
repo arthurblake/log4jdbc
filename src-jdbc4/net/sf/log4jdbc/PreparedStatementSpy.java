@@ -292,7 +292,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setBoolean(int parameterIndex, boolean x) throws SQLException
   {
     String methodCall = "setBoolean(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(boolean)", x?Boolean.TRUE:Boolean.FALSE);
+    argTraceSet(parameterIndex, "(boolean)", x);
     try
     {
       realPreparedStatement.setBoolean(parameterIndex, x);
@@ -358,7 +358,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setByte(int parameterIndex, byte x) throws SQLException
   {
     String methodCall = "setByte(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(byte)", new Byte(x));
+    argTraceSet(parameterIndex, "(byte)", x);
     try
     {
       realPreparedStatement.setByte(parameterIndex, x);
@@ -393,7 +393,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setShort(int parameterIndex, short x) throws SQLException
   {
     String methodCall = "setShort(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(short)", new Short(x));
+    argTraceSet(parameterIndex, "(short)", x);
     try
     {
       realPreparedStatement.setShort(parameterIndex, x);
@@ -460,7 +460,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setFloat(int parameterIndex, float x) throws SQLException
   {
     String methodCall = "setFloat(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(float)", new Float(x));
+    argTraceSet(parameterIndex, "(float)", x);
     try
     {
       realPreparedStatement.setFloat(parameterIndex, x);
@@ -476,7 +476,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setDouble(int parameterIndex, double x) throws SQLException
   {
     String methodCall = "setDouble(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(double)", new Double(x));
+    argTraceSet(parameterIndex, "(double)", x);
     try
     {
       realPreparedStatement.setDouble(parameterIndex, x);
