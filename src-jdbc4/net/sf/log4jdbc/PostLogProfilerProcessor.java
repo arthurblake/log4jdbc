@@ -233,7 +233,7 @@ public class PostLogProfilerProcessor {
 
     public ProfiledSql (long msec, String sql)
     {
-      this.execTime= new Long(msec);
+      this.execTime= msec;
       this.sql = sql;
     }
 

@@ -256,7 +256,7 @@ public class DriverSpy implements Driver
 		{
 			try
 			{
-				longPropValue = new Long(Long.parseLong(propValue));
+				longPropValue = Long.parseLong(propValue);
 				log.debug("  " + propName + " = " + longPropValue);
 			}
 			catch (NumberFormatException n)
@@ -286,20 +286,20 @@ public class DriverSpy implements Driver
 		{
 			log.debug("x " + propName + " is not defined (using default of " +
 				defaultValue + ")");
-			longPropValue = new Long(defaultValue);
+			longPropValue = defaultValue;
 		}
 		else
 		{
 			try
 			{
-				longPropValue = new Long(Long.parseLong(propValue));
+				longPropValue = Long.parseLong(propValue);
 				log.debug("  " + propName + " = " + longPropValue);
 			}
 			catch (NumberFormatException n)
 			{
 				log.debug("x " + propName + " \"" + propValue +
 					"\" is not a valid number (using default of " + defaultValue + ")");
-				longPropValue = new Long(defaultValue);
+				longPropValue = defaultValue;
 			}
 		}
 		return longPropValue;
