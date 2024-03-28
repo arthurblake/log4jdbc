@@ -15,8 +15,6 @@
  */
 package net.sf.log4jdbc;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Driver;
@@ -367,41 +365,16 @@ public class DriverSpy implements Driver
 
 	static
 	{
-		log.debug("... log4jdbc initializing ...");
+		Properties props = Log4JdbcProps.props;
 
-		InputStream propStream = DriverSpy.class
-			.getResourceAsStream("/log4jdbc.properties");
-
-		Properties props = new Properties(System.getProperties());
-		if (propStream != null)
+		// unwind any startup log messages froms properties load
+		for (String msg: Log4JdbcProps.queue)
 		{
-			try
-			{
-				props.load(propStream);
-			}
-			catch (IOException e)
-			{
-				log.debug("ERROR!  io exception loading " +
-					"log4jdbc.properties from classpath: " + e.getMessage());
-			}
-			finally
-			{
-				try
-				{
-					propStream.close();
-				}
-				catch (IOException e)
-				{
-					log.debug("ERROR!  io exception closing property file stream: " +
-						e.getMessage());
-				}
-			}
-			log.debug("  log4jdbc.properties loaded from classpath");
+			log.debug(msg);
 		}
-		else
-		{
-			log.debug("  log4jdbc.properties not found on classpath");
-		}
+		// get property that was already loaded indirectly via SpyLogFactory purely
+		// for the side effect of logging it to debug
+		getStringOption(props, "log4jdbc.spylogdelegator");
 
 		// look for additional driver specified in properties
 		DebugStackPrefix = getStringOption(props, "log4jdbc.debug.stack.prefix");

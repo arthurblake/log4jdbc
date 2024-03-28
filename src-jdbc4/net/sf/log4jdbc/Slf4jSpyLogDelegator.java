@@ -193,13 +193,21 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 
 	/**
 	 * Determine if the given sql should be logged or not based on the various
-	 * DumpSqlXXXXXX flags.
+	 * DumpSqlXXXXXX flags. This can be overriden to provide additional
+	 * check(s) to opt out of logging certain SQL.
 	 *
 	 * @param sql SQL to test.
 	 * @return true if the SQL should be logged, false if not.
 	 */
-	private boolean shouldSqlBeLogged(String sql)
+	protected boolean shouldSqlBeLogged(String sql)
 	{
+		// check shortcut property that is true if all the DumpSqlXXXXX
+		// properties are also true (and thus don't need to be checked)
+		// which should be the happy path in most cases
+		if (DriverSpy.DumpSqlFilteringOn)
+		{
+			return true;
+		}
 		if (sql == null)
 		{
 			return false;
@@ -228,7 +236,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	 */
 	public void sqlOccured(Spy spy, String methodCall, String sql)
 	{
-		if (!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql))
+		if (shouldSqlBeLogged(sql))
 		{
 			if (sqlOnlyLogger.isDebugEnabled())
 			{
@@ -468,8 +476,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	public void sqlTimingOccured(Spy spy, long execTime, String methodCall,
 		String sql)
 	{
-		if (sqlTimingLogger.isErrorEnabled() &&
-			(!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql)))
+		if (sqlTimingLogger.isErrorEnabled() && shouldSqlBeLogged(sql))
 		{
 			if (DriverSpy.SqlTimingErrorThresholdEnabled &&
 				execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
