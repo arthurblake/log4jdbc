@@ -1,5 +1,5 @@
 # News
-* __2023-04-03__ Finally converted the ancient Google code help text to Github markdown with some minor updates. Only 8 years late! Also merged a couple of minor simple PRs. Cursory updates for JDK 1.8 / JDBC 4.2
+* __2023-04-03__ Finally converted the ancient Google code help text to Github markdown with some minor updates. Only 8 years late! Also merged a couple of minor simple PRs. Cursory updates for JDK 1.8 / JDBC 4.3
 
 * __2015-09-30__ JDBC Version and code removed. Only JDBC 4 version included (which should be able to properly wrap a JDBC 3 driver automatically.)
 

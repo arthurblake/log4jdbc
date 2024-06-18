@@ -800,7 +800,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    * <code>java.io.InputStream</code>. Data will be read from the stream
    * as needed until end-of-file is reached.  The JDBC driver will
    * do any necessary conversion from ASCII to the database char format.
-   * <p/>
+   *
    * <P><B>Note:</B> This stream object can either be a standard
    * Java stream object or your own subclass that implements the
    * standard interface.

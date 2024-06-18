@@ -7,7 +7,7 @@ __log4jdbc__ is a Java JDBC driver that can log SQL and/or JDBC calls (and optio
 
 ----------------------
 # News
-* __2023-04-03__ Finally converted the ancient Google code help text to Github markdown with some minor updates. Only 8 years late! Also merged a couple of minor simple PRs. Cursory updates for JDK 1.8 / JDBC 4.2
+* __2023-04-03__ Finally converted the ancient Google code help text to Github markdown with some minor updates. Only 8 years late! Also merged a couple of minor simple PRs. Cursory updates for JDK 1.8 / JDBC 4.3
 
 * [More News](NEWS.md)
 ----------------------
@@ -23,12 +23,12 @@ SQL timing information can be generated to help identify how long SQL statements
 # Usage
 
 ## Decide if you need JDBC 3 or JDBC 4 support.
-* JDBC 4.2 support is available in the latest log4jdbc 1.3+ for JDK 1.8+.
+* JDBC 4.3 support is available in the latest log4jdbc 1.4+ for JDK 1.8+.
 * There is no specific JDBC 4.1 version.
-* If you are using JDK 1.6 or 1.7, you should use the JDBC 4 version of log4jdbc (even if the actual underlying JDBC driver you are using is a JDBC 3 or older driver). This is now defunct but can be obtained as log4jdbc4-1.2.jar under Archived Downloads.
+* If you are using an older JDK (such as 1.6 or 1.7), you should use the JDBC 4 version of log4jdbc (even if the actual underlying JDBC driver you are using is a JDBC 3 or older driver). This is now defunct but can be obtained as log4jdbc4-1.2.jar under Archived Downloads.
 * If you are using JDK 1.4 or 1.5, you should use the JDBC 3 version of log4jdbc. This is now defunct but can be obtained as log4jdbc3-1.2.jar under Archived Downloads.
 
-If you are using an older version of the JDBC driver with JDK 1.8+, JDBC should be able to properly wrap that driver even though log4jdbc is coded for JDBC 4.2.
+If you are using an older version of the JDBC driver with JDK 1.8+, JDBC should be able to properly wrap that driver even though log4jdbc is coded for JDBC 4.3.
 
 ## Choose which java logging system you will use.
 

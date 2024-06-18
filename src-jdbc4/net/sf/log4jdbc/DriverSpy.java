@@ -39,13 +39,10 @@ import java.util.logging.Logger;
  * well known drivers at class load time, so that this driver can be
  * "dropped in" to any Java program that uses these drivers without making any
  * code changes.
- * <p/>
+ * <br><br>
  * The well known driver classes that are loaded are:
- * <p/>
- * <p/>
- * <code>
+ * <br><br>
  * <ul>
- *
  * <li>oracle.jdbc.driver.OracleDriver</li>
  * <li>oracle.jdbc.OracleDriver</li>
  * <li>com.sybase.jdbc2.jdbc.SybDriver</li>
@@ -62,27 +59,24 @@ import java.util.logging.Logger;
  * <li>org.postgresql.Driver</li>
  * <li>org.hsqldb.jdbcDriver</li>
  * <li>org.h2.Driver</li>
- *
  * </ul>
- * </code>
- * <p/>
- * <p/>
+ * <br><br>
  * Additional drivers can be set via a property: <b>log4jdbc.drivers</b> This
  * can be either a single driver class name or a list of comma separated driver
  * class names.
- * <p/>
+ * <br><br>
  * The autoloading behavior can be disabled by setting a property:
  * <b>log4jdbc.auto.load.popular.drivers</b> to false. If that is done, then the
  * only drivers that log4jdbc will attempt to load are the ones specified in
  * <b>log4jdbc.drivers</b>.
- * <p/>
+ * <br><br>
  * If any of the above driver classes cannot be loaded, the driver continues on
  * without failing.
- * <p/>
+ * <br><br>
  * Note that the <code>getMajorVersion</code>, <code>getMinorVersion</code> and
  * <code>jdbcCompliant</code> method calls attempt to delegate to the last
  * underlying driver requested through any other call that accepts a JDBC URL.
- * <p/>
+ * <br><br>
  * This can cause unexpected behavior in certain circumstances. For example, if
  * one of these 3 methods is called before any underlying driver has been
  * established, then they will return default values that might not be correct

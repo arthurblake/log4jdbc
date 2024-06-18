@@ -4,7 +4,7 @@ setlocal
 SET ANT_HOME=C:\JavaDev\apache-ant-1.10.12
 set ANT_OPTS=-Xmx512m
 
-SET JAVA_HOME=C:\JavaDev\jdk-8.0.222.10-hotspot
+SET JAVA_HOME=C:\JavaDev\jdk8u332-b09
 set PATH=%JAVA_HOME%\bin;%ANT_HOME%\bin
 
 call java -version
