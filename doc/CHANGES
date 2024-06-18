@@ -1,5 +1,5 @@
 PENDING   1.4 release
-					o update for JDBC 4.2
+					o update for JDBC 4.3
 
 					o add MariaDB support (assuming MySQL equivalent formatting)
 

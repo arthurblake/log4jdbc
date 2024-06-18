@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2023 Arthur Blake
+ * Copyright 2007-2024 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,8 @@ import java.util.Arrays;
  *    milliseconds that the sql executed in.
  *
  */
-public class PostLogProfilerProcessor {
+public class PostLogProfilerProcessor
+{
 
   //todo:  needs to be able to gracefully handle sql exceptions in log output
 
@@ -91,7 +92,7 @@ public class PostLogProfilerProcessor {
   /**
    * Collection of all sql that took longer than "threshold" msec to run.
    */
-  private List flaggedSql = new LinkedList();
+  private List<ProfiledSql> flaggedSql = new LinkedList<>();
 
   /**
    * Process given filename, and produce sql profiling report to given PrintStream.
@@ -172,7 +173,7 @@ public class PostLogProfilerProcessor {
         topOffenderCount = flaggedSqlArray.length;
       }
 
-      out.println("top " + topOffenderCount + " offender"+ (topOffenderCount==1?"":"s") + ":");
+      out.println("top " + topOffenderCount + " offender" + (topOffenderCount==1?"":"s") + ":");
 
       ProfiledSql p;
 
@@ -227,13 +228,14 @@ public class PostLogProfilerProcessor {
     flaggedSql.add(new ProfiledSql(msec,sql));
   }
 
-  private class ProfiledSql implements Comparable {
+  private class ProfiledSql implements Comparable
+  {
     private Long execTime;
     private String sql;
 
     public ProfiledSql (long msec, String sql)
     {
-      this.execTime= new Long(msec);
+      this.execTime = Long.valueOf(msec);
       this.sql = sql;
     }
 

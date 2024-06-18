@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2023 Arthur Blake
+ * Copyright 2007-2024 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,10 @@ public interface Spy
   public String getClassType();
 
   /**
-   * Get the connection number.  In general, this is used to track which underlying connection is being
-   * used from the database.  The number will be incremented each time a new Connection is retrieved from the
-   * real underlying jdbc driver.  This is useful for debugging and tracking down problems with connection pooling.
+   * Get the connection number.  In general, this is used to track which underlying connection is
+   * being used from the database.  The number will be incremented each time a new Connection is
+   * retrieved from the real underlying jdbc driver.  This is useful for debugging and tracking down
+   * problems with connection pooling.
    *
    * @return the connection instance number.
    */

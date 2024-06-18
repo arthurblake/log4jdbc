@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2023 Arthur Blake
+ * Copyright 2007-2024 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,46 +30,46 @@ import java.util.Properties;
  */
 public class Log4JdbcProps
 {
-	// since we don't know exactly what logging system we use until after loading
-	// propertie,s queue up log messages that nornally go out over that logger
-	// until that logger is known and set up.
-	// (chicken - egg problem)
-	static final List<String> queue = new ArrayList<>();
-	static final Properties props = new Properties(System.getProperties());
+  // since we don't know exactly what logging system we use until after loading
+  // propertie,s queue up log messages that nornally go out over that logger
+  // until that logger is known and set up.
+  // (chicken - egg problem)
+  static final List<String> queue = new ArrayList<>();
+  static final Properties props = new Properties(System.getProperties());
 
-	static
-	{
-		queue.add("... log4jdbc initializing ...");
-		final InputStream propStream =
-			DriverSpy.class.getResourceAsStream("/log4jdbc.properties");
-		if (propStream != null)
-		{
-			try
-			{
-				props.load(propStream);
-			}
-			catch (IOException e)
-			{
-				queue.add("ERROR!  io exception loading " +
-					"log4jdbc.properties from classpath: " + e.getMessage());
-			}
-			finally
-			{
-				try
-				{
-					propStream.close();
-				}
-				catch (IOException e)
-				{
-					queue.add("ERROR!  io exception closing property file stream: " +
-						e.getMessage());
-				}
-			}
-			queue.add("  log4jdbc.properties loaded from classpath");
-		}
-		else
-		{
-			queue.add("  log4jdbc.properties not found on classpath");
-		}
-	}
+  static
+  {
+    queue.add("... log4jdbc initializing ...");
+    final InputStream propStream =
+      DriverSpy.class.getResourceAsStream("/log4jdbc.properties");
+    if (propStream != null)
+    {
+      try
+      {
+        props.load(propStream);
+      }
+      catch (IOException e)
+      {
+        queue.add("ERROR!  io exception loading " +
+          "log4jdbc.properties from classpath: " + e.getMessage());
+      }
+      finally
+      {
+        try
+        {
+          propStream.close();
+        }
+        catch (IOException e)
+        {
+          queue.add("ERROR!  io exception closing property file stream: " +
+            e.getMessage());
+        }
+      }
+      queue.add("  log4jdbc.properties loaded from classpath");
+    }
+    else
+    {
+      queue.add("  log4jdbc.properties not found on classpath");
+    }
+  }
 }

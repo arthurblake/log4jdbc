@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2023 Arthur Blake
+ * Copyright 2007-2024 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,53 +29,53 @@ package net.sf.log4jdbc;
  */
 public class SpyLogFactory
 {
-	private static final String defaultDelegator = "net.sf.log4jdbc.Slf4jSpyLogDelegator";
-	private static final String delegatorClassName;
+  private static final String defaultDelegator = "net.sf.log4jdbc.Slf4jSpyLogDelegator";
+  private static final String delegatorClassName;
 
   /**
    * The delegator to the logging system of choice.
    */
   private static SpyLogDelegator delegator;
 
-	static
-	{
-		final String delegatorClassNameCandidate =
-			Log4JdbcProps.props.getProperty("log4jdbc.spylogdelegator");
-		if (delegatorClassNameCandidate != null &&
-			delegatorClassNameCandidate.length() > 0)
-		{
-			delegatorClassName = delegatorClassNameCandidate;
-		}
-		else
-		{
-			delegatorClassName = defaultDelegator;
-		}
-		try
-		{
-			@SuppressWarnings("unchecked")
-			Class<SpyLogDelegator> t = (Class<SpyLogDelegator>)
-				Class.forName(delegatorClassName);
-			delegator = (SpyLogDelegator) t.newInstance();
-			delegator.debug("Startup using custom delegator class: " +
-				delegatorClassName);
-		}
-		catch (Exception e)
-		{
-			if (delegator == null)
-			{
-				delegator = new Slf4jSpyLogDelegator();
-			}
-			delegator.debug(
-				"Failed instantiating delegator class: " + delegatorClassName +
-				" ; " + e.getMessage());
-			delegator.debug("Fall back to " + defaultDelegator);
-		}
-	}
+  static
+  {
+    final String delegatorClassNameCandidate =
+      Log4JdbcProps.props.getProperty("log4jdbc.spylogdelegator");
+    if (delegatorClassNameCandidate != null &&
+      delegatorClassNameCandidate.length() > 0)
+    {
+      delegatorClassName = delegatorClassNameCandidate;
+    }
+    else
+    {
+      delegatorClassName = defaultDelegator;
+    }
+    try
+    {
+      @SuppressWarnings("unchecked")
+      Class<SpyLogDelegator> t = (Class<SpyLogDelegator>) Class.forName(delegatorClassName);
+      delegator = (SpyLogDelegator) t.getDeclaredConstructor().newInstance();
+      delegator.debug("Startup using custom delegator class: " + delegatorClassName);
+    }
+    catch (Exception e)
+    {
+      if (delegator == null)
+      {
+        delegator = new Slf4jSpyLogDelegator();
+      }
+      delegator.debug(
+        "Failed instantiating delegator class: " + delegatorClassName +
+        " ; " + e.getMessage());
+      delegator.debug("Fall back to " + defaultDelegator);
+    }
+  }
 
   /**
    * Do not allow instantiation.  Access is through static method.
    */
-  private SpyLogFactory() {}
+  private SpyLogFactory()
+  {
+  }
 
   /**
    * Get the default SpyLogDelegator for logging to the logger.
@@ -87,13 +87,13 @@ public class SpyLogFactory
     return delegator;
   }
 
-	/**
-	 * Override the SpyLogDelegator used by the log4jdbc to provide for custom logging
-	 * scenarios.
-	 * @param overrideDelegator SpyLogDelegator to use for log4jdbc.
-	 */
-	public static void overrideSpyLogDelegator(SpyLogDelegator overrideDelegator)
-	{
-		SpyLogFactory.delegator = overrideDelegator;
-	}
+  /**
+   * Override the SpyLogDelegator used by the log4jdbc to provide for custom logging
+   * scenarios.
+   * @param overrideDelegator SpyLogDelegator to use for log4jdbc.
+   */
+  public static void overrideSpyLogDelegator(SpyLogDelegator overrideDelegator)
+  {
+    SpyLogFactory.delegator = overrideDelegator;
+  }
 }

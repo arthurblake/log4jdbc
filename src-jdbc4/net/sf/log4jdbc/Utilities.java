@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2023 Arthur Blake
+ * Copyright 2007-2024 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,43 +20,43 @@ package net.sf.log4jdbc;
  */
 public class Utilities
 {
-	/**
-	 * Right justify a field within a certain number of spaces.
-	 * @param fieldSize field size to right justify field within.
-	 * @param field contents to right justify within field.
-	 * @return the field, right justified within the requested size.
-	 */
-	public static String rightJustify(int fieldSize, String field)
-	{
-		if (field == null)
-		{
-			field = "";
-		}
-		StringBuffer output = new StringBuffer();
-		for (int i = 0, j = fieldSize - field.length(); i < j; i++)
-		{
-			output.append(' ');
-		}
-		output.append(field);
-		return output.toString();
-	}
+  /**
+   * Right justify a field within a certain number of spaces.
+   * @param fieldSize field size to right justify field within.
+   * @param field contents to right justify within field.
+   * @return the field, right justified within the requested size.
+   */
+  public static String rightJustify(int fieldSize, String field)
+  {
+    if (field == null)
+    {
+      field = "";
+    }
+    StringBuffer output = new StringBuffer();
+    for (int i = 0, j = fieldSize - field.length(); i < j; i++)
+    {
+      output.append(' ');
+    }
+    output.append(field);
+    return output.toString();
+  }
 
-	/**
-	 * Trim whitespace off the right of a string.
-	 * @param s input String to trim.
-	 * @return output trimmed string.
-	 */
-	public static String rtrim(String s)
-	{
-		if (s == null)
-		{
-			return null;
-		}
-		int i = s.length() - 1;
-		while (i >= 0 && Character.isWhitespace(s.charAt(i)))
-		{
-			i--;
-		}
-		return s.substring(0, i + 1);
-	}
+  /**
+   * Trim whitespace off the right of a string.
+   * @param s input String to trim.
+   * @return output trimmed string.
+   */
+  public static String rtrim(String s)
+  {
+    if (s == null)
+    {
+      return null;
+    }
+    int i = s.length() - 1;
+    while (i >= 0 && Character.isWhitespace(s.charAt(i)))
+    {
+      i--;
+    }
+    return s.substring(0, i + 1);
+  }
 }

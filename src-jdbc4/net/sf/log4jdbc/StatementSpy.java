@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2023 Arthur Blake
+ * Copyright 2007-2024 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,19 +104,23 @@ public class StatementSpy implements Statement, Spy
 
   /**
    * Report an exception to be logged which includes timing data on a sql failure.
-   * @param methodCall description of method call and arguments passed to it that generated the exception.
+   * @param methodCall description of method call and arguments passed to it that generated the
+   * exception.
    * @param exception exception that was generated
    * @param sql SQL associated with the call.
-   * @param execTime amount of time that the jdbc driver was chugging on the SQL before it threw an exception.
+   * @param execTime amount of time that the jdbc driver was chugging on the SQL before it threw an
+   * exception.
    */
-  protected void reportException(String methodCall, SQLException exception, String sql, long execTime)
+  protected void reportException(String methodCall, SQLException exception, String sql,
+    long execTime)
   {
     log.exceptionOccured(this, methodCall, exception, sql, execTime);
   }
 
   /**
    * Report an exception to be logged.
-   * @param methodCall description of method call and arguments passed to it that generated the exception.
+   * @param methodCall description of method call and arguments passed to it that generated the
+   * exception.
    * @param exception exception that was generated
    * @param sql SQL associated with the call.
    */
@@ -128,7 +132,8 @@ public class StatementSpy implements Statement, Spy
   /**
    * Report an exception to be logged.
    *
-   * @param methodCall description of method call and arguments passed to it that generated the exception.
+   * @param methodCall description of method call and arguments passed to it that generated the
+   * exception.
    * @param exception exception that was generated
    */
   protected void reportException(String methodCall, SQLException exception)
@@ -137,10 +142,12 @@ public class StatementSpy implements Statement, Spy
   }
 
   /**
-   * Report (for logging) that a method returned.  All the other reportReturn methods are conveniance methods that call this method.
+   * Report (for logging) that a method returned.  All the other reportReturn methods are
+   * conveniance methods that call this method.
    *
    * @param methodCall description of method call and arguments passed to it that returned.
-   * @param msg description of what the return value that was returned.  may be an empty String for void return types.
+   * @param msg description of what the return value that was returned.  may be an empty String for
+   * void return types.
    */
   protected void reportAllReturns(String methodCall, String msg)
   {
@@ -433,7 +440,7 @@ public class StatementSpy implements Statement, Spy
    * Tracking of current batch (see addBatch, clearBatch and executeBatch)
    * //todo: should access to this List be synchronized?
    */
-  protected List currentBatch = new ArrayList();
+  protected List<String> currentBatch = new ArrayList<>();
 
   public void addBatch(String sql) throws SQLException
   {
@@ -777,7 +784,8 @@ public class StatementSpy implements Statement, Spy
     }
   }
 
-  public boolean isClosed() throws SQLException {
+  public boolean isClosed() throws SQLException
+  {
     String methodCall = "isClosed()";
     try
     {
@@ -790,7 +798,8 @@ public class StatementSpy implements Statement, Spy
     }
   }
 
-  public void setPoolable(boolean poolable) throws SQLException {
+  public void setPoolable(boolean poolable) throws SQLException
+  {
     String methodCall = "setPoolable(" + poolable + ")";
     try
     {
@@ -804,7 +813,8 @@ public class StatementSpy implements Statement, Spy
     reportReturn(methodCall);
   }
 
-  public boolean isPoolable() throws SQLException {
+  public boolean isPoolable() throws SQLException
+  {
     String methodCall = "isPoolable()";
     try
     {
@@ -973,8 +983,8 @@ public class StatementSpy implements Statement, Spy
     reportReturn(methodCall);
   }
 
-	public void closeOnCompletion() throws SQLException
-	{
+  public void closeOnCompletion() throws SQLException
+  {
     String methodCall = "closeOnCompletion()";
     try
     {
@@ -986,12 +996,12 @@ public class StatementSpy implements Statement, Spy
       throw s;
     }
     reportReturn(methodCall);
-	}
+  }
 
-	public boolean isCloseOnCompletion() throws SQLException
-	{
-		boolean result;
-		String methodCall = "isCloseOnCompletion()";
+  public boolean isCloseOnCompletion() throws SQLException
+  {
+    boolean result;
+    String methodCall = "isCloseOnCompletion()";
     try
     {
       result = realStatement.isCloseOnCompletion();
@@ -1002,8 +1012,8 @@ public class StatementSpy implements Statement, Spy
       throw s;
     }
     reportReturn(methodCall);
-		return result;
-	}
+    return result;
+  }
 
   public int getUpdateCount() throws SQLException
   {
@@ -1019,12 +1029,15 @@ public class StatementSpy implements Statement, Spy
     }
   }
 
-  public <T> T unwrap(Class<T> iface) throws SQLException {
+  @SuppressWarnings("unchecked")
+  public <T> T unwrap(Class<T> iface) throws SQLException
+  {
     String methodCall = "unwrap(" + (iface==null?"null":iface.getName()) + ")";
     try
     {
       //todo: double check this logic
-      return (T)reportReturn(methodCall, (iface != null && (iface == Connection.class || iface == Spy.class))?(T)this:realStatement.unwrap(iface));
+      return (T)reportReturn(methodCall, (iface != null && (iface == Connection.class ||
+        iface == Spy.class))? (T)this : realStatement.unwrap(iface));
     }
     catch (SQLException s)
     {
@@ -1038,7 +1051,8 @@ public class StatementSpy implements Statement, Spy
     String methodCall = "isWrapperFor(" + (iface==null?"null":iface.getName()) + ")";
     try
     {
-      return reportReturn(methodCall, (iface != null && (iface == Statement.class || iface == Spy.class)) ||
+      return reportReturn(methodCall,
+        (iface != null && (iface == Statement.class || iface == Spy.class)) ||
           realStatement.isWrapperFor(iface));
     }
     catch (SQLException s)

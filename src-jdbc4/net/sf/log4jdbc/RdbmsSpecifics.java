@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2023 Arthur Blake
+ * Copyright 2007-2024 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 /**
- * Encapsulate sql formatting details about a particular relational database management system so that
- * accurate, useable SQL can be composed for that RDMBS.
+ * Encapsulate sql formatting details about a particular relational database management system so
+ * that accurate, useable SQL can be composed for that RDMBS.
  *
  * @author Arthur Blake
  */
@@ -36,10 +36,10 @@ public class RdbmsSpecifics
   protected static final String dateFormat = "MM/dd/yyyy HH:mm:ss.SSS";
 
   /**
-   * Format an Object that is being bound to a PreparedStatement parameter, for display. The goal is to reformat the
-   * object in a format that can be re-run against the native SQL client of the particular RDBMS being used.  This
-   * class should be extended to provide formatting instances that format objects correctly for different RDBMS
-   * types.
+   * Format an Object that is being bound to a PreparedStatement parameter, for display. The goal is
+   * to reformat the object in a format that can be re-run against the native SQL client of the
+   * particular RDBMS being used.  This class should be extended to provide formatting instances
+   * that format objects correctly for different RDBMS types.
    *
    * @param object jdbc object to be formatted.
    * @return formatted dump of the object.

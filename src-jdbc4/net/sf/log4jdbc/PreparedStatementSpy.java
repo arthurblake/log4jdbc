@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2023 Arthur Blake
+ * Copyright 2007-2024 Arthur Blake
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   /**
    * holds list of bind variables for tracing
    */
-  protected final List argTrace = new ArrayList();
+  protected final List<String> argTrace = new ArrayList<>();
 
   // a way to turn on and off type help...
   // todo:  make this a configurable parameter
@@ -64,6 +64,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    * @param typeHelper optional additional info about the type that is being set in the arg
    * @param arg        argument being bound.
    */
+  @SuppressWarnings({"unused"})
   protected void argTraceSet(int i, String typeHelper, Object arg)
   {
     String tracedArg;
@@ -172,13 +173,15 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   protected RdbmsSpecifics rdbmsSpecifics;
 
   /**
-   * Create a PreparedStatementSpy (JDBC 4 version) for logging activity of another PreparedStatement.
+   * Create a PreparedStatementSpy (JDBC 4 version) for logging activity of another
+   * PreparedStatement.
    *
    * @param sql                   SQL for the prepared statement that is being spied upon.
    * @param connectionSpy         ConnectionSpy that was called to produce this PreparedStatement.
    * @param realPreparedStatement The actual PreparedStatement that is being spied upon.
    */
-  public PreparedStatementSpy(String sql, ConnectionSpy connectionSpy, PreparedStatement realPreparedStatement)
+  public PreparedStatementSpy(String sql, ConnectionSpy connectionSpy,
+    PreparedStatement realPreparedStatement)
   {
     super(connectionSpy, realPreparedStatement);  // does null check for us
     this.sql = sql;
@@ -227,7 +230,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException
   {
-    String methodCall = "setCharacterStream(" + parameterIndex + ", " + reader + ", " + length + ")";
+    String methodCall = "setCharacterStream(" + parameterIndex + ", " + reader + ", " + length +
+      ")";
     argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
     try
     {
@@ -358,7 +362,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setByte(int parameterIndex, byte x) throws SQLException
   {
     String methodCall = "setByte(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(byte)", new Byte(x));
+    argTraceSet(parameterIndex, "(byte)", Byte.valueOf(x));
     try
     {
       realPreparedStatement.setByte(parameterIndex, x);
@@ -371,13 +375,12 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  /**
-   * @deprecated
-   */
+  @SuppressWarnings("deprecation")
   public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException
   {
     String methodCall = "setUnicodeStream(" + parameterIndex + ", " + x + ", " + length + ")";
-    argTraceSet(parameterIndex, "(Unicode InputStream)", "<Unicode InputStream of length " + length + ">");
+    argTraceSet(parameterIndex, "(Unicode InputStream)", "<Unicode InputStream of length " +
+      length + ">");
     try
     {
       realPreparedStatement.setUnicodeStream(parameterIndex, x, length);
@@ -393,7 +396,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setShort(int parameterIndex, short x) throws SQLException
   {
     String methodCall = "setShort(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(short)", new Short(x));
+    argTraceSet(parameterIndex, "(short)", Short.valueOf(x));
     try
     {
       realPreparedStatement.setShort(parameterIndex, x);
@@ -428,7 +431,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setInt(int parameterIndex, int x) throws SQLException
   {
     String methodCall = "setInt(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(int)", new Integer(x));
+    argTraceSet(parameterIndex, "(int)", Integer.valueOf(x));
     try
     {
       realPreparedStatement.setInt(parameterIndex, x);
@@ -444,7 +447,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setLong(int parameterIndex, long x) throws SQLException
   {
     String methodCall = "setLong(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(long)", new Long(x));
+    argTraceSet(parameterIndex, "(long)", Long.valueOf(x));
     try
     {
       realPreparedStatement.setLong(parameterIndex, x);
@@ -460,7 +463,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setFloat(int parameterIndex, float x) throws SQLException
   {
     String methodCall = "setFloat(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(float)", new Float(x));
+    argTraceSet(parameterIndex, "(float)", Float.valueOf(x));
     try
     {
       realPreparedStatement.setFloat(parameterIndex, x);
@@ -476,7 +479,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setDouble(int parameterIndex, double x) throws SQLException
   {
     String methodCall = "setDouble(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(double)", new Double(x));
+    argTraceSet(parameterIndex, "(double)", Double.valueOf(x));
     try
     {
       realPreparedStatement.setDouble(parameterIndex, x);
@@ -582,7 +585,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     String methodCall = "getParameterMetaData()";
     try
     {
-      return (ParameterMetaData) reportReturn(methodCall, realPreparedStatement.getParameterMetaData());
+      return (ParameterMetaData) reportReturn(methodCall,
+        realPreparedStatement.getParameterMetaData());
     }
     catch (SQLException s)
     {
@@ -591,7 +595,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     }
   }
 
-  public void setRowId(int parameterIndex, RowId x) throws SQLException {
+  public void setRowId(int parameterIndex, RowId x) throws SQLException
+  {
     String methodCall = "setRowId(" + parameterIndex + ", " + x + ")";
     argTraceSet(parameterIndex, "(RowId)", x);
     try
@@ -606,7 +611,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setNString(int parameterIndex, String value) throws SQLException {
+  public void setNString(int parameterIndex, String value) throws SQLException
+  {
     String methodCall = "setNString(" + parameterIndex + ", " + value + ")";
     argTraceSet(parameterIndex, "(String)", value);
     try
@@ -621,8 +627,10 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {
-    String methodCall = "setNCharacterStream(" + parameterIndex + ", " + value + ", " + length + ")";
+  public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException
+  {
+    String methodCall = "setNCharacterStream(" + parameterIndex + ", " + value + ", " + length +
+      ")";
     argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
     try
     {
@@ -636,7 +644,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setNClob(int parameterIndex, NClob value) throws SQLException {
+  public void setNClob(int parameterIndex, NClob value) throws SQLException
+  {
     String methodCall = "setNClob(" + parameterIndex + ", " + value + ")";
     argTraceSet(parameterIndex, "(NClob)", "<NClob>");
     try
@@ -651,7 +660,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
+  public void setClob(int parameterIndex, Reader reader, long length) throws SQLException
+  {
     String methodCall = "setClob(" + parameterIndex + ", " + reader + ", " + length + ")";
     argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
     try
@@ -666,7 +676,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
+  public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException
+  {
     String methodCall = "setBlob(" + parameterIndex + ", " + inputStream + ", " + length + ")";
     argTraceSet(parameterIndex, "(InputStream)", "<InputStream of length " + length + ">");
     try
@@ -681,7 +692,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
+  public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException
+  {
     String methodCall = "setNClob(" + parameterIndex + ", " + reader + ", " + length + ")";
     argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
     try
@@ -696,7 +708,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
+  public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException
+  {
     String methodCall = "setSQLXML(" + parameterIndex + ", " + xmlObject + ")";
     argTraceSet(parameterIndex, "(SQLXML)", xmlObject);
     try
@@ -760,9 +773,11 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     }
   }
 
-  public void setObject(int parameterIndex, Object x, int targetSqlType, int scale) throws SQLException
+  public void setObject(int parameterIndex, Object x, int targetSqlType, int scale)
+    throws SQLException
   {
-    String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ", " + scale + ")";
+    String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ", " +
+      scale + ")";
     argTraceSet(parameterIndex, getTypeHelp(x), x);
 
     try
@@ -798,9 +813,11 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    *                               this method is called on a closed <code>PreparedStatement</code>
    * @since 1.6
    */
-  public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
+  public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException
+  {
     String methodCall = "setAsciiStream(" + parameterIndex + ", " + x + ", " + length + ")";
-    argTraceSet(parameterIndex, "(Ascii InputStream)", "<Ascii InputStream of length " + length + ">");
+    argTraceSet(parameterIndex, "(Ascii InputStream)", "<Ascii InputStream of length " + length +
+      ">");
     try
     {
       realPreparedStatement.setAsciiStream(parameterIndex, x, length);
@@ -813,9 +830,11 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
+  public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException
+  {
     String methodCall = "setBinaryStream(" + parameterIndex + ", " + x + ", " + length + ")";
-    argTraceSet(parameterIndex, "(Binary InputStream)", "<Binary InputStream of length " + length + ">");
+    argTraceSet(parameterIndex, "(Binary InputStream)", "<Binary InputStream of length " + length +
+      ">");
     try
     {
       realPreparedStatement.setBinaryStream(parameterIndex, x, length);
@@ -828,8 +847,10 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
-    String methodCall = "setCharacterStream(" + parameterIndex + ", " + reader + ", " + length + ")";
+  public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException
+  {
+    String methodCall = "setCharacterStream(" + parameterIndex + ", " + reader + ", " + length +
+      ")";
     argTraceSet(parameterIndex, "(Reader)", "<Reader of length " + length + ">");
     try
     {
@@ -844,7 +865,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   }
 
-  public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
+  public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException
+  {
     String methodCall = "setAsciiStream(" + parameterIndex + ", " + x + ")";
     argTraceSet(parameterIndex, "(Ascii InputStream)", "<Ascii InputStream>");
     try
@@ -859,7 +881,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
+  public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException
+  {
     String methodCall = "setBinaryStream(" + parameterIndex + ", " + x + ")";
     argTraceSet(parameterIndex, "(Binary InputStream)", "<Binary InputStream>");
     try
@@ -875,7 +898,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   }
 
-  public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
+  public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException
+  {
     String methodCall = "setCharacterStream(" + parameterIndex + ", " + reader + ")";
     argTraceSet(parameterIndex, "(Reader)", "<Reader>");
     try
@@ -890,7 +914,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setNCharacterStream(int parameterIndex, Reader reader) throws SQLException {
+  public void setNCharacterStream(int parameterIndex, Reader reader) throws SQLException
+  {
     String methodCall = "setNCharacterStream(" + parameterIndex + ", " + reader + ")";
     argTraceSet(parameterIndex, "(Reader)", "<Reader>");
     try
@@ -905,7 +930,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setClob(int parameterIndex, Reader reader) throws SQLException {
+  public void setClob(int parameterIndex, Reader reader) throws SQLException
+  {
     String methodCall = "setClob(" + parameterIndex + ", " + reader + ")";
     argTraceSet(parameterIndex, "(Reader)", "<Reader>");
     try
@@ -920,7 +946,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
+  public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException
+  {
     String methodCall = "setBlob(" + parameterIndex + ", " + inputStream + ")";
     argTraceSet(parameterIndex, "(InputStream)", "<InputStream>");
     try
@@ -935,7 +962,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public void setNClob(int parameterIndex, Reader reader) throws SQLException {
+  public void setNClob(int parameterIndex, Reader reader) throws SQLException
+  {
     String methodCall = "setNClob(" + parameterIndex + ", " + reader + ")";
     argTraceSet(parameterIndex, "(Reader)", "<Reader>");
     try
@@ -1037,7 +1065,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException
   {
     String methodCall = "setAsciiStream(" + parameterIndex + ", " + x + ", " + length + ")";
-    argTraceSet(parameterIndex, "(Ascii InputStream)", "<Ascii InputStream of length " + length + ">");
+    argTraceSet(parameterIndex, "(Ascii InputStream)", "<Ascii InputStream of length " + length +
+      ">");
     try
     {
       realPreparedStatement.setAsciiStream(parameterIndex, x, length);
@@ -1053,7 +1082,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException
   {
     String methodCall = "setBinaryStream(" + parameterIndex + ", " + x + ", " + length + ")";
-    argTraceSet(parameterIndex, "(Binary InputStream)", "<Binary InputStream of length " + length + ">");
+    argTraceSet(parameterIndex, "(Binary InputStream)", "<Binary InputStream of length " + length +
+      ">");
     try
     {
       realPreparedStatement.setBinaryStream(parameterIndex, x, length);
@@ -1101,6 +1131,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void addBatch() throws SQLException
   {
     String methodCall = "addBatch()";
@@ -1117,17 +1148,25 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     reportReturn(methodCall);
   }
 
-  public <T> T unwrap(Class<T> iface) throws SQLException {
+  @SuppressWarnings("unchecked")
+  public <T> T unwrap(Class<T> iface) throws SQLException
+  {
     String methodCall = "unwrap(" + (iface==null?"null":iface.getName()) + ")";
     try
     {
-      //todo: double check this logic
-      //NOTE: could call super.isWrapperFor to simplify this logic, but it would result in extra log output
-      //because the super classes would be invoked, thus executing their logging methods too...
+      // todo: double check this logic
+      // NOTE: could call super.isWrapperFor to simplify this logic, but it would result in extra
+      // log output because the super classes would be invoked, thus executing their logging methods
+      // too...
       return (T)reportReturn(methodCall,
-        (iface != null && (iface==PreparedStatement.class||iface==Statement.class||iface==Spy.class))?
-          (T)this:
-          realPreparedStatement.unwrap(iface));
+      (
+        iface != null &&
+        (
+          iface == PreparedStatement.class ||
+          iface == Statement.class ||
+          iface == Spy.class)
+        )? (T)this : realPreparedStatement.unwrap(iface)
+      );
     }
     catch (SQLException s)
     {
@@ -1141,11 +1180,17 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     String methodCall = "isWrapperFor(" + (iface==null?"null":iface.getName()) + ")";
     try
     {
-      //NOTE: could call super.isWrapperFor to simplify this logic, but it would result in extra log output
-      //when the super classes would be invoked..
+      // NOTE: could call super.isWrapperFor to simplify this logic, but it would result in extra
+      // log output when the super classes would be invoked..
       return reportReturn(methodCall,
-        (iface != null && (iface==PreparedStatement.class||iface==Statement.class||iface==Spy.class)) ||
-        realPreparedStatement.isWrapperFor(iface));
+      (
+        iface != null &&
+        (
+          iface == PreparedStatement.class ||
+          iface == Statement.class ||
+          iface == Spy.class
+        )
+      ) || realPreparedStatement.isWrapperFor(iface));
     }
     catch (SQLException s)
     {
@@ -1153,5 +1198,4 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
       throw s;
     }
   }
-
 }
